@@ -1,0 +1,10 @@
+h1 {
+    width: 100%;
+    margin: 10 auto;
+    text-align: center;
+}
+
+p {
+    color:blue;
+    font-size:22px;
+}

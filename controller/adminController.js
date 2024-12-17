@@ -1,4 +1,4 @@
-const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery} = require("../model/tasks")
+const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery} = require("../model/tasks")
 const bcrypt = require("bcryptjs");
 const multer = require('multer');
 const path = require('path');
@@ -39,10 +39,12 @@ const getRoadmapDataController = async (req, res) =>{
     
     try {
         const data = await getRoadmapData()
+       
         
         if(data){
-            
-            return  res.status(200).send(data)
+            console.log("leader =", data.rows)
+            console.log("Data from SQL query:", JSON.stringify(data.rows, null, 2))
+            return  res.status(200).send({ rows: data.rows })
         }
         res.status(404).send("no data found")
         return
@@ -53,45 +55,47 @@ const getRoadmapDataController = async (req, res) =>{
 }
 
 const updateRoadmapTodosController = async (req, res) => {
-    const {value, name, leaderid} = req.body
+    const {is_completed, task, leaderid} = req.body
     
-    if (value === undefined || !name || !leaderid) {
+    if ( !task || !leaderid) {
         return res.status(400).send("Missing parameters");
     }
-    let column = ""
     
-    switch (name) {
-        case "Création du groupe messenger": column = "creation_messenger"; break;
-        case "Date confirmée": column = "date_confirme"; break;
-        case "Questionnaires et Consignes envoyés": column = "questionnaire_envoye"; break;
-        case "Création Zoom": column = "creation_zoom"; break;
-        case "Envoie des factures": column = "envoie_factures"; break;
-        case "Comptabilité à jour": column = "comptabilite"; break;
-        case "Rédaction profils": column = "redaction_profil"; break;
-        case "Profil Leader": column = "profil_leader"; break;
-        case "Tout importer, prêt à partager": column = "pret_partage"; break;
-        case "Présentation powerpoint": column = "powerpoint"; break;
-        case "Mentimeter": column = "mentimeter"; break;
-        case "Planification des rencontres 1": column = "planif_rencontres1"; break;
-        case "Envoie du questionnaire Introspection": column = "envoie_introspection"; break;
-        case "Rencontres 1": column = "rencontres1"; break;
-        case "Planification des rencontres 2": column = "planif_rencontres2"; break;
-        case "Envoie des questionnaires objectifs": column = "envoie_questionnaire_objectifs"; break;
-        case "Rencontre 2": column = "rencontres2"; break;
-        case "Rencontre leader, profiles des autres": column = "leader_profil_autres"; break;
-        case "Rencontre leader, S'adapter": column = "leader_adapter"; break;
-        case "Rencontre leader, Suivi": column = "row.leader_suivi"; break;
-        default: column = name
-
-    };
-    const query = `UPDATE leader_todo SET ${column} = $1 WHERE leader_id = $2`
 
     try {
-        await updateRoadmapTodos(query, value, leaderid)
+        await updateRoadmapTodos(is_completed, leaderid, task)
+        
         res.status(200).send("Succesfully updated todos!")
     } catch(error) {
         res.status(400).send(error)
     }
+}
+
+const addRoadmapTodos = async(req, res) => {
+    const {leaderid} = req.params;
+    const {task, category, is_default} = req.body;
+    console.log("task:", task, "category:", category, "is_default", is_default)
+    try {
+        await addTodosQuery(leaderid, category, task, is_default)
+        res.status(200).send("succesfully added à new task!")
+    } catch(error) {
+        res.status(400).send(error)
+    }
+    
+
+}
+
+const deleteRoadmapTodos = async(req,res) => {
+    const {leaderid} = req.params;
+    const {task, delete_default} = req.body;
+    
+    try {
+        deleteRoadmapTodosQuery(leaderid, task, delete_default);
+        res.status(200).send("tasks succesfully deleted")
+    } catch(error) {
+        res.status(400).send("Couldn't delete todos")
+    }
+    
 }
 
 /*const createOverviewTask = async (req, res) =>{
@@ -253,4 +257,4 @@ const downloadFile = async (req, res) => {
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos };

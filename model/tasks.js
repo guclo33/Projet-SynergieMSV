@@ -24,11 +24,33 @@ const getOverviewData = async () => {
 }
 
 const getRoadmapData = async () => {
-    return await pool.query("SELECT c.nom_client as nom, l.leader_id, l.creation_messenger, l.date_confirme, l.questionnaire_envoye, l.creation_zoom, l.envoie_factures, l.recept_paiement, l.comptabilite, l.redaction_profil, l.profil_leader, l.pret_partage, l.powerpoint, l.mentimeter, l.planif_rencontres1, l.envoie_introspection, l.rencontres1, l.planif_rencontres2, l.envoie_questionnaire_objectifs, l.rencontres2, l.leader_profil_autres, l.leader_adapter, l.leader_suivi FROM client c JOIN leader ON c.id = leader.client_id JOIN leader_todo l ON leader.id = l.leader_id;")
+    return await pool.query("SELECT c.nom_client as nom, c.id, c.leader_id as leader, t.task, t.category, t.is_completed FROM client c JOIN todos t ON c.id = t.client_id;")
 }
 
-const updateRoadmapTodos = async(query, value, leaderid)=> {
-    return await pool.query(query, [value, leaderid])
+const updateRoadmapTodos = async(is_completed, leaderid, task)=> {
+    
+
+
+    return await pool.query(`UPDATE todos SET is_completed = $1 WHERE client_id = (SELECT client_id from leader WHERE id = $2) AND task=$3`, [is_completed, leaderid, task])
+}
+
+const addTodosQuery = async (leaderid, category, task, is_default) => {
+    if(!is_default){
+        return await pool.query(`INSERT INTO todos (client_id, task, category) VALUES ((SELECT client_id FROM leader WHERE id = $1), $2, $3)`, [leaderid, task, category])
+    }
+
+    return await pool.query(`INSERT INTO default_tasks (task, category) VALUES ($1, $2)`, [task, category])
+
+}
+
+const deleteRoadmapTodosQuery = async (leaderid, task, delete_default) => {
+    if(!delete_default) {
+        return await pool.query(`DELETE FROM todos WHERE leader_id = $1 AND task = $2`, [leaderid,task])
+    }
+    await pool.query(`DELETE FROM todos WHERE task=$1`, [task])
+    await pool.query(`DELETE FROM default_tasks WHERE task=$1`, [task])
+
+    return
 }
 
 const updateOverview = async (date_presentation, echeance, statut, priorite, leader_id) => {
@@ -74,4 +96,4 @@ const updateUserPasswordQuery = async (password, id) => {
 
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery}
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery}

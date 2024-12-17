@@ -2,12 +2,25 @@ import React, {useState, useEffect, useContext} from "react";
 import { useParams, useLocation } from "react-router";
 import { AuthContext } from "../../AuthContext";
 import { Link } from "react-router-dom";
+import Modal from "react-modal"
 
 
 export function Roadmap() {
-    const [roadmapPrepData, setRoadmapPrepData] = useState([])
-    const [roadmapExecData, setRoadmapExecData] = useState([])
+    
+    const [filteredRoadmapdata, setFilteredRoadMapData] = useState([])
+    const [fullRoadData, setFullRoadData] = useState([]);
     const [showDone, setShowDone] = useState(false)
+    const [addTodos, setAddTodos] = useState({
+        task: "",
+        category: "",
+        is_default: false
+    })
+    const [showModal, setShowModal] = useState(false);
+    const [deleteTodos, setDeleteTodos] = useState({
+        task: "",
+        delete_default: false
+    })
+    const [deleteModal, setDeleteModal] = useState(false)
     const {leaderid} = useParams()
     const {user} = useContext(AuthContext)
     const location = useLocation()
@@ -23,43 +36,17 @@ export function Roadmap() {
                     });
                     if(response.ok){
                         const data = await response.json();
-                        console.log("here's roadmap data", data.rows)
-                        const dataArrayPreparation = data.rows.map((row) => ( {
-                            nom: row.nom,
-                            leader_id : row.leader_id,
-                            "Création du groupe messenger" : row.creation_messenger,
-                            "Date confirmée": row.date_confirme,
-                            "Questionnaires et Consignes envoyés": row.questionnaire_envoye,
-                            "Création Zoom": row.creation_zoom,
-                            "Envoie des factures": row.envoie_factures,
-                            "Réception du paiement": row.recept_paiement,
-                            "Comptabilité à jour": row.comptabilite,
-                            "Rédaction profils": row.redaction_profil,
-                            "Profil Leader": row.profil_leader,
-                            "Tout importer, prêt à partager": row.pret_partage,
-                            "Présentation powerpoint": row.powerpoint,
-                            "Mentimeter": row.mentimeter,
-                            
-                        }));
-
-                        const dataArrayExecution = data.rows.map((row) => ( {
-                            nom:row.nom,
-                            leader_id : row.leader_id,
-                            "Planification des rencontres 1": row.planif_rencontres1,
-                            "Envoie du questionnaire Introspection": row.envoie_introspection,
-                            "Rencontres 1": row.rencontres1,
-                            "Planification des rencontres 2": row.planif_rencontres2,
-                            "Envoie des questionnaires objectifs": row.envoie_questionnaire_objectifs,
-                            "Rencontre 2": row.rencontres2,
-                            "Rencontre leader, profiles des autres": row.leader_profil_autres,
-                            "Rencontre leader, S'adapter": row.leader_adapter,
-                            "Rencontre leader, Suivi": row.leader_suivi
-                        }));
-                        console.log("preparation :", dataArrayPreparation)
-                        console.log("execution :",dataArrayExecution)
-                        setRoadmapPrepData(dataArrayPreparation);
-                        setRoadmapExecData(dataArrayExecution)
                         
+                        if(!leaderid) {
+                            console.log("fullRoadData:", data.rows)
+                            setFullRoadData(data.rows)
+                            return
+                        }
+                        
+                        console.log("leader id:", leaderid)
+                        console.log("filteredRoadmap data avec leader id:", data.rows.filter(leader => leader.leader == leaderid))
+                        setFilteredRoadMapData(data.rows.filter(leader => leader.leader == leaderid))
+                        return 
                         
                         
                         
@@ -79,49 +66,36 @@ export function Roadmap() {
         
 
         getRoadmapData()
-    }, [roadmapExecData, roadmapPrepData])
+    }, [leaderid])
     
-    if (!roadmapPrepData || !roadmapExecData) {
+    if (!leaderid && !fullRoadData) {
         return <p>Loading...</p>;
     }
 
-    let filteredObjectPrep = {};
-    
-    let filteredObjectExec = {};
-    
-    let prepTrueArray = [];
-
-    let prepFalseArray = [];
-
-    let execTrueArray = [];
-
-    let execFalseArray = [];
-
-    let prepArray = [];
-    let execArray = [];
-
-    
-    if(leaderid) {
-        
-        filteredObjectPrep = roadmapPrepData.find(leader => leader.leader_id == leaderid);
-        
-        
-        filteredObjectExec = roadmapExecData.find(leader => leader.leader_id == leaderid);
-        
-        if(filteredObjectPrep) {
-            prepArray = Object.entries(filteredObjectPrep)
-        }
-        if(filteredObjectExec) {
-            execArray = Object.entries(filteredObjectExec)
-        }
-        prepTrueArray = prepArray.filter(([key, value]) => value === true)
-        
-        prepFalseArray = prepArray.filter(([key, value]) =>  value === false)
-        
-        execTrueArray = execArray.filter(([key, value]) =>  value === true)
-
-        execFalseArray = execArray.filter(([key, value]) =>  value === false)
+    if(leaderid && !filteredRoadmapdata) {
+        return <p>Loading...</p>;
     }
+
+    let dataArrayPreparation = null;
+    let dataArrayExecution = null;
+    let dataArrayPrepDataDone = null;
+    let dataArrayExecDataDone = null;
+
+    if(filteredRoadmapdata) {
+        dataArrayPreparation = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == false)
+        console.log(" dataArrayPreparation", dataArrayPreparation)
+
+        dataArrayExecution = filteredRoadmapdata.filter(row => row.category === "exécution" && row.is_completed == false)
+        console.log(" dataArrayExecution", dataArrayExecution)
+
+        dataArrayPrepDataDone = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == true)
+        console.log(" dataArrayPrepDataDone", dataArrayPrepDataDone)
+
+        dataArrayExecDataDone = filteredRoadmapdata.filter(row => row.category === "exécution" && row.is_completed == true)
+        console.log(" dataArrayExecDataDone", dataArrayExecDataDone)
+        
+    }
+
     
     const handleButton = () => {
         setShowDone(!showDone)
@@ -131,8 +105,18 @@ export function Roadmap() {
         
         const {value} = e.target
         const {name} = e.target
+        let newValue = null
+        console.log("value", value)
+        if (value === "true") {
+            newValue = false
+            console.log("newValue", newValue)
+        } 
+        if (value === "false") {
+            newValue = true
+            console.log("newValue", newValue)
+        }
+        
 
-        const newValue = value === "true" ? false : true
         
         try{
             const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap`, {
@@ -142,13 +126,13 @@ export function Roadmap() {
                     "Content-Type": "application/json",
                 },
                 body : JSON.stringify({
-                    value: newValue,
-                    name: name,
+                    is_completed: newValue,
+                    task: name,
                     leaderid : leaderid
                 })
             });
             if(response.ok){
-                console.log(`succesfully updated ${name} with ${value}`)
+                console.log(`succesfully updated ${name} with ${newValue}`)
 
             } else {
                 console.log("could not update the task")
@@ -158,14 +142,99 @@ export function Roadmap() {
         }
     }
     
-
+    const uniqueLeaders = fullRoadData.reduce((acc, current) => {
+        if (!acc.find(item => item.nom === current.nom)) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
    /* const handleNewTask = async() => {
 
     }*/
     
-    if (!filteredObjectPrep || !roadmapPrepData || !roadmapExecData) {
+    /*if (!filteredObjectPrep || !roadmapPrepData || !roadmapExecData) {
         return <p>Loading...</p>;
+    }*/
+    
+    const handleAddTodos = async (e) => {
+        e.preventDefault()
+
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap/${leaderid}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    
+                    task: addTodos.task,
+                    category: addTodos.category,
+                    is_default: addTodos.is_default
+                })
+            });
+            if(response.ok){
+                console.log("Task succesfully added")
+                setShowModal(false)
+            } else {
+                console.log("could not add task")
+            }
+
+        } catch(error) {
+            console.log("error adding todos", error)
+        }
+    };
+
+    const handleAddTodosChange =(e) => {
+        const {name, value} = e.target;
+        setAddTodos((prev) => ({
+            ...prev,
+            [name] : value
+        }))
     }
+
+    const handleDeleteTodos = async (e) => {
+        e.preventDefault();
+        const userConfirmed = window.confirm("Êtes-vous certain de vouloir supprimer cette tâche ?");
+
+        if(userConfirmed) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap/${leaderid}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        
+                        task: deleteTodos.task,
+                        delete_default: deleteTodos.delete_default
+                    })
+                });
+                if(response.ok){
+                    console.log("Task succesfully deleted")
+                    setDeleteModal(false)
+                } else {
+                    console.log("could not delete task")
+                }
+
+            } catch(error) {
+                console.log("error deleting todos", error)
+            }
+        } else {
+            console.alert("suppression annulée")
+        }
+    }
+
+    const handleDeleteTodosChange =(e) => {
+        const {name, value} = e.target;
+        setDeleteTodos((prev) => ({
+            ...prev,
+            [name] : value
+        }))
+    }
+        
 
     return(
         <div className="roadmap">
@@ -173,14 +242,14 @@ export function Roadmap() {
            
                 {leaderid ? (
                     <div className="todoList">
-                            <h2>{filteredObjectPrep.nom}</h2>
+                            <h2>{filteredRoadmapdata.nom}</h2>
                             <h3>Préparation</h3>
-                            <div key={filteredObjectPrep.leader_id} >
+                            <div key={filteredRoadmapdata.leader} >
                                 <div className="preparation">
-                                {prepFalseArray.map(([key, value]) => (
-                                    <div key={key} className="todo">
-                                        <label htmlFor={key}>{key}</label>
-                                        <input name={key} value={value} type="checkbox" checked={Boolean(value)} onChange={handleClick}/>
+                                {dataArrayPreparation.map((task) => (
+                                    <div key={task} className="todo">
+                                        <label htmlFor={task.task}>{task.task}</label>
+                                        <input name={task.task} value={Boolean(task.is_completed)} type="checkbox" checked={task.is_completed} onChange={handleClick}/>
                                         
                                     </div>
                             ))}
@@ -189,14 +258,14 @@ export function Roadmap() {
                             <div className="done">
                                 <h3 className="tacheComplete">Tâches complétées</h3>
                                 <div className="doneChecklist">
-                                {prepTrueArray.map(([key, value]) => (
-                                    <div key={key} className="todo">
-                                        <label htmlFor={key}>{key}</label>
+                                {dataArrayPrepDataDone.map((task) => (
+                                    <div key={task.task} className="todo">
+                                        <label htmlFor={task.task}>{task.task}</label>
                                         <input 
-                                            name={key} 
-                                            value={value} 
+                                            name={task.task} 
+                                            value={Boolean(task.is_completed)} 
                                             type="checkbox" 
-                                            checked={value} 
+                                            checked={task.is_completed} 
                                             onChange={handleClick} 
                                         />
                                     </div>
@@ -208,10 +277,10 @@ export function Roadmap() {
                         <div className="execution">
                             <h3>Exécution</h3>
                             <div className="execContainer">
-                                {execFalseArray.map(([key, value]) => (
-                                    <div key={key} className="todo">
-                                        <label htmlFor={key}>{key}</label>
-                                        <input name={key} value={value} type="checkbox" checked={value} onChange={handleClick} />
+                                {dataArrayExecution.map((task) => (
+                                    <div key={task.task} className="todo">
+                                        <label htmlFor={task.task}>{task.task}</label>
+                                        <input name={task.task} value={Boolean(task.is_completed)} type="checkbox" checked={task.is_completed} onChange={handleClick} />
                                     </div>
                                 ))}
                             </div>
@@ -219,28 +288,77 @@ export function Roadmap() {
                                 <div className="executionDone">
                                     <h3 className="tacheComplete">Tâches complétées</h3>
                                     <div className="execDoneChecklist">
-                                    {execTrueArray.map(([key, value]) => (
+                                    {dataArrayExecDataDone.map((task) => (
                                 
-                                        <div key={key} className="todo">
-                                            <label htmlFor={key}>{key}</label>
-                                            <input name={key} value={value} type="checkbox" checked={value} onChange={handleClick} />
+                                        <div key={task.task} className="todo">
+                                            <label htmlFor={task.task}>{task.task}</label>
+                                            <input name={task.task}  value={Boolean(task.is_completed)} type="checkbox" checked={task.is_completed} onChange={handleClick} />
                                         </div>
                                 ))}
                                 </div>
                                 </div>
                             )}
                         </div>
-                        <div className="overviewButton">
+                        <div className="roadmapButton">
                             <button className="showDone" name="showDone" onClick={handleButton}>Voir tâches complétées</button>
-                            
+                            <button className="showModal" name="showModal" onClick = {() => setShowModal(true)}>Ajouter une nouvelle tâche</button>
+                            <button className="deleteModal" name="deleteModal" onClick = {() => setDeleteModal(true)}>Supprimer des tâches</button>
                         </div>
+                        <Modal className="modal" isOpen={showModal} onRequestClose={() => setShowModal(false)}>
+                            <div className="modalContent">
+                                <h2>Ajouter une nouvelle tâche</h2>
+                                <form onSubmit={handleAddTodos}>
+                                    <div className="inputModal">
+                                        <label htmlfor="task">Description de la tâche</label>
+                                        <input className="textArea" name="task" value={addTodos.taks} type="textarea" onChange={handleAddTodosChange}/>
+                                    </div>
+                                    <div className="inputModal">
+                                        <label htmlfor="category">Catégorie</label>
+                                        <select name="category" value={addTodos.category} onChange={handleAddTodosChange}>
+                                            <option value="préparation">Préparation</option>
+                                            <option value="exécution" >Exécution</option>
+                                        </select>
+                                    </div>
+                                    <div className="inputModal">
+                                    <label htmlfor="is_default">S'applique à tous les leaders?</label>
+                                    <input type="checkbox" name="is_default" value={addTodos.is_default} checked={addTodos.is_default} onChange={handleAddTodosChange}/>
+                                    </div>
+                                    <button className="submitAddTodos" name="submitAddTodos" type="submit">Soumettre</button>
+                                </form>
+                            
+                                <button name="unShowModal" onClick={()=> setShowModal(false)}>Fermer</button>
+                            </div>
+                        </Modal>
+                        <Modal className="modal" isOpen={deleteModal} onRequestClose={() => setDeleteModal(false)}>
+                            <div className="modalContent">
+                                <h2>Supprimer des tâches</h2>
+                                <form onSubmit={handleDeleteTodos}>
+                                    
+                                    <div className="inputDeleteModal">
+                                        <label htmlfor="task">Catégorie</label>
+                                        <select name="task" value={deleteTodos.task} onChange={handleDeleteTodosChange}>
+                                            {filteredRoadmapdata.map(task =>(
+                                                <option key={task.task} value={task.task}>{task.task}</option>
+                                                
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="inputDeleteModal">
+                                        <label htmlfor="delete_default">Supprimer pour tous les leaders?</label>
+                                        <input type="checkbox" name="delete_default" value={deleteTodos.delete_default} checked={deleteTodos.delete_default} onChange={handleDeleteTodosChange}/>
+                                    </div>
+                                    <button className="submitDeleteTodos" name="submitDeleteTodos" type="submit">Soumettre</button>
+                                </form>
+                                <button name="unShowModal" onClick={()=> setDeleteModal(false)}>Fermer</button>
+                                </div>
+                        </Modal>
                     </div> ): 
                         (
                             
                             <div className="leadersMap">    
-                                {roadmapPrepData.map(leader => (
-                                <div className="leader" key={leader.leader_id}>
-                                    <h4><Link to={`${leader.leader_id}`}>{leader.nom}</Link></h4>
+                                {uniqueLeaders.map(leader => (
+                                <div className="leader" key={leader.leader}>
+                                    <h4><Link to={`${leader.leader}`}>{leader.nom}</Link></h4>
                                 </div> ))}
                             </div>    
                                 

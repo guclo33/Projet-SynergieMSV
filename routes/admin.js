@@ -8,7 +8,7 @@ const fs = require('fs');
 const upload = multer({ dest: 'C:/Users/Guillaume Cloutier/Downloads' });
 
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile} = require ("../controller/adminController")
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos} = require ("../controller/adminController")
 
 
 router.get("/", getAdminHomeDataController)
@@ -20,6 +20,10 @@ router.put("/overview", updateOverviewController)
 router.get("/roadmap", getRoadmapDataController)
 
 router.put("/roadmap", updateRoadmapTodosController )
+
+router.post("/roadmap/:leaderid", addRoadmapTodos)
+
+router.delete("/roadmap/:leaderid", deleteRoadmapTodos)
 
 router.get("/details", getAdminHomeDataController)
 

@@ -42,7 +42,7 @@ app.use(session({
   secret: sessionSecret,  
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 * 24, sameSite: 'Lax' }  
+  cookie: { secure: true, httpOnly: true, maxAge: 1000 * 60 * 60 * 24, sameSite: 'Strict' }  
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());

@@ -18,12 +18,9 @@ const passport = require('./config/passport');
 const sessionSecret = process.env.COOKIE_SECRET_KEY
 
 const RedisStore = connectRedis(session);
-const redisClient = new Redis({
-  host: 'localhost',
-  port: 6379
-})
+const redisClient = new Redis("redis://red-cthdiidumphs73fn57k0:6379")
 
-const allowedOrigins = ['http://10.0.0.6:3001', 'http://localhost:3000', "http://localhost:3001", "https://app-aagr4xe5mic.canva-apps.com", "http://127.0.0.1:3001", "http://localhost:3001/admin" ]; // 
+const allowedOrigins = ['http://10.0.0.6:3001', 'http://localhost:3000', "http://localhost:3001", "https://app-aagr4xe5mic.canva-apps.com", "http://127.0.0.1:3001", "http://localhost:3001/admin", "https://projet-synergiemsv.onrender.com/", "projet-synergiemsv:3000" ]; // 
 
 const corsOptions = {
   origin: function (origin, callback) {

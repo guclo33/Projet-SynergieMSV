@@ -1,3 +1,5 @@
 .env
 accessToken.json
 /node_modules
+/build
+synergiemsv/build

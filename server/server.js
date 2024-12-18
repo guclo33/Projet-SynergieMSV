@@ -12,6 +12,7 @@ const Redis = require('ioredis');
 const connectRedis = require('connect-redis');
 const { isAuthenticated, isAuthorizedAdmin } = require('../controller/loginAndRegister');
 const passport = require('./config/passport');
+const path = require('path');
 
 
 
@@ -47,7 +48,11 @@ app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.static(path.join(__dirname, '../synergiemsv/build')));
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../synergiemsv/build', 'index.html'));
+});
 
 app.use("/api/admin/:id", isAuthorizedAdmin,(req, res, next) => {
   console.log("Params:", req.params);

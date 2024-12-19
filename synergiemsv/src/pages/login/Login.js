@@ -7,7 +7,7 @@ import { AuthContext } from "../AuthContext";
 import { useLocation } from 'react-router-dom';
 
 export function Login() {
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
     const [userData, setUserData] = useState({
         usernameOrEmail : "",
         password : ""

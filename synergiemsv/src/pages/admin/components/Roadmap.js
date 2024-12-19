@@ -24,7 +24,7 @@ export function Roadmap() {
     const {leaderid} = useParams()
     const {user} = useContext(AuthContext)
     const location = useLocation()
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
     
 
     useEffect(() => {

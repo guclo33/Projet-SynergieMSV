@@ -19,7 +19,7 @@ export function Register() {
     })
     const location = useLocation();
     const navigate = useNavigate();
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
 
     const isPassCapsVerified = (password) => {
         const minorExist = /[a-z]/.test(password);

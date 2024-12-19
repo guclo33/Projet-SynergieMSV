@@ -12,7 +12,7 @@ export function Overview() {
         priorite : overviewData.priorite,
         client_id: overviewData.client_id
     })
-    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
+    const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     const {user} = useContext(AuthContext)
 
     useEffect(() => {

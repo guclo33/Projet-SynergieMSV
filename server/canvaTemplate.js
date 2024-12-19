@@ -121,7 +121,7 @@ const connectCanva = async (req,res, next) => {
     const authCode = req.query.code;
     const state = req.query.state;
     const redirectURL = req.session.redirectURL;
-    const redirectURI = "http://127.0.0.1:3000/api/canva/auth";
+    const redirectURI = "https://projet-synergiemsv.onrender.com/api/canva/auth";
     
      
 

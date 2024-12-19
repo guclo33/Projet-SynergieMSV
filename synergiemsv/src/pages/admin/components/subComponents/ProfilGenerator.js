@@ -14,7 +14,7 @@ export function ProfilGenerator() {
     const [message, setMessage] = useState("")
     const {id} = useParams();
     const {user} = useContext(AuthContext);
-    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
+    const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
 
     useEffect(() =>{
         const fetchAuthUrl= async () =>{

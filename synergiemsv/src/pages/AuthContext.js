@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 export const  AuthProvider = ({children}) => {
   ;  
   const [user, setUser] = useState(null);
-  const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
+  const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     useEffect(() => {
       const checkSession = async () => {
         

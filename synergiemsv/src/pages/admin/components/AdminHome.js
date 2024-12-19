@@ -9,7 +9,7 @@ import "../admin.css"
 export function AdminHome() {
     const [adminHomeData, setAdminHomeData] = useState([])
     const {user} = useContext(AuthContext);
-    const apiUrl = process.env.RENDER_API || 'http://localhost:3000';
+    const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     useEffect( () => {
         
         const getAdminHomeData = async () => {

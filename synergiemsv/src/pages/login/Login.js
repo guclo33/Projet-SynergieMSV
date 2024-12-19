@@ -36,7 +36,7 @@ export function Login() {
         e.preventDefault()
         if (verified){
             try {
-                console.log('Sending data to backend:', userData);
+                console.log('Sending data to backend:', userData.usernameOrEmail);
                 const response = await fetch("http://localhost:3000/api/login", {
                     method: "POST",
                     credentials: 'include',

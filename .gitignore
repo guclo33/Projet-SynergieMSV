@@ -1,4 +1,6 @@
 .env
+.env.local
+.env.production
 accessToken.json
 /node_modules
 /build

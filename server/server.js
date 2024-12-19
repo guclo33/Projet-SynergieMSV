@@ -42,17 +42,13 @@ app.use(session({
   secret: sessionSecret,  
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true, httpOnly: true, maxAge: 1000 * 60 * 60 * 24, sameSite: 'Strict' }  
+  cookie: { secure: true, httpOnly: true, maxAge: 1000 * 60 * 60 * 24, sameSite: 'None' }  
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, '../synergiemsv/build')));
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../synergiemsv/build', 'index.html'));
-});
 
 app.use("/api/admin/:id", isAuthorizedAdmin,(req, res, next) => {
   console.log("Params:", req.params);
@@ -95,6 +91,11 @@ app.post('/api/auth/logout', (req, res) => {
   });
 });
 
+app.use(express.static(path.join(__dirname, '../synergiemsv/build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../synergiemsv/build', 'index.html'));
+});
 
 app.listen(PORT, "0.0.0.0", () =>{
     console.log(`Listening to port : ${PORT}`)

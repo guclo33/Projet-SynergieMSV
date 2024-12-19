@@ -24,13 +24,13 @@ export function Roadmap() {
     const {leaderid} = useParams()
     const {user} = useContext(AuthContext)
     const location = useLocation()
-
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     
 
     useEffect(() => {
         const getRoadmapData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap`, {
                     method: "GET",
                     credentials: "include",
                     });
@@ -119,7 +119,7 @@ export function Roadmap() {
 
         
         try{
-            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
@@ -161,7 +161,7 @@ export function Roadmap() {
 
 
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap/${leaderid}`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${leaderid}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -200,7 +200,7 @@ export function Roadmap() {
 
         if(userConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/roadmap/${leaderid}`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${leaderid}`, {
                     method: "DELETE",
                     credentials: "include",
                     headers: {

@@ -18,7 +18,8 @@ export function Register() {
         verifyPassword: ""
     })
     const location = useLocation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
     const isPassCapsVerified = (password) => {
         const minorExist = /[a-z]/.test(password);
@@ -75,7 +76,7 @@ export function Register() {
         if(verified){
 
             try {
-                const response = await fetch ("http://10.0.0.6:3000/api/register", {
+                const response = await fetch (`${apiUrl}/api/register`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

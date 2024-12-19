@@ -6,13 +6,13 @@ export const AuthContext = createContext();
 export const  AuthProvider = ({children}) => {
   ;  
   const [user, setUser] = useState(null);
-
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     useEffect(() => {
       const checkSession = async () => {
         
         try {
               // Vérifie la session côté serveur
-              const response = await fetch('http://localhost:3000/api/auth/check', {
+              const response = await fetch(`${apiUrl}/api/auth/check`, {
                   method: 'GET',
                   credentials: 'include', // Assure que les cookies de session sont envoyés
               });

@@ -9,12 +9,12 @@ import "../admin.css"
 export function AdminHome() {
     const [adminHomeData, setAdminHomeData] = useState([])
     const {user} = useContext(AuthContext);
-
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     useEffect( () => {
         
         const getAdminHomeData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}`, {
                     method: "GET",
                     credentials: "include",
                     });

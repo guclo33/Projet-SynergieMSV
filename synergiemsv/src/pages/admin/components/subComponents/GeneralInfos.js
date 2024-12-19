@@ -15,7 +15,7 @@ export function GeneralInfos({detailsData}) {
     })
     const {clientid} = useParams()
     const {user} = useContext(AuthContext)
-    
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     const handleModify = () => {
         setModify(true)
     }
@@ -34,7 +34,7 @@ export function GeneralInfos({detailsData}) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/details/${clientid}`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/${clientid}`, {
                 method : "PUT",
                 credentials : "include",
                 headers : {

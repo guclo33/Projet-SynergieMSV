@@ -14,12 +14,12 @@ export function ProfilGenerator() {
     const [message, setMessage] = useState("")
     const {id} = useParams();
     const {user} = useContext(AuthContext);
-    
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
     useEffect(() =>{
         const fetchAuthUrl= async () =>{
             try{
-                const response = await fetch(`http://localhost:3000/api/canva/authurl/`, {
+                const response = await fetch(`${apiUrl}/api/canva/authurl/`, {
                     methode : "GET",
                     credentials: 'include',
                 });
@@ -71,7 +71,7 @@ export function ProfilGenerator() {
         document.getElementById('loading').style.display = 'block';
         console.log(dataToSend, "params id =", id)
         try {
-            const response = await fetch(`http://localhost:3000/api/admin/${id}/profilgenerator`, {
+            const response = await fetch(`${apiUrl}/api/admin/${id}/profilgenerator`, {
                 method: "POST",
                 credentials: 'include',
                 headers : {

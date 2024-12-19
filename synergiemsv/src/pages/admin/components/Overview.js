@@ -12,13 +12,13 @@ export function Overview() {
         priorite : overviewData.priorite,
         client_id: overviewData.client_id
     })
-
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     const {user} = useContext(AuthContext)
 
     useEffect(() => {
         const getOverviewData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/overview`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/overview`, {
                     method: "GET",
                     credentials: "include",
                     });
@@ -76,7 +76,7 @@ export function Overview() {
         e.preventDefault()
         
         try{
-            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/overview`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/overview`, {
                 method : "PUT",
                 credentials : "include",
                 headers : {

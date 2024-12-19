@@ -10,11 +10,11 @@ export function Details() {
     const {clientid = null} = useParams()
     const {user} = useContext(AuthContext);
     const location = useLocation()
-
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     useEffect(()=>{
         const getLeadersData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/details`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/details`, {
                     method: "GET",
                     credentials: "include",
                     });
@@ -57,7 +57,7 @@ export function Details() {
         console.log("getDetails called with clientid", clientid)
         const getDetailsData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/details/${clientid}`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/${clientid}`, {
                     method: "GET",
                     credentials: "include",
                     });

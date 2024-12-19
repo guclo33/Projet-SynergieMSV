@@ -6,7 +6,8 @@ import { DropZone } from "./DropZone";
 
 export function Documents({detailsData}) {
         const {user} = useContext(AuthContext)
-        const apiUrl = `http://localhost:3000/api/admin/${user.id}/details`;
+        const apiU = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+        const apiUrl = `${apiU}/api/admin/${user.id}/details`;
         
         if(!detailsData.equipe){
             return

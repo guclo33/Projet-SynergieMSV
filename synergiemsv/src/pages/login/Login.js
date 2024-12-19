@@ -7,7 +7,7 @@ import { AuthContext } from "../AuthContext";
 import { useLocation } from 'react-router-dom';
 
 export function Login() {
-    
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     const [userData, setUserData] = useState({
         usernameOrEmail : "",
         password : ""
@@ -37,7 +37,7 @@ export function Login() {
         if (verified){
             try {
                 console.log('Sending data to backend:', userData.usernameOrEmail);
-                const response = await fetch("http://localhost:3000/api/login", {
+                const response = await fetch(`${apiUrl}/api/login`, {
                     method: "POST",
                     credentials: 'include',
                     headers: {

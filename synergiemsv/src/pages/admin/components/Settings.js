@@ -11,7 +11,7 @@ export function Settings() {
         email : user.email
     })
     const [newPassword, setNewPassword] = useState("")
-
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
     console.log("user :", user)
     const handleClick = () => {
         setModify(true)
@@ -32,7 +32,7 @@ export function Settings() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            const response = await fetch(`http://localhost:3000/api/admin/${user.id}/settings/`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/settings/`, {
                 method : "PUT",
                 credentials : "include",
                 headers : {
@@ -71,7 +71,7 @@ export function Settings() {
             console.log("Mot de passe modifié !");
                
             try{
-                const response = await fetch(`http://localhost:3000/api/admin/${user.id}/settings/password`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/settings/password`, {
                     method : "PUT",
                     credentials : "include",
                     headers : {
@@ -90,7 +90,7 @@ export function Settings() {
             }
             
         } else {
-            // Ne rien faire si annulé
+            
             console.log("Action annulée.");
         }
     

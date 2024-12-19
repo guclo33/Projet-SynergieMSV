@@ -9,7 +9,7 @@ passport.use(
         { usernameField: 'usernameOrEmail', passwordField: 'password' }, 
         async (usernameOrEmail, password, done) => {
             try {
-                
+                console.log('Authenticating user:', usernameOrEmail);
                 const user = await loginQuery(usernameOrEmail);
 
                 if (user.rows.length === 0) {

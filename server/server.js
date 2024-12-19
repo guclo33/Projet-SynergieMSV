@@ -21,7 +21,7 @@ const sessionSecret = process.env.COOKIE_SECRET_KEY
 const RedisStore = connectRedis(session);
 const redisClient = new Redis(process.env.REDIS_RENDER_URL)
 
-const allowedOrigins = ['http://10.0.0.6:3001', 'http://localhost:3000', "http://localhost:3001", "https://app-aagr4xe5mic.canva-apps.com", "http://127.0.0.1:3001", "http://localhost:3001/admin", "https://projet-synergiemsv.onrender.com/", "projet-synergiemsv:3000" ]; // 
+const allowedOrigins = ['http://10.0.0.6:3001', 'http://localhost:3000', "http://localhost:3001", "https://app-aagr4xe5mic.canva-apps.com", "http://127.0.0.1:3001", "http://localhost:3001/admin", "https://projet-synergiemsv.onrender.com", "projet-synergiemsv:3000" ]; // 
 
 const corsOptions = {
   origin: function (origin, callback) {

@@ -8,12 +8,12 @@ const fs = require('fs')
 const getAdminHomeDataController = async (req,res) => {
     try {
         const data = await getAdminHomeData()
-        
+        console.log("Backend data:", data)
         if(data){
             
             return  res.status(200).send(data)
         }
-        res.send(404).send("no data found")
+        res.status(404).send("no data found")
         return
     } catch (error){
         return res.send(500).send("internal server error")

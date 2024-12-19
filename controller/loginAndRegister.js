@@ -69,6 +69,7 @@ const isAuthenticated = (req, res, next) => {
 
 
 const isAuthorizedAdmin = (req, res, next) => {
+    console.log("req.user", req.user)
     const {id} = req.params;
     
     if (!req.isAuthenticated()) {

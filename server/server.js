@@ -79,7 +79,7 @@ app.get("/api/canva/auth", (req,res,next) => {
 connectCanva);
 
 app.get('/api/auth/check', (req, res) => {
-  
+  console.log("req.user:", req.user)
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
    

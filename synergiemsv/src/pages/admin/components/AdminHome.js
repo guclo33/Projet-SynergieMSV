@@ -11,7 +11,7 @@ export function AdminHome() {
     const {user} = useContext(AuthContext);
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     useEffect( () => {
-        
+        console.log(`${apiUrl}/api/admin/${user.id}`);
         const getAdminHomeData = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/admin/${user.id}`, {
@@ -42,6 +42,7 @@ export function AdminHome() {
                 console.error("Could not connect to getadminhomedata", error)
             }
         }
+        console.log('user.id', user.id)
         console.log("getAdmin called")
         getAdminHomeData();
 

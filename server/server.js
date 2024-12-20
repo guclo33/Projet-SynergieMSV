@@ -13,6 +13,7 @@ const connectRedis = require('connect-redis');
 const { isAuthenticated, isAuthorizedAdmin } = require('../controller/loginAndRegister');
 const passport = require('./config/passport');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -39,7 +40,8 @@ const corsOptions = {
   exposedHeaders: ["Set-Cookie"], 
 };
 
-
+app.use(cookieParser());
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(session({
   store: new RedisStore({ client: redisClient }),
@@ -56,6 +58,8 @@ app.use(session({
 app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 redisClient.on('connect', () => {
   console.log('Connected to Redis successfully');

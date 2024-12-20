@@ -49,7 +49,6 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    domain: process.env.NODE_ENV === 'production' ? "https://projet-synergiemsv.onrender.com" : undefined ,
     secure: process.env.NODE_ENV === 'production', 
     httpOnly: true, 
     maxAge: 1000 * 60 * 60 * 24, 

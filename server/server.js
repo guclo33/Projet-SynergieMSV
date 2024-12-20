@@ -65,6 +65,7 @@ redisClient.on('error', (err) => {
 redisClient.set('testKey', 'testValue');
 redisClient.get('testKey', (err, result) => {
     console.log('Test key value:', result);
+});
 
 app.use("/api/admin/:id",(req, res, next) => {
   console.log('Session data:', req.session);

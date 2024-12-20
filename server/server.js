@@ -45,10 +45,12 @@ app.use(session({
   secret: sessionSecret,  
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production', 
+  cookie: { 
+    domain: process.env.NODE_ENV === 'production' ? "https://projet-synergiemsv.onrender.com" : undefined ,
+    secure: process.env.NODE_ENV === 'production', 
     httpOnly: true, 
     maxAge: 1000 * 60 * 60 * 24, 
-    sameSite: 'Lax', }  
+    sameSite: 'None', }  
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());

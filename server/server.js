@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const {connectCanva, getAuthUrl, getUser, setAuthStatus} = require("./canvaTemplate");
 const adminRoute = require("../routes/admin");
 const registerRoute = require("../routes/register");

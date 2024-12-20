@@ -45,7 +45,10 @@ app.use(session({
   secret: sessionSecret,  
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true, httpOnly: true, maxAge: 1000 * 60 * 60 * 24, sameSite: 'Lax' }  
+  cookie: { secure: process.env.NODE_ENV === 'production', 
+    httpOnly: true, 
+    maxAge: 1000 * 60 * 60 * 24, 
+    sameSite: 'Lax', }  
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
@@ -59,7 +62,15 @@ redisClient.on('error', (err) => {
   console.error('Redis connection error:', err);
 });
 
-app.use("/api/admin/:id", isAuthorizedAdmin,(req, res, next) => {
+redisClient.set('testKey', 'testValue');
+redisClient.get('testKey', (err, result) => {
+    console.log('Test key value:', result);
+
+app.use("/api/admin/:id",(req, res, next) => {
+  console.log('Session data:', req.session);
+  console.log('User:', req.user);
+  next();
+}, isAuthorizedAdmin,(req, res, next) => {
   console.log("Params:", req.params);
   console.log("Path:", req.path);
   console.log("Middleware executed");

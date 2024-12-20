@@ -39,7 +39,10 @@ export const  AuthProvider = ({children}) => {
   // Fonction de login
   const login = (userData) => {
       setUser(userData);
-      Cookies.set('user', JSON.stringify(userData), { expires: 7 }); // Stocke dans un cookie pour des raisons supplémentaires (optionnel)
+      Cookies.set('user', JSON.stringify(userData), {expires: 7, 
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'Lax', 
+      path: '/',}) 
   };
 
   // Fonction de logout

@@ -78,7 +78,7 @@ const isAuthorizedAdmin = (req, res, next) => {
     }
       
 
-    if(req.user.role !== "admin" || req.user.id.toString() !== id) {
+    if(!["admin", "superadmin"].includes(req.user.role)  || req.user.id.toString() !== id) {
         console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }

@@ -66,7 +66,7 @@ export function Roadmap() {
         
 
         getRoadmapData()
-    }, [leaderid])
+    }, [leaderid, filteredRoadmapdata])
     
     if (!leaderid && !fullRoadData) {
         return <p>Loading...</p>;
@@ -242,7 +242,7 @@ export function Roadmap() {
            
                 {leaderid ? (
                     <div className="todoList">
-                            <h2>{filteredRoadmapdata.nom}</h2>
+                            <h2>{filteredRoadmapdata[0].nom}</h2>
                             <h3>Préparation</h3>
                             <div key={filteredRoadmapdata.leader} >
                                 <div className="preparation">

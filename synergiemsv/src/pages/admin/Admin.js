@@ -50,7 +50,7 @@ export function Admin() {
         return <div>Loading...</div>;
       }
 
-    if(user.role !== "admin" && user.id !== id) {
+    if(!["admin", "superadmin"].includes(user.role) && user.id !== id) {
             navigate("/unauthorized");
             return null;
         }

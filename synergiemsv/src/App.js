@@ -15,6 +15,13 @@ import { Details } from "./pages/admin/components/Details"
 import { Settings } from  "./pages/admin/components/Settings"
 import { AuthProvider } from './pages/AuthContext'
 import { Unauthorized } from './pages/unauthorized/Unauthorized';
+import { SuperAdmin } from './pages/superAdmin/SuperAdmin'; 
+import { LeaderHome } from './pages/leader/components/LeaderHome';
+import { UserHome } from './pages/user/components/UserHome';
+import { LeaderInfo } from './pages/leader/components/LeaderInfo';
+import { SettingLeader } from './pages/leader/components/SettingLeader';
+import { UserInfo } from './pages/user/components/UserInfo';
+import { SettingUser } from './pages/user/components/SettingUser';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -22,6 +29,7 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     <Route path="/" element={<Home />} />
     <Route path="/register" element={<Register />}/>
     <Route path="/login" element={<Login />} />
+    <Route path="/superadmin/:id" element={<SuperAdmin />} />
     <Route path="/admin/:id" element={<Admin />}>
       <Route index element={<AdminHome />} />
       <Route path="overview" element={<Overview />} />
@@ -31,8 +39,18 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="details/:clientid" element={<Details />} />
       <Route path="settings" element={<Settings />} />
     </Route>
-    <Route path="/leader" element={<Leader />} />
-    <Route path="/user" element={<User />} />  
+    <Route path="/leader/:id" element={<Leader />} >
+      <Route index element={<LeaderHome />} />
+      <Route path="details" element={<LeaderInfo />} />
+      <Route path="settings" element={<SettingLeader />} />
+
+    </Route>
+    <Route path="/user/:id" element={<User />} >
+      <Route index element={<UserHome />} />
+      <Route path="details" element={<UserInfo />} />
+      <Route path="settings" element={<SettingUser />} />
+    </Route> 
+
     <Route path="/unauthorized" element={<Unauthorized />} />
   </>
 

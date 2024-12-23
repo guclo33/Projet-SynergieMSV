@@ -16,7 +16,7 @@ const getAdminHomeDataController = async (req,res) => {
         res.status(404).send("no data found")
         return
     } catch (error){
-        return res.send(500).send("internal server error")
+        return res.status(500).send("internal server error")
     }
 };
 
@@ -103,11 +103,11 @@ const deleteRoadmapTodos = async(req,res) => {
 }*/
 
 const updateOverviewController = async (req, res) => {
-    const { leader_id, date_presentation, echeance, statut, priorite} = req.body;
+    const { leader_id, date_presentation, echeance, statut, priorite, active} = req.body;
     console.log("req.body=", req.body)
     console.log("leader id", leader_id,"date pres:", date_presentation,"echeance", echeance,'statut', statut,"priorite", priorite)
     try {
-        await updateOverview(date_presentation, echeance, statut, priorite, leader_id)
+        await updateOverview(date_presentation, echeance, statut, priorite, leader_id, active)
         res.status(200).send("completed update overview")
     } catch(error) {
         res.status(400).send(error)

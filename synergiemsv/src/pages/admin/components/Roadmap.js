@@ -72,7 +72,7 @@ export function Roadmap() {
         return <p>Loading...</p>;
     }
 
-    if(leaderid && !filteredRoadmapdata) {
+    if(leaderid && filteredRoadmapdata.length===0) {
         return <p>Loading...</p>;
     }
 
@@ -81,7 +81,7 @@ export function Roadmap() {
     let dataArrayPrepDataDone = null;
     let dataArrayExecDataDone = null;
 
-    if(filteredRoadmapdata) {
+    if(filteredRoadmapdata.length > 0) {
         dataArrayPreparation = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == false)
         console.log(" dataArrayPreparation", dataArrayPreparation)
 

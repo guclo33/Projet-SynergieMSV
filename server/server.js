@@ -17,6 +17,7 @@ const cookieParser = require('cookie-parser');
 
 
 
+
 const sessionSecret = process.env.COOKIE_SECRET_KEY
 
 const RedisStore = connectRedis(session);
@@ -86,11 +87,7 @@ app.get("/api/canva/authurl/", (req,res) => {
 
 app.get("/api/user/:id", getUser)
 
-app.get("/api/canva/auth", (req,res,next) => {
-  console.log("req.session.user", req.session.user)
-  next()
-},
-connectCanva);
+app.get("/api/canva/auth", connectCanva);
 
 app.get('/api/auth/check', (req, res) => {
   console.log("req.user:", req.user)

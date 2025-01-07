@@ -478,14 +478,33 @@ if not os.path.exists(dossier_facture):
 if not os.path.exists(dossier_questionnaires):
     os.makedirs(dossier_questionnaires)
 
+
 # Générer le fichier Word
-generate_simple_word(f"{nouveau_dossier}/{nom_profile}", full_text)
+try:
+    generate_simple_word(f"{nouveau_dossier}/{nom_profile}", full_text)
+    print("Génération du fichier Word réussie")
+except Exception as e:
+    print(f"Erreur lors de la génération du fichier Word : {e}")
+    
+    
+
     
 # Pour updater la database
 
-update_database(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, explorateur, protecteur, bouffon, souverain, magicien, createur, hero, citoyen, sage, amoureuse, rebelle, optimiste , email, nom_leader)
+try:
+    print("appel de update database")
+    update_database(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, explorateur, protecteur, bouffon, souverain, magicien, createur, hero, citoyen, sage, amoureuse, rebelle, optimiste , email, nom_leader)
+    
+    print("Base de données mise à jour avec succès")
+except Exception as e:
+    print(f"Erreur lors de la mise à jour de la base de données : {e}")
 
 # Pour Autofill le template Canva
-
-autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert)
+try:
+    print("appel de autofill_job")
+    autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert)
+    print("autofill complété avec succès")
+    
+except Exception as e:
+    print(f"Erreur lors de l'autofill Canva : {e}")
 

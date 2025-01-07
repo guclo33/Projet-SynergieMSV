@@ -668,4 +668,19 @@ ul {
     min-height:2rem;
 }
 
+.files {
+    display: flex;
+}
+
+.files p  {
+    flex: 12;
+}
+
+.files button {
+    flex: 1;
+    align-self: center;
+    
+    height: 90%;
+}
+
 

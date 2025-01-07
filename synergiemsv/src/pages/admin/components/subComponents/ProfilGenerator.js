@@ -24,7 +24,7 @@ export function ProfilGenerator() {
                     credentials: 'include',
                 });
                 const data = await response.json()
-
+                console.log("authUrl", authURL)
                 
 
                 setAuthURL(data.authURL)
@@ -85,6 +85,7 @@ export function ProfilGenerator() {
             });
             if(response.ok){
                 const data = await response.json()
+                
                 setMessage(data.message)
             } else {
                 console.log(`problem sending ${dataToSend}`)

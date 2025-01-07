@@ -69,7 +69,7 @@ const isAuthenticated = (req, res, next) => {
 
 
 const isAuthorizedAdmin = (req, res, next) => {
-    console.log("req.user", req.user)
+    
     const {id} = req.params;
     
     if (!req.isAuthenticated()) {
@@ -82,7 +82,7 @@ const isAuthorizedAdmin = (req, res, next) => {
         console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }
-    console.log("user authenticated")
+    
     
     return next();
 }

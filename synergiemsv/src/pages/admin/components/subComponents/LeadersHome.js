@@ -36,7 +36,7 @@ export function LeadersHome ({ adminHomeData})  {
             })
             
         }
-    }, [modifyId])
+    }, [])
     
 
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';

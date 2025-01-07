@@ -17,6 +17,7 @@ const cookieParser = require('cookie-parser');
 
 
 
+
 const sessionSecret = process.env.COOKIE_SECRET_KEY
 
 const RedisStore = connectRedis(session);
@@ -52,7 +53,7 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production', 
     httpOnly: true, 
     maxAge: 1000 * 60 * 60 * 24, 
-    sameSite: 'None', }  
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', }  
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());
@@ -73,16 +74,7 @@ redisClient.get('testKey', (err, result) => {
     console.log('Test key value:', result);
 });
 
-app.use("/api/admin/:id",(req, res, next) => {
-  console.log('Session data:', req.session);
-  console.log('User:', req.user);
-  next();
-}, isAuthorizedAdmin,(req, res, next) => {
-  console.log("Params:", req.params);
-  console.log("Path:", req.path);
-  console.log("Middleware executed");
-  next();
-}, adminRoute)
+app.use("/api/admin/:id",isAuthorizedAdmin, adminRoute)
 
 
 app.use("/api/register", registerRoute)
@@ -95,11 +87,7 @@ app.get("/api/canva/authurl/", (req,res) => {
 
 app.get("/api/user/:id", getUser)
 
-app.get("/api/canva/auth", (req,res,next) => {
-  console.log("req.session.user", req.session.user)
-  next()
-},
-connectCanva);
+app.get("/api/canva/auth", connectCanva);
 
 app.get('/api/auth/check', (req, res) => {
   console.log("req.user:", req.user)

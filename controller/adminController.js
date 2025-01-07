@@ -3,6 +3,11 @@ const bcrypt = require("bcryptjs");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs')
+const s3Client = require('../server/config/s3-config')
+const {PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl} = require('@aws-sdk/s3-request-presigner')
+const { Upload } = require('@aws-sdk/lib-storage');
+
 
 
 const getAdminHomeDataController = async (req,res) => {
@@ -16,7 +21,7 @@ const getAdminHomeDataController = async (req,res) => {
         res.status(404).send("no data found")
         return
     } catch (error){
-        return res.send(500).send("internal server error")
+        return res.status(500).send("internal server error")
     }
 };
 
@@ -103,11 +108,11 @@ const deleteRoadmapTodos = async(req,res) => {
 }*/
 
 const updateOverviewController = async (req, res) => {
-    const { leader_id, date_presentation, echeance, statut, priorite} = req.body;
+    const { leader_id, date_presentation, echeance, statut, priorite, active} = req.body;
     console.log("req.body=", req.body)
     console.log("leader id", leader_id,"date pres:", date_presentation,"echeance", echeance,'statut', statut,"priorite", priorite)
     try {
-        await updateOverview(date_presentation, echeance, statut, priorite, leader_id)
+        await updateOverview(date_presentation, echeance, statut, priorite, leader_id, active)
         res.status(200).send("completed update overview")
     } catch(error) {
         res.status(400).send(error)
@@ -169,7 +174,42 @@ const updateUserPassword = async (req, res) => {
 }
 
 const uploadFile = async (req, res) => {
-    console.log("req.file :", req.file)
+    const {leaderName, category} = req.params;
+    const file = req.file
+    const decodedFileName = decodeURIComponent(req.body.fileName)
+    const filePath = `Synergia/${leaderName}/${category}/${decodedFileName}`
+
+    console.log("req.file =", req.file, "leaderName", leaderName, "filePath", filePath, 'decodedFileName', decodedFileName)
+
+  try {
+    const upload = new Upload({
+        client: s3Client,
+        params: {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: filePath,
+          Body: file.buffer, 
+          ContentType: file.mimetype,
+        },
+      });
+  
+      upload.on('httpUploadProgress', (progress) => {
+        console.log(`Uploaded ${progress.loaded}/${progress.total} bytes`);
+      });
+  
+      const result = await upload.done(); 
+      res.status(200).json({ message: 'Fichier uploadé avec succès', location: result.Location });
+    } catch (error) {
+      console.error('Error during upload:', error);
+      res.status(500).send('Error during upload');
+    }
+;
+
+    
+    
+    
+    
+    
+    /*console.log("req.file :", req.file)
     
     const {leaderName, category} = req.params;
     
@@ -196,15 +236,32 @@ const uploadFile = async (req, res) => {
                 filePath: targetPath,
             });
         });
-    });
-}
+    });*/
+};
 
 
 const listFile = async (req, res) => {
     const { category, leaderName } = req.params;
     
+    const folderKey = `Synergia/${leaderName}/${category}`;
 
-    if (!leaderName) {
+    try {
+        const command = new ListObjectsV2Command({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Prefix: folderKey, 
+        });
+    
+        const data = await s3Client.send(command);
+        const files = data.Contents ? data.Contents.map((file) => file.Key) : [];
+        
+        res.status(200).json({ files });
+      } catch (error) {
+        console.error('Erreur lors du listing des fichiers :', error);
+        res.status(500).send('Erreur lors du listing des fichiers');
+      }
+    
+
+    /*if (!leaderName) {
         return res.status(400).send({ message: 'Leader name is required.' });
     }
 
@@ -222,7 +279,7 @@ const listFile = async (req, res) => {
         }
 
         res.status(200).send({ files });
-    });
+    })*/;
 };
 
 const downloadFile = async (req, res) => {
@@ -230,13 +287,26 @@ const downloadFile = async (req, res) => {
     console.log(`Téléchargement du fichier: ${fileName}, catégorie: ${category}, leader: ${leaderName}`);
     
     
-    const filePath = path.join(
-        `C:/Users/Guillaume Cloutier/OneDrive/Synergia/${leaderName}/${category}`,
-        fileName
-    );
+    const folderKey = `Synergia/${leaderName}/${category}/${fileName}`
+    
 
     
-    if (!fs.existsSync(filePath)) {
+    try {
+        const command = new GetObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: folderKey,
+        });
+    
+        const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // Lien valide 1 heure
+        console.log("signedUrl", signedUrl)
+        res.status(200).json({ downloadUrl: signedUrl });
+      } catch (error) {
+        console.error('Erreur lors du téléchargement du fichier :', error);
+        res.status(500).send('Erreur lors du téléchargement');
+      }
+    
+    
+    /*if (!fs.existsSync(filePath)) {
         return res.status(404).send({ message: 'Fichier non trouvé.' });
     }
 
@@ -251,10 +321,30 @@ const downloadFile = async (req, res) => {
     } catch (error) {
         console.error('Erreur inattendue:', error);
         res.status(500).send({ message: 'Erreur interne du serveur.' });
-    }
+    }*/
 };
 
+const deleteFile = async(req, res) => {
+    const {leaderName, category, fileName} = req.params;
+
+    const key = `Synergia/${leaderName}/${category}/${fileName}`; 
+
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+    };
+
+    try {
+        const command = new DeleteObjectCommand(params);
+        await s3Client.send(command);
+        console.log(`Fichier ${fileName} supprimé avec succès de S3.`);
+    } catch (error) {
+        console.error(`Erreur lors de la suppression du fichier ${filePath} :`, error);
+    }
+}
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos };
+
+
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile };

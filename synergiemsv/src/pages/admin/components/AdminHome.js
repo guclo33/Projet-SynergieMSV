@@ -27,7 +27,11 @@ export function AdminHome() {
                             active: row.active,
                             nom: row.nom,
                             email: row.email,
-                            phone: row.phone
+                            phone: row.phone,
+                            priorite: row.priorite,
+                            echeance: row.echeance,
+                            date_presentation: row.date_presentation,
+                            statut: row.statut
                         }));
                         console.log(dataArray)
                         setAdminHomeData(dataArray)
@@ -54,7 +58,7 @@ export function AdminHome() {
             <h1>Bienvenue {user.username}</h1>
             <ProfilGenerator />
             <LeadersHome adminHomeData={adminHomeData}/>
-            <h3>Informations diverses:</h3>
+            
         </div>
     )
 }

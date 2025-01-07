@@ -13,14 +13,17 @@ const codeChallenge = crypto
 
 const clientId = process.env.CANVA_CLIENTID;
 const clientSecret = process.env.CANVA_SECRETID;
-const authURL = process.env.CANVA_AUTHURL + codeChallenge;
+const authURL = process.env.NODE_ENV === "production" ? process.env.CANVA_RENDER_AUTHURL + codeChallenge : process.env.CANVA_AUTHURL + codeChallenge;
 
 
 let accessToken = "";
 let refreshToken = "";
 
 const getAuthUrl =() => {
-    
+    console.log("Environnement :", process.env.NODE_ENV);
+    console.log("CANVA_RENDER_AUTHURL :", process.env.CANVA_RENDER_AUTHURL);
+    console.log("CANVA_AUTHURL :", process.env.CANVA_AUTHURL);
+    console.log("authURL:", authURL)
     return authURL
 }
 
@@ -120,13 +123,15 @@ const template = async (accessToken, refreshToken) => {
 const connectCanva = async (req,res, next) => {
     const authCode = req.query.code;
     const state = req.query.state;
+    const apiUrl = process.env.REACT_APP_RENDER_API || 'http://127.0.0.1:3000';
     const redirectURL = req.session.redirectURL;
-    const redirectURI = "https://projet-synergiemsv.onrender.com/api/canva/auth";
+    const redirectURI = `${apiUrl}/api/canva/auth`;
     
      
 
     if(authCode) {
         try{
+        console.log("fetching api canva")
         const credentials = `${clientId}:${clientSecret}`;
         const base64Credentials = Buffer.from(credentials).toString('base64');
         const response = await fetch("https://api.canva.com/rest/v1/oauth/token", {

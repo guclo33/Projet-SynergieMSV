@@ -5,10 +5,11 @@ const { exec } = require('child_process');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-const upload = multer({ dest: 'C:/Users/Guillaume Cloutier/Downloads' });
+const memoryStorage = multer.memoryStorage();
+const upload = multer({ storage: memoryStorage });
 
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos} = require ("../controller/adminController")
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile} = require ("../controller/adminController")
 
 
 router.get("/", getAdminHomeDataController)
@@ -39,7 +40,9 @@ router.post("/details/:category/upload/:leaderName", upload.single("file"), uplo
 
 router.get("/details/:category/list/:leaderName", listFile)
 
-router.get("/details/:category/download/:leaderName/:fileName",  downloadFile)
+router.get("/details/:category/download/:leaderName/:fileName", downloadFile);
+
+router.delete("/details/:category/delete/:leaderName/:fileName", deleteFile)
 
 
 

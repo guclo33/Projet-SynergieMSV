@@ -24,7 +24,10 @@ export function DropZone({detailsData, category, apiUrl}) {
             });
             if (response.ok) {
                 const data = await response.json();
-                setFiles(data.files);
+                console.log("data", data)
+                const filenames = data.files.map(file => file.split("/").pop())
+
+                setFiles(filenames);
             }
         } catch (error) {
             console.error("Error fetching files:", error);
@@ -40,6 +43,7 @@ export function DropZone({detailsData, category, apiUrl}) {
         
         const formData = new FormData();
         formData.append('file', acceptedFiles[0]);
+        formData.append('fileName', encodeURIComponent(acceptedFiles[0].name));
 
         try {
             const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_leader}`, {
@@ -59,37 +63,64 @@ export function DropZone({detailsData, category, apiUrl}) {
     },[apiUrl, category, detailsData]);
 
     const downloadFile = async (fileName) => {
+        const encodedLeaderName = encodeURIComponent(info.nom_leader)
+        console.log("apiUrl", apiUrl, "category", category, 'encoded leader', info.nom_leader, 'filename', fileName)
+        console.log("apiURL", `${apiUrl}/${category}/download/${encodedLeaderName}/${fileName}`)
         try {
-            const response = await fetch(`${apiUrl}/${category}/download/${info.nom_leader}/${fileName}`, {
+            const response = await fetch(`${apiUrl}/${category}/download/${encodedLeaderName}/${fileName}`, {
                 method: "GET",
                 credentials: "include",
             });
             if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
+                const data = await response.json();
+                console.log("data", data)
+                if (data.downloadUrl) {
+                window.open(data.downloadUrl, "_blank"); 
+                }
             }
         } catch (error) {
             console.error("Error downloading file:", error);
         }
     };
 
+    const deleteFile = async(fileName) => {
+        const encodedLeaderName = encodeURIComponent(info.nom_leader)
+        try {
+            const response = await fetch(`${apiUrl}/${category}/delete/${encodedLeaderName}/${fileName}`, {
+                method: 'DELETE',
+                credentials: "include"
+            });
+            if(response.ok) {
+                console.log(fileName, "successfully deleted")
+            } 
+        } catch (err) {
+            console.log("Couldn't delete the file", err)
+        }
+    }
+
     useEffect(() => {
         fetchFiles();
-    }, [fetchFiles]);
+    }, [fetchFiles, files]);
 
 
     const handleClick = (e) => {
-        
+        e.stopPropagation()
         const fileName = e.target.getAttribute('data-name')
         downloadFile(fileName)
     }
 
+    const handleDelete =  async (e) => {
+        e.stopPropagation()
+        const fileName = e.target.getAttribute('data-name')
+        const confirmDelete = window.confirm(`Voulez-vous vraiment supprimer le fichier "${fileName}" ?`);
+
+        if (!confirmDelete) {
+          console.log("Suppression annulée");
+          return; // Annuler la suppression si l'utilisateur clique sur "Annuler"
+        }
+        deleteFile(fileName)
+
+    }
     
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
@@ -143,7 +174,7 @@ export function DropZone({detailsData, category, apiUrl}) {
             
             <ul>
                 {files.map((file, index) => (
-                <li key={index}>
+                <li className="files" key={index} style={{ display : file.length===0? 'none': 'flex'}}>
                     <p
                     style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
                     data-name={file}
@@ -152,6 +183,7 @@ export function DropZone({detailsData, category, apiUrl}) {
                     >
                     {file}
                     </p>
+                    <button data-name={file} onClick={handleDelete}>X</button>
                 </li>
                 ))}
             </ul>

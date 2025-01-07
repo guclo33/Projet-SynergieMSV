@@ -57,7 +57,7 @@ export function Login() {
                     }
                     
                     login(user)
-
+                    console.log("user role :",data.user.role)
                     navigate(`/${data.user.role}/${data.user.id}`);
 
                 } else {

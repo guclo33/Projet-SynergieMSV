@@ -18,6 +18,7 @@ export function Documents({detailsData}) {
                 <DropZone detailsData={detailsData} apiUrl={apiUrl} category="profils" />
                 <DropZone detailsData={detailsData} apiUrl={apiUrl} category="factures" />
                 <DropZone detailsData={detailsData} apiUrl={apiUrl} category="questionnaires" />
+                <DropZone detailsData={detailsData} apiUrl={apiUrl} category="photos" />
             </div>
         );
     }

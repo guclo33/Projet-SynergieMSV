@@ -66,13 +66,13 @@ export function Roadmap() {
         
 
         getRoadmapData()
-    }, [leaderid])
+    }, [leaderid, filteredRoadmapdata])
     
     if (!leaderid && !fullRoadData) {
         return <p>Loading...</p>;
     }
 
-    if(leaderid && !filteredRoadmapdata) {
+    if(leaderid && filteredRoadmapdata.length===0) {
         return <p>Loading...</p>;
     }
 
@@ -81,7 +81,7 @@ export function Roadmap() {
     let dataArrayPrepDataDone = null;
     let dataArrayExecDataDone = null;
 
-    if(filteredRoadmapdata) {
+    if(filteredRoadmapdata.length > 0) {
         dataArrayPreparation = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == false)
         console.log(" dataArrayPreparation", dataArrayPreparation)
 
@@ -242,7 +242,7 @@ export function Roadmap() {
            
                 {leaderid ? (
                     <div className="todoList">
-                            <h2>{filteredRoadmapdata.nom}</h2>
+                            <h2>{filteredRoadmapdata[0].nom}</h2>
                             <h3>Préparation</h3>
                             <div key={filteredRoadmapdata.leader} >
                                 <div className="preparation">

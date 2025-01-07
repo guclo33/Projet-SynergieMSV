@@ -43,14 +43,17 @@ Cette plateforme a été développée pour centraliser la gestion des clients, g
 
 - **Base de données** :
   - PostgreSQL
+  - BD Render
 
 - **API** :
   - OpenAI (GPT-4)
   - Canva
+  - AWS S3
 
 ## Deploiement
 
-Pour l'instant, le site n'est pas encore déployé et est en environement local seulement
+Le site est déployer sur render, bien que pas encore fonctionnel à 100%.
+(https://projet-synergiemsv.onrender.com/login)
 
 ## Amélioration à venir
 

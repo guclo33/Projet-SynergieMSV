@@ -58,8 +58,6 @@ export function GeneralInfos({detailsData}) {
             console.log("couldn't update client details data" , error)
         }
     }
-
-    const teamWithoutLeader = detailsData.equipe.filter(client => client.nom !== detailsData.info.nom_client)
     
     if(!detailsData.equipe) {
         
@@ -115,6 +113,7 @@ export function GeneralInfos({detailsData}) {
  )
     }
 
+    const teamWithoutLeader = detailsData.equipe.filter(client => client.nom !== detailsData.info.nom_client)
 
     return(
         <div className="generalInfos">

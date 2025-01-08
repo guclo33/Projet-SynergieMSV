@@ -9,7 +9,15 @@ const loginQuery = async (userNameOrEmail) =>  {
 }
 
 const getAdminHomeData = async () => {
-    return await pool.query("SELECT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, t.date_presentation as date_presentation, t.echeance as echeance, t.statut as statut, t.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id join leader_todo t on l.id = t.leader_id ORDER BY t.priorite" )
+    const leadersData = await pool.query("SELECT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, t.date_presentation as date_presentation, t.echeance as echeance, t.statut as statut, t.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id join leader_todo t on l.id = t.leader_id ORDER BY t.priorite" );
+
+    const clientsData = await pool.query("SELECT id, nom_client FROM client")
+
+    const data = {
+        leadersData,
+        clientsData
+    }
+    return data
 }
 
 

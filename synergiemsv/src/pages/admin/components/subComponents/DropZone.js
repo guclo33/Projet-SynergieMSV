@@ -10,6 +10,7 @@ function capitalizeFirstLetter(string) {
 
 export function DropZone({detailsData, category, apiUrl}) {
     const [files, setFiles] = useState([]);
+    const [selectedFile, setSelectedFile] = useState()
     const {user} = useContext(AuthContext)
     const {info} = detailsData
     
@@ -100,7 +101,7 @@ export function DropZone({detailsData, category, apiUrl}) {
 
     useEffect(() => {
         fetchFiles();
-    }, [fetchFiles, files]);
+    }, [fetchFiles]);
 
 
     const handleClick = (e) => {
@@ -121,6 +122,37 @@ export function DropZone({detailsData, category, apiUrl}) {
         deleteFile(fileName)
 
     }
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0])
+    }
+
+    const handleUpload = async () => {
+        if(!selectedFile) {
+            alert("Svp sélectionner un fichier d'abord")
+            return
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('fileName', encodeURIComponent(selectedFile.name));
+        console.log("selectedFile", selectedFile)
+
+        try {
+            const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_leader}`, {
+                method: "POST",
+                credentials : "include",
+                body : formData
+            });
+            if (response.ok) {
+                const data = await response.json()
+                console.log('Uploaded file:', data);
+                fetchFiles();
+            }
+        } catch (error) {
+            console.log("couldn't upload file")
+        }
+
+    }
     
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
@@ -131,7 +163,8 @@ export function DropZone({detailsData, category, apiUrl}) {
         boxShadow: "0 4px 8px var(--primary-color)",
         borderRadius: "20px",
         padding: "1rem",
-
+        minHeight: '15rem',
+        overflow: 'scroll',
         textAlign: "center",
         transition: "border-color 0.3s, background-color 0.3s",
         
@@ -163,6 +196,8 @@ export function DropZone({detailsData, category, apiUrl}) {
     return (
         <div className="dropSection">
             <h3>{capitalizeFirstLetter(category)}</h3>
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUpload}>Ajouter un fichier</button>
             <div   
             {...getRootProps({ className: "dropzone" })}
             style={currentStyle}

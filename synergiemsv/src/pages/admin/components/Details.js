@@ -7,6 +7,7 @@ import { AuthContext } from "../../AuthContext";
 export function Details() {
     const [leadersData, setLeadersData] = useState([]);
     const [detailsData, setDetailsData] = useState({});
+    const [clientsData, setClientsData] = useState([]);
     const {clientid = null} = useParams()
     const {user} = useContext(AuthContext);
     const location = useLocation()
@@ -21,7 +22,7 @@ export function Details() {
                     if(response.ok){
                         const data = await response.json();
                         
-                        const dataArray = data.rows.map((row) => ( {
+                        const dataArray = data.leadersData.rows.map((row) => ( {
                             leader_id: row.leaderid,
                             client_id: row.clientid,
                             nom: row.nom,
@@ -30,8 +31,15 @@ export function Details() {
                             active: row.active,
                             
                         }));
-                        
+                        console.log('dataArray',dataArray)
                         setLeadersData(dataArray)
+
+                        const clientsArray = data.clientsData.rows.map((row) => ({
+                            id: row.id,
+                            nom: row.nom_client
+                        }))
+                        console.log("clientArray", clientsArray)
+                        setClientsData(clientsArray)
                         
                         
                         
@@ -86,7 +94,7 @@ export function Details() {
     
     return(
         <div className="details">
-            {clientid ? <DetailsById detailsData={detailsData} /> : <DetailsLeaders leadersData={leadersData}/>}
+            {clientid ? <DetailsById detailsData={detailsData} /> : <DetailsLeaders clientsData={clientsData} leadersData={leadersData}/>}
         </div>
     )
 }

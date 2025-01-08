@@ -20,8 +20,8 @@ export function AdminHome() {
                     });
                     if(response.ok){
                         const data = await response.json();
-                        console.log("here's data", data.rows)
-                        const dataArray = data.rows.map((row) => ( {
+                        console.log("here's data", data)
+                        const dataArray = data.leadersData.rows.map((row) => ( {
                             id : row.leaderid,
                             clientid: row.clientid,
                             active: row.active,

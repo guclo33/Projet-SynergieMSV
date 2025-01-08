@@ -101,7 +101,7 @@ export function DropZone({detailsData, category, apiUrl}) {
 
     useEffect(() => {
         fetchFiles();
-    }, [fetchFiles, files]);
+    }, [fetchFiles]);
 
 
     const handleClick = (e) => {

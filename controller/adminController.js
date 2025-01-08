@@ -16,7 +16,7 @@ const getAdminHomeDataController = async (req,res) => {
         console.log("Backend data:", data)
         if(data){
             
-            return  res.status(200).send(data)
+            return  res.status(200).json(data)
         }
         res.status(404).send("no data found")
         return

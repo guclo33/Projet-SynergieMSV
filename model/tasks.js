@@ -69,7 +69,9 @@ const updateOverview = async (date_presentation, echeance, statut, priorite, lea
 
 const getDetailsData = async (clientid) => {
     
-    const info = await pool.query("SELECT * FROM leader JOIN client ON leader.client_id = client.id JOIN profile ON client.profile_id = profile.id where client.id = $1", [clientid])
+    const info = await pool.query("SELECT * FROM client left JOIN profile ON client.id = profile.client_id and client.profile_id is not null left JOIN leader ON client.leader_id = leader.id and client.leader_id is not null where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
+
+    console.log("info", info)
 
     if(info.rows.length === 0) {
         const info = await pool.query("SELECT * FROM client JOIN profile ON client.id = profile.client_id where client.id = $1", [clientid])

@@ -15,6 +15,12 @@ export function Profile({detailsData}) {
         }},100)
     }
 
+    if(!detailsData.profile_id) {
+        return (
+            <h3>Il n'y pas de profil présentement disponible!</h3>
+        )
+    }
+
     return(
         <div className="profile">
             <button ref={sectionRef} onClick={handleClick}>Voir profil</button>

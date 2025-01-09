@@ -31,14 +31,28 @@ const getOverviewData = async () => {
     return await pool.query("SELECT c.nom_client as nom, c.id as client_id, l.leader_id, l.date_presentation, l.echeance, l.statut, l.priorite FROM client c JOIN leader ON c.id = leader.client_id JOIN leader_todo l ON leader.id = l.leader_id ORDER BY statut")
 }
 
+const getObjectifsData = async (clientid) => {
+    console.log("clientid", clientid)
+    return await pool.query("SELECT * FROM client LEFT JOIN objectifs on client.id = objectifs.client_id AND client.objectifs_id IS NOT NULL WHERE client.id = $1", [clientid])
+}
+
+const createObjectifsData = async ( query, queryArray) => {
+    
+    return await pool.query(query, queryArray)
+    
+}
+
+const updateObjectifsData = async (query, queryArray) => {
+    
+    return await pool.query(query, queryArray)
+}
+
 const getRoadmapData = async () => {
     return await pool.query("SELECT c.nom_client as nom, c.id, c.leader_id as leader, t.task, t.category, t.is_completed FROM client c JOIN todos t ON c.id = t.client_id;")
 }
 
 const updateRoadmapTodos = async(is_completed, leaderid, task)=> {
     
-
-
     return await pool.query(`UPDATE todos SET is_completed = $1 WHERE client_id = (SELECT client_id from leader WHERE id = $2) AND task=$3`, [is_completed, leaderid, task])
 }
 
@@ -108,4 +122,4 @@ const updateUserPasswordQuery = async (password, id) => {
 
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery}
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData}

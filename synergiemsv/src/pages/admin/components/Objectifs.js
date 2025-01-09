@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
 import { ObjectifsById } from "./subComponents/ObjectifsById";
 
 export function Objectifs () {
-    
+    const[searchQuery, setSearchQuery] = useState("")
     const [clientsData, setClientsData] = useState([])
     const {clientid} = useParams()
     const {user} = useContext(AuthContext)
+
 
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
 
@@ -54,6 +55,8 @@ export function Objectifs () {
                 {clientid ? <ObjectifsById clientsData={clientsData} clientid={clientid} user={user} apiUrl={apiUrl} /> : 
                 <div>
                 <h2>Liste des clients:</h2>
+                <label htmlfor="search">Recherche</label>
+                <input name="search" type="search" value={searchQuery} />
                                 <div className="detailsLeader">
                                     {clientsData.map(client => (
                                             <Link to={`${client.id}`}><div className="detailsLeaders" key={client.id}>

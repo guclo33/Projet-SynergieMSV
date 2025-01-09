@@ -3,6 +3,7 @@ from docx import Document
 import boto3
 from botocore.exceptions import NoCredentialsError
 from io import BytesIO
+from dotenv import load_dotenv
 
 
 #Connection à et setup AWS S3

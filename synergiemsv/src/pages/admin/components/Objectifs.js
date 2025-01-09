@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
 import { ObjectifsById } from "./subComponents/ObjectifsById";
 
 export function Objectifs () {
-    const[searchQuery, setSearchQuery] = useState("")
+    
     const [clientsData, setClientsData] = useState([])
     const {clientid} = useParams()
     const {user} = useContext(AuthContext)
+    const [searchQuery, setSearchQuery] = useState("")
 
 
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
@@ -48,6 +49,11 @@ export function Objectifs () {
             
         }, [])
 
+        const handleSearch = (e) => {
+            const {value} = e.target
+            setSearchQuery(value.toLowerCase())
+        }
+
         
 
         return (
@@ -55,12 +61,14 @@ export function Objectifs () {
                 {clientid ? <ObjectifsById clientsData={clientsData} clientid={clientid} user={user} apiUrl={apiUrl} /> : 
                 <div>
                 <h2>Liste des clients:</h2>
-                <label htmlfor="search">Recherche</label>
-                <input name="search" type="search" value={searchQuery} />
+                <div className="search"> 
+                    <label htmlfor="search" >Rechercher : </label>
+                    <input name="search" onChange={handleSearch} type="search" value={searchQuery} />
+                </div>
                                 <div className="detailsLeader">
-                                    {clientsData.map(client => (
+                                    {clientsData.filter((client) => client.nom.toLowerCase().includes(searchQuery)).map(client => (
                                             <Link to={`${client.id}`}><div className="detailsLeaders" key={client.id}>
-                                                <h4>{client.nom}</h4>
+                                                <h4 key={client.id}>{client.nom}</h4>
                                                 
                 
                                             </div></Link>

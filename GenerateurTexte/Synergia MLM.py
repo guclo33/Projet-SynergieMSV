@@ -6,9 +6,10 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 pd.set_option('future.no_silent_downcasting', True)
 from openai import OpenAI
 from docx import Document
-import subprocess
+from AWS_S3 import synergia_upload_s3
 from canvaAutofill import autofill_job
 from fonction_database import update_database
+from dotenv import load_dotenv
 
 
 
@@ -508,3 +509,5 @@ try:
 except Exception as e:
     print(f"Erreur lors de l'autofill Canva : {e}")
 
+# Upload sur S3
+synergia_upload_s3(full_text, nom_organisateur, nom_profile)

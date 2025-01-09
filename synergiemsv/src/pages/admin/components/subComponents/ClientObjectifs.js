@@ -3,12 +3,14 @@ import { useParams } from "react-router";
 
 
 export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
+    
     const [modify, setModify] = useState(false)
     const [value, setValue]= useState((objectifsData && objectifsData[category]) || "")
-    const [valueTitre, setValueTitre] = useState((objectifsData &&objectifsData[category+"_titre"]) || "")
+    const [valueTitre, setValueTitre] = useState((objectifsData && objectifsData[category+"_titre"]) || "")
     const {clientid} = useParams();
     
-
+    
+    
     
 
     const handleModify = (e) => {
@@ -18,7 +20,7 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
     const handleSubmit = async(e) => {
         console.log("objectifsData", objectifsData)
             
-        if(objectifsData){
+        if(objectifsData && objectifsData.objectifs_id){
             try {
                 console.log("sending data to update objectif", value)
                 const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
@@ -97,11 +99,11 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
         break;
         case "section1":
             const titreSection = category+"_titre";
-            (objectifsData ) ? (titre = objectifsData[titreSection]) : (titre = "Orientation du contenu");
+            (objectifsData && objectifsData.objectifs_id) ? (titre = objectifsData[titreSection]) : (titre = "Orientation du contenu");
         break;
         case "section2":
             const titreSection2 = category+"_titre";
-            (objectifsData) ? (titre = objectifsData[titreSection2]) : (titre = "Stratégie de prospection");
+            (objectifsData && objectifsData.objectifs_id) ? (titre = objectifsData[titreSection2]) : (titre = "Stratégie de prospection");
         break;
         default:
             titre= "Autre catégories";
@@ -109,7 +111,7 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
 
     }
     
-    if(objectifsData) {
+    if(objectifsData && objectifsData.objectifs_id ) {
         console.log("data category:", objectifsData[category] )
         
         return(

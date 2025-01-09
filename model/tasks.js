@@ -32,19 +32,39 @@ const getOverviewData = async () => {
 }
 
 const getObjectifsData = async (clientid) => {
-    console.log("clientid", clientid)
-    return await pool.query("SELECT * FROM client LEFT JOIN objectifs on client.id = objectifs.client_id AND client.objectifs_id IS NOT NULL WHERE client.id = $1", [clientid])
+    
+    const objectifs = await pool.query("SELECT * FROM client LEFT JOIN objectifs on client.id = objectifs.client_id AND client.objectifs_id IS NOT NULL WHERE client.id = $1", [clientid])
+
+    const progres = await pool.query("SELECT * FROM progres WHERE client_id = $1", [clientid])
+
+    const data = {
+        objectifs,
+        progres
+    }
+
+    return data
 }
 
-const createObjectifsData = async ( query, queryArray) => {
-    
+const createObjectifsData = async ( query, queryArray, value) => {
+    if(value) {
+        return await pool.query(query, [value])
+    }
+
+
     return await pool.query(query, queryArray)
     
 }
 
-const updateObjectifsData = async (query, queryArray) => {
-    
+const updateObjectifsData = async (query, queryArray, id, value) => {
+    if(id) {
+        console.log("updating with value", value, "and id", id)
+        return await pool.query(query, [value, id])
+    }
     return await pool.query(query, queryArray)
+}
+
+const deleteObjectifsData = async (id) => {
+    return await pool.query("DELETE FROM progres WHERE id = $1", [id])
 }
 
 const getRoadmapData = async () => {
@@ -122,4 +142,4 @@ const updateUserPasswordQuery = async (password, id) => {
 
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData}
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData}

@@ -1,4 +1,4 @@
-const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery,getObjectifsData, createObjectifsData, updateObjectifsData} = require("../model/tasks")
+const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery,getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData} = require("../model/tasks")
 const bcrypt = require("bcryptjs");
 const multer = require('multer');
 const path = require('path');
@@ -154,20 +154,32 @@ const createObjectifsDataController = async (req,res) => {
         }
 
     }
+
+    if(category) {
     query = `INSERT INTO objectifs (client_id, ${category}) VALUES ($1, $2)`
     queryArray = [clientid, value]
     try {
         await createObjectifsData(query, queryArray)
         res.status(200).send("objectifs crées avec succès!")
+        return
+    } catch(error) {
+        res.status(400).send(error)
+    }}
+
+    query= `INSERT INTO progres (client_id, progres) VALUES (${clientid}, $1)`
+    try {
+        await createObjectifsData(query, queryArray, value)
+        res.status(200).send("Progrès crées avec succès!")
 
     } catch(error) {
         res.status(400).send(error)
     }
+
 }
 
 const updateObjectifsDataController = async (req,res) => {
     const {clientid} = req.params
-    const {value, category, titre} = req.body
+    const {value, category, titre, id} = req.body
     console.log("body", req.body, "clientid", clientid)
     let query = ""
     let queryArray = []
@@ -185,12 +197,39 @@ const updateObjectifsDataController = async (req,res) => {
             res.status(400).send(error)
         }}
 
-    query = `UPDATE objectifs SET ${category} = $1 WHERE client_id = $2`
-    queryArray = [value, clientid]
-    console.log("tentative d'update sans Titre")
+    
+    if(category){
+        query = `UPDATE objectifs SET ${category} = $1 WHERE client_id = $2`
+        queryArray = [value, clientid]
+        console.log("tentative d'update sans Titre")
+        try {
+            await updateObjectifsData(query, queryArray)
+            res.status(200).send("objectifs mis à jour avec succès!")
+            return
+
+        } catch(error) {
+            res.status(400).send(error)
+        }}
+    
+    query = `UPDATE progres SET progres = $1 WHERE id = $2`
     try {
-        await updateObjectifsData(query, queryArray)
-        res.status(200).send("objectifs mis à jour avec succès!")
+        await updateObjectifsData(query, queryArray, id, value)
+        res.status(200).send("Progrès mis à jour avec succès!")
+
+    } catch(error) {
+        res.status(400).send(error)
+    }
+
+}
+
+const deleteObjectifsDataController = async(req, res) => {
+    const {clientid} = req.params;
+    const {id} = req.body
+    console.log("supprimé avec l'id", id)
+
+    try {
+        await deleteObjectifsData(id)
+        res.status(200).send("Progrès supprimé avec succès!")
 
     } catch(error) {
         res.status(400).send(error)
@@ -424,4 +463,4 @@ const deleteFile = async(req, res) => {
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController };

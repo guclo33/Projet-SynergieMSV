@@ -32,7 +32,7 @@ export function ObjectifsById ({clientsData, user, clientid, apiUrl}) {
         }
     
         getObjectifsData()
-    }, [clientid, progresData])
+    }, [clientid, progresData, objectifsData])
 
     
     const client = clientsData.find(client => client.id === Number(clientid))

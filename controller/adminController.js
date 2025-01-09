@@ -1,4 +1,4 @@
-const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery} = require("../model/tasks")
+const {getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery,getObjectifsData, createObjectifsData, updateObjectifsData} = require("../model/tasks")
 const bcrypt = require("bcryptjs");
 const multer = require('multer');
 const path = require('path');
@@ -118,6 +118,83 @@ const updateOverviewController = async (req, res) => {
         res.status(400).send(error)
     }
 
+}
+
+const getObjectifsDataController = async (req,res) => {
+    const {clientid} = req.params
+    try {
+        const data = await getObjectifsData(clientid)
+        res.status(200).json(data)
+
+    } catch(error) {
+        res.staus(400).send(error)
+    }
+}
+
+const createObjectifsDataController = async (req,res) => {
+    const {clientid} = req.params
+    
+    const {value, category, titre} = req.body
+    console.log("body", req.body, "clientid", clientid)
+    let query = ""
+    let queryArray = []
+
+    if(titre) {
+        
+        const categoryTitre = `${category}_titre`;
+        query = `INSERT INTO objectifs (client_id, ${category}, ${categoryTitre}) VALUES ($1, $2, $3)`
+        queryArray = [clientid, value, titre]
+        try {
+            await createObjectifsData(query, queryArray)
+            res.status(200).send("objectifs crées avec succès!")
+            return
+    
+        } catch(error) {
+            res.status(400).send(error)
+        }
+
+    }
+    query = `INSERT INTO objectifs (client_id, ${category}) VALUES ($1, $2)`
+    queryArray = [clientid, value]
+    try {
+        await createObjectifsData(query, queryArray)
+        res.status(200).send("objectifs crées avec succès!")
+
+    } catch(error) {
+        res.status(400).send(error)
+    }
+}
+
+const updateObjectifsDataController = async (req,res) => {
+    const {clientid} = req.params
+    const {value, category, titre} = req.body
+    console.log("body", req.body, "clientid", clientid)
+    let query = ""
+    let queryArray = []
+
+    if(titre) {
+        console.log("tentative d'update avec Titre")
+        const categoryTitre = `${category}_titre`;
+        query = `UPDATE objectifs SET ${category} = $1, ${categoryTitre} = $2 WHERE client_id = $3`
+        queryArray = [value, titre, clientid]
+        try {await updateObjectifsData(query, queryArray)
+            res.status(200).send("objectifs mis à jour avec succès!")
+            return
+    
+        } catch(error) {
+            res.status(400).send(error)
+        }}
+
+    query = `UPDATE objectifs SET ${category} = $1 WHERE client_id = $2`
+    queryArray = [value, clientid]
+    console.log("tentative d'update sans Titre")
+    try {
+        await updateObjectifsData(query, queryArray)
+        res.status(200).send("objectifs mis à jour avec succès!")
+
+    } catch(error) {
+        res.status(400).send(error)
+    }
 }
 
 const getDetailsById = async (req,res) => {
@@ -347,4 +424,4 @@ const deleteFile = async(req, res) => {
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController };

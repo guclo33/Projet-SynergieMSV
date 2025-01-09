@@ -164,6 +164,7 @@ export function DropZone({detailsData, category, apiUrl}) {
         borderRadius: "20px",
         padding: "1rem",
         minHeight: '15rem',
+        maxHeight: '20rem',
         overflow: 'scroll',
         textAlign: "center",
         transition: "border-color 0.3s, background-color 0.3s",

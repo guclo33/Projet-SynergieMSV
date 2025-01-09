@@ -22,6 +22,7 @@ import { LeaderInfo } from './pages/leader/components/LeaderInfo';
 import { SettingLeader } from './pages/leader/components/SettingLeader';
 import { UserInfo } from './pages/user/components/UserInfo';
 import { SettingUser } from './pages/user/components/SettingUser';
+import { Objectifs } from './pages/admin/components/Objectifs';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -32,7 +33,9 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     <Route path="/superadmin/:id" element={<SuperAdmin />} />
     <Route path="/admin/:id" element={<Admin />}>
       <Route index element={<AdminHome />} />
-      <Route path="overview" element={<Overview />} />
+      <Route path="objectifs" element={<Objectifs />} />
+      <Route path="objectifs/:clientid" element={<Objectifs />} />
+
       <Route path="roadmap" element={<Roadmap />} />
       <Route path="roadmap/:leaderid" element={<Roadmap />} />
       <Route path="details" element={<Details />} />

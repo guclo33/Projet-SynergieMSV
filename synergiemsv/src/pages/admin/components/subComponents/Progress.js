@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 
 export function Progress ({progresData, apiUrl, clientid, user}) {
     const [modify, setModify] = useState(false)
-    const [modifyProg, setModifyProg] = useState(false)
+    const [modifyProg, setModifyProg] = useState(null)
     const [value, setValue] = useState("")
     const [valueProg, setValueProg] = useState("")
     
@@ -74,8 +74,9 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
         setValue(value);
     }
 
-    const handleModifyProg = () => {
-        setModifyProg(!modifyProg)
+    const handleModifyProg = (e) => {
+        const {name} = e.target
+        setModifyProg(name)
     }
 
     const handleDelete = async(e) => {
@@ -141,21 +142,19 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
                     <h2 className="titre">Progrès</h2>
                     <div className="progresArea">
                         {progresData.map((progres) => (
-                            modifyProg ? (
-                                <div id={progres.id} className="singleProgres">
-                                    <input name={progres.id} type="text" value={(valueProg ? valueProg : progres.progres)} onChange={handleChangeProg} />
-                                    <button onClick={handleModifyProg}>Annuler</button>
-                                    <button name={progres.id} onClick={handleClick}>Modifier</button>
-                                </div>
-                            ) : (
-                            
-                            <div id={progres.id} className="singleProgres">
-                                <p onClick={handleModifyProg}>{progres.progres}</p>
-                                
-                                <button name={progres.id} onClick={handleDelete}>X</button>
-                            </div>
-                        )
-                        ))}
+                            modifyProg===progres.id ? ( 
+                                <div id={progres.id} name={progres.id} className="singleProgres">
+                                    
+                                        <input name={progres.id} type="text" value={(valueProg ? valueProg : progres.progres)} onChange={handleChangeProg} />
+                                        <button name={progres.id} onClick={()=>setModifyProg(null)}>Annuler</button>
+                                        <button name={progres.id} onClick={handleClick}>Modifier</button>
+
+                                </div> ) : (
+                                    <div id={progres.id} className="singleProgres">
+                                        <p  onClick={() => setModifyProg(progres.id)}>{progres.progres}</p>
+                                        <button name={progres.id} onClick={handleDelete}>X</button>
+                                    </div>
+                        )))}
                     </div>
                     
                     {modify ? (

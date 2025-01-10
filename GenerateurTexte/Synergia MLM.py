@@ -29,6 +29,8 @@ nom_profile = nom.replace(",", "")
 
 prenom = nom.split(",")[0]
 
+print(nom)
+
 #DONNÉES EXCEL
 
 #Pour le client
@@ -37,7 +39,7 @@ synergia = pd.read_excel("C:/Users/Guillaume Cloutier/OneDrive/Synergia/Synergia
 synergia_model = pd.read_excel("C:/Users/Guillaume Cloutier/OneDrive/Synergia/Synergia.xlsx", sheet_name="Réponses 3")
 
 synergia_nom = pd.DataFrame(synergia.loc[synergia["Prénom, Nom"]== nom])
-
+print(synergia_nom)
 
 #plage de questions utilisé pour les prompts
 

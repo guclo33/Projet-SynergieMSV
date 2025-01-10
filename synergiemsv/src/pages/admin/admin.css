@@ -792,7 +792,7 @@ ul {
 }
 
 
-.progressArea , .progressArea .singleProgress, .Objectifs .clientObjectifs p, .sectionTitre input {
+.progressArea , .progressArea .singleProgres, .Objectifs .clientObjectifs p, .sectionTitre input, .singleProgres input {
     border: 1px solid var(--secondary-color);
     box-shadow: 0 2px 4px var(--primary-color);
     border-radius: 20px;

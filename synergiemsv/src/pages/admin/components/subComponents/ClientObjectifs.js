@@ -120,7 +120,7 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
                     <div className="clientObjectifs">
                     <div className="sectionTitre">
                         {category === "section1" || category === "section2" ? (
-                            <input type="text" value={valueTitre} name="titre" onChange={handleTitreChange} placeholder={valueTitre || titre}/>
+                            <input type="text" value={(valueTitre ? valueTitre : objectifsData[category+"_titre"])} name="titre" onChange={handleTitreChange} placeholder={valueTitre || titre}/>
                         ) : (
                         <h2 className="titre">{titre}</h2>
                         )}
@@ -129,7 +129,7 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
                             <button onClick={handleSubmit}>Confirmer</button>
                         </div>
                     </div>
-                <textarea value={value} onChange={handleChange} />
+                <textarea value={(value ? value : objectifsData[category])} onChange={handleChange} />
 
             </div>
                 ):(

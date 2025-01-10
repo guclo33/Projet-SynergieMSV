@@ -296,6 +296,20 @@
     
 }
 
+.search {
+    
+    height: 2rem;
+    min-width: 20rem;
+    box-sizing: content-box;
+    width: 20%;
+    justify-items: center;
+    
+    margin: 0 ;
+    align-content: center;
+    justify-self: right;
+    
+}
+
 .detailsById {
     position: relative;
     top: 5rem;
@@ -778,7 +792,7 @@ ul {
 }
 
 
-.progressArea , .progressArea .singleProgress, .Objectifs .clientObjectifs p, .sectionTitre input {
+.progressArea , .progressArea .singleProgres, .Objectifs .clientObjectifs p, .sectionTitre input, .singleProgres input {
     border: 1px solid var(--secondary-color);
     box-shadow: 0 2px 4px var(--primary-color);
     border-radius: 20px;

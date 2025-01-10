@@ -6,9 +6,10 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 pd.set_option('future.no_silent_downcasting', True)
 from openai import OpenAI
 from docx import Document
-import subprocess
+from AWS_S3 import synergia_upload_s3
 from canvaAutofill import autofill_job
 from fonction_database import update_database
+from dotenv import load_dotenv
 
 
 
@@ -28,6 +29,8 @@ nom_profile = nom.replace(",", "")
 
 prenom = nom.split(",")[0]
 
+print(nom)
+
 #DONNÉES EXCEL
 
 #Pour le client
@@ -36,7 +39,7 @@ synergia = pd.read_excel("C:/Users/Guillaume Cloutier/OneDrive/Synergia/Synergia
 synergia_model = pd.read_excel("C:/Users/Guillaume Cloutier/OneDrive/Synergia/Synergia.xlsx", sheet_name="Réponses 3")
 
 synergia_nom = pd.DataFrame(synergia.loc[synergia["Prénom, Nom"]== nom])
-
+print(synergia_nom)
 
 #plage de questions utilisé pour les prompts
 
@@ -508,3 +511,5 @@ try:
 except Exception as e:
     print(f"Erreur lors de l'autofill Canva : {e}")
 
+# Upload sur S3
+synergia_upload_s3(full_text, nom_organisateur, nom_profile)

@@ -121,13 +121,13 @@ const updateOverviewController = async (req, res) => {
 }
 
 const getObjectifsDataController = async (req,res) => {
-    const {clientid} = req.params
+    const {clientid, id} = req.params
     try {
-        const data = await getObjectifsData(clientid)
+        const data = await getObjectifsData(clientid, id)
         res.status(200).json(data)
 
     } catch(error) {
-        res.staus(400).send(error)
+        res.status(400).send(error)
     }
 }
 
@@ -151,6 +151,7 @@ const createObjectifsDataController = async (req,res) => {
     
         } catch(error) {
             res.status(400).send(error)
+            return
         }
 
     }
@@ -164,6 +165,7 @@ const createObjectifsDataController = async (req,res) => {
         return
     } catch(error) {
         res.status(400).send(error)
+        return
     }}
 
     query= `INSERT INTO progres (client_id, progres) VALUES (${clientid}, $1)`
@@ -177,9 +179,61 @@ const createObjectifsDataController = async (req,res) => {
 
 }
 
+const createObjectifsUserController = async (req,res) => {
+    const {id} = req.params
+    
+    const {value, category, titre} = req.body
+    console.log("body", req.body, "id", id)
+    let query = ""
+    let queryArray = []
+
+    if(titre) {
+        
+        const categoryTitre = `${category}_titre`;
+        query = `INSERT INTO objectifs (client_id, ${category}, ${categoryTitre}) VALUES ((SELECT client_id FROM users WHERE users.id = $1), $2, $3)`
+        queryArray = [Number(id), value, titre]
+        try {
+            await createObjectifsData(query, queryArray)
+            res.status(200).send("objectifs crées avec succès!")
+            return
+    
+        } catch(error) {
+            res.status(400).send(error)
+            return
+        }
+
+    }
+
+    if(category) {
+    query = `INSERT INTO objectifs (client_id, ${category}) VALUES ((SELECT client_id FROM users WHERE users.id = $1), $2)`
+    queryArray = [Number(id), value]
+    try {
+        await createObjectifsData(query, queryArray)
+        res.status(200).send("objectifs crées avec succès!")
+        return
+    } catch(error) {
+        res.status(400).send(error)
+        return
+    }}
+
+    query= `INSERT INTO progres (client_id, progres) VALUES ((SELECT client_id FROM users WHERE users.id = ${Number(id)}), $1)`
+    try {
+        await createObjectifsData(query, queryArray, value)
+        res.status(200).send("Progrès crées avec succès!")
+        return
+
+    } catch(error) {
+        res.status(400).send(error)
+    }
+
+}
+
+
+
+
 const updateObjectifsDataController = async (req,res) => {
     const {clientid} = req.params
-    const {value, category, titre, id} = req.body
+    const {value, category, titre, prog_id} = req.body
     console.log("body", req.body, "clientid", clientid)
     let query = ""
     let queryArray = []
@@ -195,6 +249,7 @@ const updateObjectifsDataController = async (req,res) => {
     
         } catch(error) {
             res.status(400).send(error)
+            return
         }}
 
     
@@ -209,11 +264,59 @@ const updateObjectifsDataController = async (req,res) => {
 
         } catch(error) {
             res.status(400).send(error)
+            return
         }}
     
     query = `UPDATE progres SET progres = $1 WHERE id = $2`
     try {
-        await updateObjectifsData(query, queryArray, id, value)
+        await updateObjectifsData(query, queryArray, prog_id, value)
+        res.status(200).send("Progrès mis à jour avec succès!")
+
+    } catch(error) {
+        res.status(400).send(error)
+    }
+
+}
+
+const updateObjectifsUserController = async (req,res) => {
+    const {id} = req.params
+    const {value, category, titre, prog_id} = req.body
+    console.log("body", req.body, "id", id)
+    let query = ""
+    let queryArray = []
+
+    if(titre) {
+        console.log("tentative d'update avec Titre")
+        const categoryTitre = `${category}_titre`;
+        query = `UPDATE objectifs SET ${category} = $1, ${categoryTitre} = $2 FROM users JOIN client ON users.client_id = client.id WHERE objectifs.client_id = client.id AND users.id = $3`
+        queryArray = [value, titre, id]
+        try {await updateObjectifsData(query, queryArray)
+            res.status(200).send("objectifs mis à jour avec succès!")
+            return
+    
+        } catch(error) {
+            res.status(400).send(error)
+            return
+        }}
+
+    
+    if(category){
+        query = `UPDATE objectifs SET ${category} = $1 FROM users JOIN client ON users.client_id = client.id WHERE objectifs.client_id = client.id AND users.id = $2`
+        queryArray = [value, id]
+        console.log("tentative d'update sans Titre")
+        try {
+            await updateObjectifsData(query, queryArray)
+            res.status(200).send("objectifs mis à jour avec succès!")
+            return
+
+        } catch(error) {
+            res.status(400).send(error)
+            return
+        }}
+    
+    query = `UPDATE progres SET progres = $1 WHERE id = $2`
+    try {
+        await updateObjectifsData(query, queryArray, prog_id, value)
         res.status(200).send("Progrès mis à jour avec succès!")
 
     } catch(error) {
@@ -224,11 +327,11 @@ const updateObjectifsDataController = async (req,res) => {
 
 const deleteObjectifsDataController = async(req, res) => {
     const {clientid} = req.params;
-    const {id} = req.body
-    console.log("supprimé avec l'id", id)
+    const {prog_id} = req.body
+    console.log("supprimé avec l'id", prog_id)
 
     try {
-        await deleteObjectifsData(id)
+        await deleteObjectifsData(prog_id)
         res.status(200).send("Progrès supprimé avec succès!")
 
     } catch(error) {
@@ -463,4 +566,4 @@ const deleteFile = async(req, res) => {
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController };

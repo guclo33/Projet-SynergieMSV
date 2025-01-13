@@ -31,8 +31,10 @@ const getOverviewData = async () => {
     return await pool.query("SELECT c.nom_client as nom, c.id as client_id, l.leader_id, l.date_presentation, l.echeance, l.statut, l.priorite FROM client c JOIN leader ON c.id = leader.client_id JOIN leader_todo l ON leader.id = l.leader_id ORDER BY statut")
 }
 
-const getObjectifsData = async (clientid) => {
+const getObjectifsData = async (clientid, id) => {
+    console.log("CLIENTID", clientid, "ID", id)
     
+    if(clientid) {
     const objectifs = await pool.query("SELECT * FROM client LEFT JOIN objectifs on client.id = objectifs.client_id AND client.objectifs_id IS NOT NULL WHERE client.id = $1", [clientid])
 
     const progres = await pool.query("SELECT * FROM progres WHERE client_id = $1", [clientid])
@@ -44,27 +46,40 @@ const getObjectifsData = async (clientid) => {
 
     return data
 }
+    const objectifs = await pool.query("select u.id, c.nom_client,o.id as objectifs_id, o.objectifs, o.actions, o.new_ideas, o.section1_titre, o.section1, o.section2_titre, o.section2 from users u join client c on u.client_id = c.id join objectifs o on c.id = o.client_id where u.id = $1", [id])
+
+    const progres = await pool.query("select u.id as client_id, c.nom_client,p.id, p.progres, p.completed, p.created_date from users u join client c on u.client_id = c.id join progres p on c.id = p.client_id where u.id = $1", [id])
+
+    const data = {
+        objectifs,
+        progres
+    }
+    console.log("DATA", data)
+    return data
+
+}
 
 const createObjectifsData = async ( query, queryArray, value) => {
+    console.log("QUERY:", query, "queryARRAY", queryArray, "VALUE", value)
     if(value) {
         return await pool.query(query, [value])
     }
 
-
+    console.log("JE FAIS LA QUERY SANS VALUE")
     return await pool.query(query, queryArray)
     
 }
 
-const updateObjectifsData = async (query, queryArray, id, value) => {
-    if(id) {
-        console.log("updating with value", value, "and id", id)
-        return await pool.query(query, [value, id])
+const updateObjectifsData = async (query, queryArray, prog_id, value) => {
+    if(prog_id) {
+        console.log("updating with value", value, "and id", prog_id)
+        return await pool.query(query, [value, prog_id])
     }
     return await pool.query(query, queryArray)
 }
 
-const deleteObjectifsData = async (id) => {
-    return await pool.query("DELETE FROM progres WHERE id = $1", [id])
+const deleteObjectifsData = async (prog_id) => {
+    return await pool.query("DELETE FROM progres WHERE id = $1", [prog_id])
 }
 
 const getRoadmapData = async () => {

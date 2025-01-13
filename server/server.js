@@ -6,11 +6,13 @@ const {connectCanva, getAuthUrl, getUser, setAuthStatus} = require("./canvaTempl
 const adminRoute = require("../routes/admin");
 const registerRoute = require("../routes/register");
 const loginRoute = require("../routes/login")
+const leaderRoute = require("../routes/leader")
+const userRoute = require("../routes/user")
 const cors = require('cors');
 require("dotenv").config();
 const Redis = require('ioredis');
 const connectRedis = require('connect-redis');
-const { isAuthenticated, isAuthorizedAdmin } = require('../controller/loginAndRegister');
+const { isAuthenticated, isAuthorizedAdmin, isAuthorizedLeader, isAuthorizedUser } = require('../controller/loginAndRegister');
 const passport = require('./config/passport');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -74,8 +76,9 @@ redisClient.get('testKey', (err, result) => {
     console.log('Test key value:', result);
 });
 
-app.use("/api/admin/:id",isAuthorizedAdmin, adminRoute)
-
+app.use("/api/admin/:id", isAuthorizedAdmin, adminRoute)
+app.use("/api/leader/:id", isAuthorizedLeader, leaderRoute)
+app.use("/api/user/:id", isAuthorizedUser, userRoute)
 
 app.use("/api/register", registerRoute)
 app.use("/api/login", loginRoute)

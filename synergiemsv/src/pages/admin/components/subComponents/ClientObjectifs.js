@@ -2,13 +2,13 @@ import React, {useEffect, useState} from "react";
 import { useParams } from "react-router";
 
 
-export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
+export function ClientObjectifs ({user, objectifsData, category, URL}) {
     
     const [modify, setModify] = useState(false)
     const [value, setValue]= useState((objectifsData && objectifsData[category]) || "")
     const [valueTitre, setValueTitre] = useState((objectifsData && objectifsData[category+"_titre"]) || "")
-    const {clientid} = useParams();
-    
+    let {clientid} = useParams();
+
     
     
     
@@ -22,8 +22,8 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
             
         if(objectifsData && objectifsData.objectifs_id){
             try {
-                console.log("sending data to update objectif", value)
-                const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
+                console.log("sending data to update objectif", value, "URL", URL)
+                const response = await fetch(URL, {
                     method: "PUT",
                     credentials: "include",
                     headers: {
@@ -40,15 +40,18 @@ export function ClientObjectifs ({user, objectifsData, apiUrl, category}) {
                     setModify(false);
                     return
                 }
+                console.log("n'a pas réussi à mettre à jour")
+                return
     
             } catch(error) {
                 console.log("erreur en mettan à jour l'objectifs", error)
+                return
             }
         }
         try {
-            console.log("sending data to create objectifs. user.id", user.id, "clientid", clientid)
+            console.log("sending data to create objectifs. user.id", user.id, "clientid", clientid, "URL", URL)
 
-            const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
+            const response = await fetch(URL, {
                 method: "POST",
                 credentials: "include",
                 headers: {

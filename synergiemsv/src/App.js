@@ -23,6 +23,8 @@ import { SettingLeader } from './pages/leader/components/SettingLeader';
 import { UserInfo } from './pages/user/components/UserInfo';
 import { SettingUser } from './pages/user/components/SettingUser';
 import { Objectifs } from './pages/admin/components/Objectifs';
+import { LeaderObjectifs } from './pages/leader/components/LeaderObjectifs';
+import { UserObjectifs } from './pages/user/components/UserObjectifs';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -44,12 +46,15 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     </Route>
     <Route path="/leader/:id" element={<Leader />} >
       <Route index element={<LeaderHome />} />
+      <Route path="objectifs" element={<LeaderObjectifs />} />
       <Route path="details" element={<LeaderInfo />} />
+      <Route path="details/:clientid" element={<LeaderInfo />} />
       <Route path="settings" element={<SettingLeader />} />
 
     </Route>
     <Route path="/user/:id" element={<User />} >
       <Route index element={<UserHome />} />
+      <Route path="objectifs" element={<UserObjectifs />} />
       <Route path="details" element={<UserInfo />} />
       <Route path="settings" element={<SettingUser />} />
     </Route> 

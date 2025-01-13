@@ -71,6 +71,7 @@ const isAuthenticated = (req, res, next) => {
 const isAuthorizedAdmin = (req, res, next) => {
     
     const {id} = req.params;
+    console.log("req.user.id", req.user.id, "id=",id , "user role", req.user.role)
     
     if (!req.isAuthenticated()) {
         console.log("User not authenticated");
@@ -78,7 +79,43 @@ const isAuthorizedAdmin = (req, res, next) => {
     }
       
 
-    if(!["admin", "superadmin"].includes(req.user.role)  || req.user.id.toString() !== id) {
+    if(!["admin", "superadmin"].includes(req.user.role)  || req.user.id !== Number(id)) {
+        console.log("c'est la que ca casse")
+        return res.status(403).send({message: "Forbidden: Role or ID does not match"});
+    }
+    
+    
+    return next();
+}
+
+const isAuthorizedLeader = (req, res, next) => {
+    const {id} = req.params;
+    
+    if (!req.isAuthenticated()) {
+        console.log("User not authenticated");
+        return res.status(401).send({ message: "Unauthorized" });
+    }
+      
+
+    if(!["leader", "superadmin"].includes(req.user.role) || req.user.id.toString() !== id) {
+        console.log("c'est la que ca casse")
+        return res.status(403).send({message: "Forbidden: Role or ID does not match"});
+    }
+    
+    console.log("AUTHORIZED AS LEADER")
+    return next();
+}
+
+const isAuthorizedUser = (req, res, next) => {
+    const {id} = req.params;
+    
+    if (!req.isAuthenticated()) {
+        console.log("User not authenticated");
+        return res.status(401).send({ message: "Unauthorized" });
+    }
+      
+
+    if(!["user", "superadmin"].includes(req.user.role) || req.user.id.toString() !== id) {
         console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }
@@ -92,4 +129,4 @@ const isAuthorizedAdmin = (req, res, next) => {
 
 
 
-module.exports = { createUser, login, isAuthenticated, isAuthorizedAdmin};
+module.exports = { createUser, login, isAuthenticated, isAuthorizedAdmin, isAuthorizedLeader, isAuthorizedUser};

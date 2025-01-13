@@ -147,7 +147,7 @@ export function LeadersHome ({ adminHomeData})  {
                         </div>        
                 </form>
                 ):(
-                    <div className="leaderHome" key={leader.id}>   
+                    <div className="leadersList" key={leader.id}>   
                         <div className="info">
                             <h4>Leader</h4>
                             <p><Link to={`roadmap/${leader.id}`}>{leader.nom}</Link></p>

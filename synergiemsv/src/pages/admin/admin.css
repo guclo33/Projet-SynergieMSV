@@ -1,4 +1,4 @@
-.AdminHome {
+.AdminHome, .leaderHome {
     position:relative;
     display: grid ;
     grid-template-columns: 70% 1fr;
@@ -70,22 +70,28 @@
     border-radius: 20px;
 }
 
-.leaderHome {
+.leaderHome, .leadersList {
     display: flex;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-    margin: 1rem;
+    
+    
     flex-wrap: wrap;
 }
 
-.leaderHome .info {
+.leaderHome .info, .leadersList .info {
     flex: 1;
     display: inline-block;
     margin: 1rem;
     min-width: 12rem;
+    
 
 
+}
+
+.leadersList {
+    margin-top: 1rem;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 4px 8px var(--primary-color);
+    border-radius: 20px;
 }
 
 .Overview {

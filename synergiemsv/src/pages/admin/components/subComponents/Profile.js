@@ -15,7 +15,7 @@ export function Profile({detailsData}) {
         }},100)
     }
 
-    if(!detailsData.profile_id) {
+    if(!detailsData.info.profile_id) {
         return (
             <h3>Il n'y pas de profil présentement disponible!</h3>
         )

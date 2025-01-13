@@ -11,12 +11,12 @@ export function User() {
     const {id} = useParams()
     
     return(
-        <div className="userHome">
-            <nav className="navUser">
+        <div className="user">
+            <nav className="nav">
                 <ul>
                     
                     <li><NavLink to={`/user/${id}`} end className={({ isActive }) => (isActive ? 'isActive' : '')} >Accueil</NavLink></li>
-                    <li><NavLink to="overview" className={({ isActive }) => (isActive ? 'isActive' : '')} >Vue d'ensemble</NavLink></li>
+                    <li><NavLink to="objectifs" className={({ isActive }) => (isActive ? 'isActive' : '')} >Objectifs</NavLink></li>
                     <li><NavLink to="roadmap" className={({ isActive }) => (isActive ? 'isActive' : '')} >Feuille de route</NavLink></li>
                     <li><NavLink to="details" className={({ isActive }) => (isActive ? 'isActive' : '')} >Informations</NavLink></li>
                     <li><NavLink to="settings" className={({ isActive }) => (isActive ? 'isActive' : '')} >Paramètres</NavLink></li>

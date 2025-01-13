@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-export function Progress ({progresData, apiUrl, clientid, user}) {
+export function Progress ({progresData, URL, clientid, user}) {
     const [modify, setModify] = useState(false)
     const [modifyProg, setModifyProg] = useState(null)
     const [value, setValue] = useState("")
@@ -18,7 +18,7 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
 
     const handleSubmit = async() => {
         try {
-            const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
+            const response = await fetch(URL, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -32,10 +32,13 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
                 console.log("progrès crée avec succès!");
                 setModify(false);
                 setValue("")
+                return
             }
+            return
 
         } catch(error) {
             console.log("erreur en ajoutant le progrès", error)
+            return
         }
             
             
@@ -46,20 +49,20 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
         console.log("clé", name)
         try {
             console.log("sending data to update progres", valueProg)
-            const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
+            const response = await fetch(URL, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: name,
+                    prog_id: name,
                     value: valueProg
                 })
             });
             if(response.ok) {
                 console.log("Progrès mis à jour avec succès!");
-                setModifyProg(false);
+                setModifyProg(null);
                 setValueProg("")
                 return
             }
@@ -86,14 +89,14 @@ export function Progress ({progresData, apiUrl, clientid, user}) {
         if(confirmDelete) {
             try {
                 console.log("sending data to update progres", value)
-                const response = await fetch(`${apiUrl}/api/admin/${user.id}/objectifs/${clientid}`, {
+                const response = await fetch(URL, {
                     method: "DELETE",
                     credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        id: name,
+                        prog_id: name,
                         
                     })
                 });

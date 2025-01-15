@@ -411,14 +411,32 @@ textarea {
     padding: 0 1rem;
 }*/
 
-.userInfo{
+.userInfo {
     display: flex;
+    flex:1;
     justify-content: space-between;
-    
+    padding-left: 1rem;
+}
+.team h4 {
+    justify-self: center;
+}
+
+.userInfo1 {
+    grid-column: 1;
+    grid-row: 1/4;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.userInfo {
+    grid-column: 2/6;
 }
 
 .team a {
-    
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr 1fr 1fr;
     flex:1;
     text-decoration: none; 
     color: inherit; 
@@ -815,3 +833,12 @@ ul {
 }
 
 
+.imgSmall {
+    justify-content: center;
+    width: 100px;   
+    height: 100px; 
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid #ccc;  
+    padding: 2px;
+}

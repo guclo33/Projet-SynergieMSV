@@ -2,11 +2,16 @@ import React, {useContext, useState,useEffect} from "react";
 import { Link } from "react-router-dom";
 import "../../../pages.css"
 import { AuthContext } from "../../../AuthContext";
+import { AdminContext } from "../../AdminContext";
+import iconeProfile from "../../../../Images/iconeProfile.jpg"
+
 
 export function LeadersHome ({ adminHomeData})  {
     const [active, setActive] = useState(true)
     const [modifyId, setModifyId] = useState(null);
+    const {profilePhotos} = useContext(AdminContext)
     
+    console.log("profilePhotos =", profilePhotos)
     
     
     const [newInfos, setNewInfos] = useState({
@@ -110,7 +115,9 @@ export function LeadersHome ({ adminHomeData})  {
             {leadersActif.map((leader) => (
                 modifyId == leader.id ? (
                     <form className="leaderHome" onSubmit={handleSubmit}>
-                        
+                        <div className="info">
+                            <img className="imgSmall" src={profilePhotos[leader.nom] || iconeProfile} alt={leader.nom} />
+                        </div>
                         <div className="info">
                         <h4>Leader</h4>
                         <p>{leader.nom}</p> 
@@ -147,7 +154,10 @@ export function LeadersHome ({ adminHomeData})  {
                         </div>        
                 </form>
                 ):(
-                    <div className="leadersList" key={leader.id}>   
+                    <div className="leadersList" key={leader.id}>  
+                        <div className="info">
+                            <img className="imgSmall" src={profilePhotos[leader.nom] || iconeProfile} alt={leader.nom} />
+                        </div> 
                         <div className="info">
                             <h4>Leader</h4>
                             <p><Link to={`roadmap/${leader.id}`}>{leader.nom}</Link></p>

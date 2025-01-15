@@ -11,7 +11,7 @@ const loginQuery = async (userNameOrEmail) =>  {
 const getAdminHomeData = async () => {
     const leadersData = await pool.query("SELECT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, t.date_presentation as date_presentation, t.echeance as echeance, t.statut as statut, t.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id join leader_todo t on l.id = t.leader_id ORDER BY t.priorite" );
 
-    const clientsData = await pool.query("SELECT id, nom_client FROM client ORDER BY id")
+    const clientsData = await pool.query("SELECT client.id, nom_client, leader.nom_leader FROM client LEFT JOIN leader ON client.leader_id = leader.id ORDER BY id")
 
     const data = {
         leadersData,
@@ -116,8 +116,34 @@ const updateOverview = async (date_presentation, echeance, statut, priorite, lea
     return {success:true}
 }
 
-const getDetailsData = async (clientid) => {
+const getDetailsData = async (clientid, id) => {
+    //pour USER et Leader
     
+    if(!clientid) {
+        const info = await pool.query("SELECT * FROM client left JOIN profile ON client.id = profile.client_id and client.profile_id is not null left JOIN leader ON client.leader_id = leader.id and client.leader_id is not null JOIN users ON users.client_id = client.id WHERE users.id = $1 ORDER BY profile.id DESC LIMIT 1", [id])
+
+    console.log("info", info)
+
+    if(info.rows.length === 0) {
+        const info = await pool.query("SELECT * FROM client JOIN profile ON client.id = profile.client_id JOIN users ON client.id = users.client_id where users.id = $1", [id])
+        const data = {
+            info: info.rows[info.rows.length -1]
+        }
+        return data
+    }
+    
+    const equipe = await pool.query(" SELECT id, nom_client as nom, email, phone FROM client WHERE leader_id = (SELECT leader_id FROM client JOIN users ON client.id = users.client_id WHERE users.id = $1);", [id])
+
+    const data = {
+        info: info.rows[0],
+        equipe : equipe.rows
+    }
+    console.log("voici le detailsData:", data)
+    return data
+    }
+
+    //Pour Admin
+
     const info = await pool.query("SELECT * FROM client left JOIN profile ON client.id = profile.client_id and client.profile_id is not null left JOIN leader ON client.leader_id = leader.id and client.leader_id is not null where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
 
     console.log("info", info)

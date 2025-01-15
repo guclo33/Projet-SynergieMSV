@@ -4,15 +4,17 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs')
 const s3Client = require('../server/config/s3-config')
-const {PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl} = require('@aws-sdk/s3-request-presigner')
 const { Upload } = require('@aws-sdk/lib-storage');
+require("dotenv").config();
 
 
 
 const getAdminHomeDataController = async (req,res) => {
     try {
         const data = await getAdminHomeData()
+
         console.log("Backend data:", data)
         if(data){
             
@@ -340,10 +342,10 @@ const deleteObjectifsDataController = async(req, res) => {
 }
 
 const getDetailsById = async (req,res) => {
-    const {clientid} = req.params;
-    console.log("clientID:" , clientid)
+    const {clientid, id} = req.params;
+    console.log("clientID:" , clientid, "ID", id)
     try{
-        const data = await getDetailsData(clientid)
+        const data = await getDetailsData(clientid, id)
         console.log(data)
         
         res.status(200).json(data)
@@ -562,8 +564,43 @@ const deleteFile = async(req, res) => {
     }
 }
 
+const getProfilePhoto = async(req, res) => {
+    const {nomLeader, clientName} = req.params;
+    
+    if (!nomLeader || !clientName) {
+        console.log("Paramètres manquants. Aucune action.");
+        return; 
+      }
+    
+    console.log("nomLeader et clientName", nomLeader, clientName)
+    const s3params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `Synergia/${nomLeader}/photos/${clientName}.png`,
+        Expires: 7200,
+    }
+
+    console.log("nomLeader et clientName", nomLeader, clientName,"s3Params", s3params)
+    
+    try {
+
+        const headCommand = new HeadObjectCommand({ Bucket: s3params.Bucket, Key: s3params.Key });
+        await s3Client.send(headCommand);  
+
+        const command = new GetObjectCommand(s3params);
+        const url = await getSignedUrl(s3Client, command);
+        console.log("URL = ", url)
+        return res.status(200).json({url})
+    } catch (error) {
+        if (error.name === 'NotFound' || error.$metadata?.httpStatusCode === 404) {
+            console.log("Objet introuvable :", s3params.Key);
+            return res.status(200).json({ url: null });
+    }
+
+    console.error("Erreur lors de la génération de l'URL :", error);
+    return res.status(500).json({ error: 'Erreur interne du serveur.' });
+   
+}}
 
 
 
-
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto };

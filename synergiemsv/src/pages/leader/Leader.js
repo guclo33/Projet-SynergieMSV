@@ -5,6 +5,7 @@ import { AuthContext } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../pages.css";
 import "../admin/admin.css";
+import "./leader.css"
 import image from "../../Images/logo2 sans fond.png";
 
 

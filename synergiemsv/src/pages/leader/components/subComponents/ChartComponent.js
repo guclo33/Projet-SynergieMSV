@@ -4,9 +4,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 ChartJS.register(LinearScale, CategoryScale, BarElement, BarController, Title, Tooltip, Legend, ChartDataLabels)
 
-export function ChartComponent({bleu, rouge, vert, jaune}) {
+export function ChartComponent({height, width, bleu, rouge, vert, jaune}) {
     const canvasRef = useRef(null); 
-        
       
         useEffect(() => {
           
@@ -24,6 +23,9 @@ export function ChartComponent({bleu, rouge, vert, jaune}) {
                 "#F4F22D"
               ],
               borderRadius: 50,
+              barThickness: 'flex', // Adjusted to remove space
+              maxBarThickness: 100, // Adjusted to remove space
+              
               
             }]
           };
@@ -43,6 +45,8 @@ export function ChartComponent({bleu, rouge, vert, jaune}) {
                 grid: {
                   display: false
                 },
+                categoryPercentage: 1.0, // Adjusted to remove space
+                barPercentage: 1.0, // Adjusted to remove space
               },
               
 
@@ -51,22 +55,24 @@ export function ChartComponent({bleu, rouge, vert, jaune}) {
               duration: 1500,
               easing: 'easeInOutQuad'
             },
-            responsive: true,
-            maintainAspectRatio: true,
+            responsive: false,
+            maintainAspectRatio: false,
+            
             plugins: {
               legend: {
                   display: false  // Désactiver la légende
               },
               datalabels: {
-                  anchor: 'center', // Positionner les labels sur la fin de chaque barre
-                  align: 'top',  // Aligner les labels au-dessus des barres
-                  color: '#000', // Couleur du texte des labels
+                  anchor: 'center', 
+                  align: 'top',
+                  color: '#000', 
                   font: {
-                      size: 14,  // Taille de la police
+                      size: 14,  
                       weight: 'bold'
                   }
               }
-          }
+          }, 
+           
           };
       
           const myBarChart = new ChartJS(ctx, {
@@ -84,6 +90,10 @@ export function ChartComponent({bleu, rouge, vert, jaune}) {
         
     
     
-    return <canvas className="chart" ref={canvasRef} width="400" height="200"></canvas>
+    return (
+        <div className="chartContainer">
+          <canvas className="chart" height={height} width={width} ref={canvasRef} ></canvas>
+        </div>
+    )
        
 }

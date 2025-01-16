@@ -2,6 +2,8 @@ import React, {useState,  useContext} from "react";
 import { useParams } from "react-router";
 import { AuthContext } from "../../../AuthContext";
 import { Link } from "react-router-dom";
+import iconeProfile from "../../../../Images/iconeProfile.jpg"
+import { AdminContext } from "../../AdminContext";
 
 export function GeneralInfos({detailsData}) {
     const {info, equipe} = detailsData
@@ -15,6 +17,7 @@ export function GeneralInfos({detailsData}) {
     })
     const {clientid} = useParams()
     const {user} = useContext(AuthContext)
+    const {profilePhotos} = useContext(AdminContext)
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     const handleModify = () => {
         setModify(true)
@@ -192,6 +195,9 @@ export function GeneralInfos({detailsData}) {
                 
                 {detailsData.equipe.length >0? (teamWithoutLeader.map(teamMate => (
                     <Link to={`/admin/${user.id}/details/${teamMate.id}`} key={teamMate.id} >
+                        <div className="userInfo1">
+                            <img className="imgSmall" src={profilePhotos[teamMate.nom] || iconeProfile} alt={detailsData[teamMate.nom]} />
+                        </div>
                         <h4>{teamMate.nom}</h4>
                         <div className="userInfo">
                             <p>Courriel: </p>

@@ -1,0 +1,102 @@
+.profileSummary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    width:100%;
+}
+
+.imgBig, .arch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 33%;
+    
+    
+}
+
+.chartContainer {
+    flex: 1; 
+    justify-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.arch {
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+}
+.arch img {
+    justify-content: center;
+    width: 50%;   
+    height: 50%; 
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid #ccc;  
+    padding: 2px;
+}
+
+.chart {
+    width: 15rem; 
+    height: 30rem; 
+    flex-grow: 0;  
+    flex-shrink: 0; 
+}
+
+.imgBig {  
+    flex: 1; 
+    justify-content: center;
+    align-items: center;
+    border-radius: 10%; 
+    object-fit: cover;
+   
+    padding: 2px;
+}
+
+.leaderHome h2 {
+    width: 100%;
+    text-align: center;
+}
+
+.smallArch img {
+    justify-content: center;
+    width: 4rem;   
+    height: 4rem; 
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 2px solid #ccc;  
+    padding: 2px;
+}
+
+.equipe {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+}
+
+.imgName {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width:100%;
+}
+.teamList {
+    
+    flex:1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 2px 4px var(--primary-color);
+    border-radius: 20px;
+}

@@ -9,7 +9,7 @@ const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController} = require ("../controller/adminController")
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto} = require ("../controller/adminController")
 
 
 router.get("/", getAdminHomeDataController)
@@ -51,6 +51,8 @@ router.get("/details/:category/list/:leaderName", listFile)
 router.get("/details/:category/download/:leaderName/:fileName", downloadFile);
 
 router.delete("/details/:category/delete/:leaderName/:fileName", deleteFile)
+
+router.get("/profilePhoto/:nomLeader/:clientName", getProfilePhoto)
 
 
 

@@ -1,5 +1,17 @@
 import React, { createContext, useState, useEffect } from 'react';
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
+import héro from "../Images/archetypes/Héros.webp";
+import explorateur from "../Images/archetypes/Explorateur.webp";
+import sage from "../Images/archetypes/Sage.webp";
+import rebelle from "../Images/archetypes/Rebelle.webp";
+import bouffon from "../Images/archetypes/Bouffon.webp";
+import magicien from "../Images/archetypes/Magicien.webp";
+import créateur from "../Images/archetypes/Créateur.webp";
+import citoyen from "../Images/archetypes/Citoyen.webp";
+import innocent from "../Images/archetypes/Innocent.webp";
+import protecteur from "../Images/archetypes/Protecteur.webp";
+import souverain from "../Images/archetypes/Souverain.webp";
+import amoureuse from "../Images/archetypes/amoureuse.webp";
 
 export const AuthContext = createContext();
 
@@ -60,10 +72,88 @@ export const  AuthProvider = ({children}) => {
       }
   };
 
+  const archetypeImage = (arch) =>{
+    
+    
+    switch (String(arch).toLowerCase()) {
+            case "héro" :
+            case "héros" :
+                return héro
+                
+            case "explorateur":
+            case "explorateurs":
+            case "exploratrice":
+            case "exploratrices":
+                return explorateur;
+                
+            case "amoureux" :
+            case "amoureuse" :
+            case "amoureux" :
+            case "amoureuses":
+                return amoureuse;
+                
+            case "sage" :
+            case "sages":
+                return sage;
+                
+            case "rebelle" :
+            case "rebelles" :
+            case "rebel" :
+            case "rebels":
+                return rebelle;
+                
+            case "bouffon" :
+            case "bouffons":
+                return bouffon;
+                
+            case "magicien" :
+            case "magicienne" :
+            case "magiciens" :
+            case "magiciennes":
+                return magicien;
+                
+            case "créateur" :
+            case "créatrice" :
+            case "créateurs" :
+            case "créatrices":
+                return créateur;
+                
+            case "citoyen" :
+            case "citoyenne" :
+            case "citoyens" :
+            case "citoyennes":
+                return citoyen;
+                
+            case "optimiste" :
+            case "optimistes" :
+            case "innocent" :
+            case "innocente" :
+            case "innocents" :
+            case "innocentes":
+                return innocent;
+                
+            case "protecteur" :
+            case "protectrice" :
+            case "protecteurs" :
+            case "protectrices":
+                return protecteur;
+                
+            case "souverain" :
+            case "souveraine" :
+            case "souverains" :
+            case "souveraines":
+                return souverain;
+                
+            default:
+                return "Missing image";
+                
+    
+        }
+  }
   
 
       return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, archetypeImage }}>
           {children}
         </AuthContext.Provider>
       );

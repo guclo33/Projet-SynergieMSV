@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
@@ -11,6 +11,7 @@ import image from "../../Images/logo2 sans fond.png";
 export function Admin() {
     const { user} = useContext(AuthContext);
     const { id } = useParams()
+    
   
     const navigate = useNavigate()
 

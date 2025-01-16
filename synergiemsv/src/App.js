@@ -25,6 +25,9 @@ import { SettingUser } from './pages/user/components/SettingUser';
 import { Objectifs } from './pages/admin/components/Objectifs';
 import { LeaderObjectifs } from './pages/leader/components/LeaderObjectifs';
 import { UserObjectifs } from './pages/user/components/UserObjectifs';
+import { AdminProvider } from './pages/admin/AdminContext';
+import { LeaderProvider } from './pages/leader/LeaderContext';
+import { UserProvider } from './pages/user/UserContext';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -33,7 +36,12 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     <Route path="/register" element={<Register />}/>
     <Route path="/login" element={<Login />} />
     <Route path="/superadmin/:id" element={<SuperAdmin />} />
-    <Route path="/admin/:id" element={<Admin />}>
+
+    <Route path="/admin/:id" element={
+      <AdminProvider>
+        <Admin />
+      </AdminProvider>
+    }>
       <Route index element={<AdminHome />} />
       <Route path="objectifs" element={<Objectifs />} />
       <Route path="objectifs/:clientid" element={<Objectifs />} />
@@ -44,7 +52,12 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="details/:clientid" element={<Details />} />
       <Route path="settings" element={<Settings />} />
     </Route>
-    <Route path="/leader/:id" element={<Leader />} >
+
+    <Route path="/leader/:id" element={
+      <LeaderProvider>
+        <Leader />
+      </LeaderProvider>
+    }>
       <Route index element={<LeaderHome />} />
       <Route path="objectifs" element={<LeaderObjectifs />} />
       <Route path="details" element={<LeaderInfo />} />
@@ -52,7 +65,11 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="settings" element={<SettingLeader />} />
 
     </Route>
-    <Route path="/user/:id" element={<User />} >
+    <Route path="/user/:id" element={
+      <UserProvider>
+        <User />
+        </UserProvider>
+    }>
       <Route index element={<UserHome />} />
       <Route path="objectifs" element={<UserObjectifs />} />
       <Route path="details" element={<UserInfo />} />

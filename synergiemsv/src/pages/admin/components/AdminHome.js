@@ -10,7 +10,7 @@ export function AdminHome() {
     const [adminHomeData, setAdminHomeData] = useState([])
     const {user} = useContext(AuthContext);
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
-    useEffect( () => {
+    /*useEffect( () => {
         console.log(`${apiUrl}/api/admin/${user.id}`);
         const getAdminHomeData = async () => {
             try {
@@ -50,14 +50,14 @@ export function AdminHome() {
         console.log("getAdmin called")
         getAdminHomeData();
 
-    },[])
+    },[])*/
     
     
     return(
         <div className="AdminHome">
             <h1>Bienvenue {user.username}</h1>
             <ProfilGenerator />
-            <LeadersHome adminHomeData={adminHomeData}/>
+            <LeadersHome />
             
         </div>
     )

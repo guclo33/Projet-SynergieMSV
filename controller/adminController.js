@@ -62,15 +62,15 @@ const getRoadmapDataController = async (req, res) =>{
 }
 
 const updateRoadmapTodosController = async (req, res) => {
-    const {is_completed, task, leaderid} = req.body
+    const {is_completed, task, clientid} = req.body
     
-    if ( !task || !leaderid) {
+    if ( !task || !clientid) {
         return res.status(400).send("Missing parameters");
     }
     
 
     try {
-        await updateRoadmapTodos(is_completed, leaderid, task)
+        await updateRoadmapTodos(is_completed, clientid, task)
         
         res.status(200).send("Succesfully updated todos!")
     } catch(error) {
@@ -79,11 +79,11 @@ const updateRoadmapTodosController = async (req, res) => {
 }
 
 const addRoadmapTodos = async(req, res) => {
-    const {leaderid} = req.params;
+    const {clientid} = req.params;
     const {task, category, is_default} = req.body;
     console.log("task:", task, "category:", category, "is_default", is_default)
     try {
-        await addTodosQuery(leaderid, category, task, is_default)
+        await addTodosQuery(clientid, category, task, is_default)
         res.status(200).send("succesfully added à new task!")
     } catch(error) {
         res.status(400).send(error)
@@ -93,11 +93,11 @@ const addRoadmapTodos = async(req, res) => {
 }
 
 const deleteRoadmapTodos = async(req,res) => {
-    const {leaderid} = req.params;
+    const {clientid} = req.params;
     const {task, delete_default} = req.body;
     
     try {
-        deleteRoadmapTodosQuery(leaderid, task, delete_default);
+        deleteRoadmapTodosQuery(clientid, task, delete_default);
         res.status(200).send("tasks succesfully deleted")
     } catch(error) {
         res.status(400).send("Couldn't delete todos")
@@ -110,11 +110,11 @@ const deleteRoadmapTodos = async(req,res) => {
 }*/
 
 const updateOverviewController = async (req, res) => {
-    const { leader_id, date_presentation, echeance, statut, priorite, active} = req.body;
+    const { id, date_presentation, echeance, priorite, active} = req.body;
     console.log("req.body=", req.body)
-    console.log("leader id", leader_id,"date pres:", date_presentation,"echeance", echeance,'statut', statut,"priorite", priorite)
+    console.log("id", id,"date pres:", date_presentation,"echeance", echeance,"priorite", priorite)
     try {
-        await updateOverview(date_presentation, echeance, statut, priorite, leader_id, active)
+        await updateOverview(date_presentation, echeance, priorite, id, active)
         res.status(200).send("completed update overview")
     } catch(error) {
         res.status(400).send(error)

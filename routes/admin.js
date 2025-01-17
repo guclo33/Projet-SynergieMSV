@@ -30,9 +30,9 @@ router.get("/roadmap", getRoadmapDataController)
 
 router.put("/roadmap", updateRoadmapTodosController )
 
-router.post("/roadmap/:leaderid", addRoadmapTodos)
+router.post("/roadmap/:clientid", addRoadmapTodos)
 
-router.delete("/roadmap/:leaderid", deleteRoadmapTodos)
+router.delete("/roadmap/:clientid", deleteRoadmapTodos)
 
 router.get("/details", getAdminHomeDataController)
 

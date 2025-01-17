@@ -1,14 +1,17 @@
-import React, {useState}from "react";
+import React, {useContext, useState}from "react";
 
 
 import { Link } from "react-router-dom";
+import { AdminContext } from "../../AdminContext";
 
-export function DetailsLeaders({clientsData, leadersData}) {
+export function DetailsLeaders({}) {
    const [searchQuery, setSearchQuery] = useState("")
+   const { leadersData, clientsData} = useContext(AdminContext)
    
     if(!leadersData) {
         return <h2>...loading</h2>
     }
+    console.log("leader DAAATTTAAA:" ,leadersData)
 
     const handleSearch = (e) => {
         const {value} = e.target
@@ -25,7 +28,7 @@ export function DetailsLeaders({clientsData, leadersData}) {
                 <div className="detailsLeader">
                 
                     {leadersData.filter(leader => leader.nom.toLowerCase().includes(searchQuery)).map(leader => (
-                        <Link  to={`${leader.client_id}`}><div style={{backgroundColor:'#FDEEFF'}} className="detailsLeaders" key={leader.leader_id}>
+                        <Link  to={`${leader.clientid}`}><div style={{backgroundColor:'#FDEEFF'}} className="detailsLeaders" key={leader.leader_id}>
                             <h4>{leader.nom}</h4>
                             
 

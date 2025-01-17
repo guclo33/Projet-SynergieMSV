@@ -6,48 +6,55 @@ import { AdminContext } from "../../AdminContext";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 
 
-export function LeadersHome ({ adminHomeData})  {
+export function LeadersHome () {
     const [active, setActive] = useState(true)
     const [modifyId, setModifyId] = useState(null);
-    const {profilePhotos} = useContext(AdminContext)
+    const {profilePhotos, setClientsData, clientsData, leadersData} = useContext(AdminContext)
     
     console.log("profilePhotos =", profilePhotos)
     
     
-    const [newInfos, setNewInfos] = useState({
-        date_presentation : adminHomeData.date_presentation,
-        echeance : adminHomeData.echeance,
-        statut: adminHomeData.statut,
-        priorite : adminHomeData.priorite,
-        active: adminHomeData.active
-    })
+    const [newInfos, setNewInfos] = useState(clientsData)
     const {user} = useContext(AuthContext)
+
+    /*useEffect(()=> {
+        if(clientsData.date_presentation !== newInfos.date_presentation || clientsData.echeance !== newInfos.echeance || clientsData.active !== newInfos.active || clientsData.priorite !== newInfos.priorite){
+            setClientsData(prev => ({
+                ...prev,
+                date_presentation : newInfos.date_presentation,
+                echeance : newInfos.echeance,
+                active: newInfos.active,
+                priorite : newInfos.priorite
+
+            }))
+    }},[newInfos, clientsData])*/
 
    
     useEffect(()=> {
         if(modifyId) {
-            const leaderData = adminHomeData.find(leader => leader.id === Number(modifyId))
+            const leaderData = clientsData.find(leader => leader.id === Number(modifyId))
             console.log("leaderData:", leaderData)
             if (!leaderData) {
                 console.error(`Leader with id ${modifyId} not found`);
                 return;
               }
             setNewInfos({
-                date_presentation : leaderData.date_presentation,
+                date_presentation : leadersData.date_presentation,
                 echeance : leaderData.echeance,
-                statut: leaderData.statut,
+                
                 priorite : leaderData.priorite,
                 active: leaderData.active
             })
             
         }
-    }, [])
+    }, [modifyId])
     
 
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
 
     const handleClick = (e) =>{
         const leaderID = e.target.getAttribute("data-id")
+        //const clientFound = clientsData.find(client => client.id === Number(leaderID))
         setModifyId(leaderID)
     }
 
@@ -62,11 +69,11 @@ export function LeadersHome ({ adminHomeData})  {
         
     }
     const handleChange = (e) => {
-        const {name, value, type, checked} = e.target;
+        const {name, value} = e.target;
         console.log("name:", name, "value,", value)
         setNewInfos(prev => ({
             ...prev,
-            [name] : type === "checkbox" ? checked : value,
+            [name] : value,
         }))
 
     }
@@ -82,10 +89,10 @@ export function LeadersHome ({ adminHomeData})  {
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify({
-                    leader_id : modifyId,
+                    id : modifyId,
                     date_presentation: newInfos.date_presentation,
                     echeance: newInfos.echeance,
-                    statut: newInfos.statut,
+                    
                     priorite: newInfos.priorite,
                     active: newInfos.active
                     
@@ -94,6 +101,8 @@ export function LeadersHome ({ adminHomeData})  {
             });
             if(response.ok){
                 console.log(`overview for leaderId ${modifyId}data are succesfully updated`)
+                
+                setClientsData(prev => prev.map(client => client.id === Number(modifyId) ? {...client, ...newInfos} : client))
                 setModifyId(null)
             } else {
                 console.log("error while trying to update in the server")
@@ -103,30 +112,35 @@ export function LeadersHome ({ adminHomeData})  {
         }
     }
 
-    const leadersActif = adminHomeData.filter(leader => leader.active !== undefined && leader.active === active);
+    console.log("newInfos", newInfos)
+
+    const leadersActif = clientsData.filter(leader => leader.active !== undefined && leader.active === active);
 
     return (
         <div className="leadersHome">
-            <h2>Mes leaders!</h2>
+            <h2>Mes clients!</h2>
              <div className="input">  
                 <input id = "active" type="checkbox" checked={!active} onChange={handleCheck} />
-                <label htmlFor="active">Voir les leaders inactifs</label>
+                <label htmlFor="active">Voir les clients inactifs</label>
             </div> 
             {leadersActif.map((leader) => (
                 modifyId == leader.id ? (
-                    <form className="leaderHome" onSubmit={handleSubmit}>
+                    <form className="leadersList" onSubmit={handleSubmit}>
                         <div className="info">
                             <img className="imgSmall" src={profilePhotos[leader.nom] || iconeProfile} alt={leader.nom} />
                         </div>
                         <div className="info">
-                        <h4>Leader</h4>
+                        <h4>Client</h4>
                         <p>{leader.nom}</p> 
                         </div>    
                         
                         <div className="info">
                             <h4>Statut</h4>
-                            <input type="checkbox" name="active"  value={newInfos.active}
-                            checked={newInfos.active} onChange={handleChange}/>
+                            <select className="c" name="active" value={newInfos.active !== undefined ? newInfos.active : leader.active || false} onChange={handleChange}>
+                                <option value={true} >Actif</option>
+                                <option value={false}>Inactif</option>
+                            </select>
+                            
                         </div>
 
                         <div className="info">
@@ -159,7 +173,7 @@ export function LeadersHome ({ adminHomeData})  {
                             <img className="imgSmall" src={profilePhotos[leader.nom] || iconeProfile} alt={leader.nom} />
                         </div> 
                         <div className="info">
-                            <h4>Leader</h4>
+                            <h4>Client</h4>
                             <p><Link to={`roadmap/${leader.id}`}>{leader.nom}</Link></p>
                         </div>
                         <div className="info">
@@ -172,11 +186,11 @@ export function LeadersHome ({ adminHomeData})  {
                         </div>
                         <div className="info">
                             <h4>Date Présentation</h4>
-                            <p>{new Date(leader.date_presentation).toLocaleDateString('en-CA')} </p>
+                            <p>{leader.date_presentation ? new Date(leader.date_presentation).toLocaleDateString('en-CA') : "Date non définie"} </p>
                         </div>
                         <div className="info">
                             <h4>Échéance</h4>
-                            <p>{new Date(leader.echeance).toLocaleDateString('en-CA') || "non enregistré"} </p>
+                            <p>{leader.echeance ? new Date(leader.echeance).toLocaleDateString('en-CA') : "Date non définie"} </p>
                         </div>
                         
                         <button className="e" data-id={leader.id} name="modify" onClick={handleClick}>Modifier</button>

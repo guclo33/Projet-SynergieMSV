@@ -28,6 +28,10 @@ import { UserObjectifs } from './pages/user/components/UserObjectifs';
 import { AdminProvider } from './pages/admin/AdminContext';
 import { LeaderProvider } from './pages/leader/LeaderContext';
 import { UserProvider } from './pages/user/UserContext';
+import { Form } from './pages/form/Form';
+import { FormHome } from './pages/form/FormHome';
+import store from './pages/form/Redux/store';
+import {Provider} from 'react-redux';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -47,7 +51,7 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="objectifs/:clientid" element={<Objectifs />} />
 
       <Route path="roadmap" element={<Roadmap />} />
-      <Route path="roadmap/:leaderid" element={<Roadmap />} />
+      <Route path="roadmap/:clientid" element={<Roadmap />} />
       <Route path="details" element={<Details />} />
       <Route path="details/:clientid" element={<Details />} />
       <Route path="settings" element={<Settings />} />
@@ -75,6 +79,14 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="details" element={<UserInfo />} />
       <Route path="settings" element={<SettingUser />} />
     </Route> 
+
+    <Route path="/form" element={
+      <Provider store={store}> 
+        <FormHome />
+      </Provider>
+    }>
+      <Route index element={<Form />} />
+    </Route>
 
     <Route path="/unauthorized" element={<Unauthorized />} />
   </>

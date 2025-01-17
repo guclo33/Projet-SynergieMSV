@@ -12,7 +12,7 @@ export function Roadmap() {
     const [showDone, setShowDone] = useState(false)
     const [addTodos, setAddTodos] = useState({
         task: "",
-        category: "",
+        category: "préparation",
         is_default: false
     })
     const [showModal, setShowModal] = useState(false);
@@ -21,7 +21,7 @@ export function Roadmap() {
         delete_default: false
     })
     const [deleteModal, setDeleteModal] = useState(false)
-    const {leaderid} = useParams()
+    const {clientid} = useParams()
     const {user} = useContext(AuthContext)
     const location = useLocation()
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
@@ -37,15 +37,19 @@ export function Roadmap() {
                     if(response.ok){
                         const data = await response.json();
                         
-                        if(!leaderid) {
+                        if(!clientid) {
                             console.log("fullRoadData:", data.rows)
                             setFullRoadData(data.rows)
                             return
                         }
                         
-                        console.log("leader id:", leaderid)
-                        console.log("filteredRoadmap data avec leader id:", data.rows.filter(leader => leader.leader == leaderid))
-                        setFilteredRoadMapData(data.rows.filter(leader => leader.leader == leaderid))
+                        console.log("client id:", clientid)
+                       
+                        const filterData = data.rows.filter(leader => leader.id == clientid)
+                        console.log("filteredRoadmap data avec client id:", filterData)
+                        if (JSON.stringify(filteredRoadmapdata) !== JSON.stringify(filterData)) {
+                            setFilteredRoadMapData(filterData);
+                        }
                         return 
                         
                         
@@ -66,13 +70,13 @@ export function Roadmap() {
         
 
         getRoadmapData()
-    }, [leaderid, filteredRoadmapdata])
+    }, [clientid, fullRoadData, showModal])
     
-    if (!leaderid && !fullRoadData) {
+    if (!clientid && !fullRoadData) {
         return <p>Loading...</p>;
     }
 
-    if(leaderid && filteredRoadmapdata.length===0) {
+    if(clientid && filteredRoadmapdata.length===0) {
         return <p>Loading...</p>;
     }
 
@@ -128,11 +132,12 @@ export function Roadmap() {
                 body : JSON.stringify({
                     is_completed: newValue,
                     task: name,
-                    leaderid : leaderid
+                    clientid : clientid
                 })
             });
             if(response.ok){
                 console.log(`succesfully updated ${name} with ${newValue}`)
+                setFilteredRoadMapData(prevData => prevData.map(item => item.task === name ? {...item, is_completed: newValue} : item))
 
             } else {
                 console.log("could not update the task")
@@ -148,6 +153,8 @@ export function Roadmap() {
         }
         return acc;
     }, []);
+
+    console.log("uniqueLeaders:", uniqueLeaders) 
    /* const handleNewTask = async() => {
 
     }*/
@@ -161,7 +168,7 @@ export function Roadmap() {
 
 
         try {
-            const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${leaderid}`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${clientid}`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -176,6 +183,13 @@ export function Roadmap() {
             });
             if(response.ok){
                 console.log("Task succesfully added")
+                setFilteredRoadMapData(prevData => 
+                    prevData.map(item => 
+                        item.id === addTodos.id 
+                        ? { ...item, task: addTodos.task, category: addTodos.category, is_default: addTodos.is_default }
+                        : item
+                    )
+                );
                 setShowModal(false)
             } else {
                 console.log("could not add task")
@@ -200,7 +214,7 @@ export function Roadmap() {
 
         if(userConfirmed) {
             try {
-                const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${leaderid}`, {
+                const response = await fetch(`${apiUrl}/api/admin/${user.id}/roadmap/${clientid}`, {
                     method: "DELETE",
                     credentials: "include",
                     headers: {
@@ -214,6 +228,7 @@ export function Roadmap() {
                 });
                 if(response.ok){
                     console.log("Task succesfully deleted")
+
                     setDeleteModal(false)
                 } else {
                     console.log("could not delete task")
@@ -240,7 +255,7 @@ export function Roadmap() {
         <div className="roadmap">
             <h2>Feuille de route</h2>
            
-                {leaderid ? (
+                {clientid ? (
                     <div className="todoList">
                             <h2>{filteredRoadmapdata[0].nom}</h2>
                             <h3>Préparation</h3>
@@ -357,8 +372,8 @@ export function Roadmap() {
                             
                             <div className="leadersMap">    
                                 {uniqueLeaders.map(leader => (
-                                <div className="leader" key={leader.leader}>
-                                    <h4><Link to={`${leader.leader}`}>{leader.nom}</Link></h4>
+                                <div className="leader" key={leader.id}>
+                                    <h4><Link to={`${leader.id}`}>{leader.nom}</Link></h4>
                                 </div> ))}
                             </div>    
                                 

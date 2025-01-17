@@ -9,9 +9,9 @@ const loginQuery = async (userNameOrEmail) =>  {
 }
 
 const getAdminHomeData = async () => {
-    const leadersData = await pool.query("SELECT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, t.date_presentation as date_presentation, t.echeance as echeance, t.statut as statut, t.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id join leader_todo t on l.id = t.leader_id ORDER BY t.priorite" );
+    const leadersData = await pool.query("SELECT DISTINCT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, c.date_presentation as date_presentation, c.echeance as echeance, c.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id ORDER BY c.priorite" );
 
-    const clientsData = await pool.query("SELECT client.id, nom_client, leader.nom_leader FROM client LEFT JOIN leader ON client.leader_id = leader.id ORDER BY id")
+    const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c JOIN leader l ON c.leader_id = l.id ORDER BY id")
 
     const data = {
         leadersData,
@@ -86,23 +86,23 @@ const getRoadmapData = async () => {
     return await pool.query("SELECT c.nom_client as nom, c.id, c.leader_id as leader, t.task, t.category, t.is_completed FROM client c JOIN todos t ON c.id = t.client_id;")
 }
 
-const updateRoadmapTodos = async(is_completed, leaderid, task)=> {
+const updateRoadmapTodos = async(is_completed, clientid, task)=> {
     
-    return await pool.query(`UPDATE todos SET is_completed = $1 WHERE client_id = (SELECT client_id from leader WHERE id = $2) AND task=$3`, [is_completed, leaderid, task])
+    return await pool.query(`UPDATE todos SET is_completed = $1 WHERE client_id = $2 AND task=$3`, [is_completed, clientid, task])
 }
 
-const addTodosQuery = async (leaderid, category, task, is_default) => {
+const addTodosQuery = async (clientid, category, task, is_default) => {
     if(!is_default){
-        return await pool.query(`INSERT INTO todos (client_id, task, category) VALUES ((SELECT client_id FROM leader WHERE id = $1), $2, $3)`, [leaderid, task, category])
+        return await pool.query(`INSERT INTO todos (client_id, task, category) VALUES  ($1, $2, $3)`, [clientid, task, category])
     }
 
     return await pool.query(`INSERT INTO default_tasks (task, category) VALUES ($1, $2)`, [task, category])
 
 }
 
-const deleteRoadmapTodosQuery = async (leaderid, task, delete_default) => {
+const deleteRoadmapTodosQuery = async (clientid, task, delete_default) => {
     if(!delete_default) {
-        return await pool.query(`DELETE FROM todos WHERE leader_id = $1 AND task = $2`, [leaderid,task])
+        return await pool.query(`DELETE FROM todos WHERE client_id = $1 AND task = $2`, [clientid,task])
     }
     await pool.query(`DELETE FROM todos WHERE task=$1`, [task])
     await pool.query(`DELETE FROM default_tasks WHERE task=$1`, [task])
@@ -110,9 +110,9 @@ const deleteRoadmapTodosQuery = async (leaderid, task, delete_default) => {
     return
 }
 
-const updateOverview = async (date_presentation, echeance, statut, priorite, leader_id, active) => {
-    await pool.query("UPDATE leader_todo SET date_presentation = $1, echeance = $2, statut = $3, priorite = $4 WHERE leader_id = $5", [date_presentation, echeance, statut, priorite, leader_id ])
-    await pool.query("UPDATE leader SET active = $1 WHERE id = $2", [active, leader_id])
+const updateOverview = async (date_presentation, echeance,  priorite, id, active) => {
+    await pool.query("UPDATE client SET date_presentation = $1, echeance = $2, priorite = $3 WHERE id = $4", [date_presentation, echeance,  priorite, id ])
+    await pool.query("UPDATE client SET active = $1 WHERE id = $2", [active, id])
     return {success:true}
 }
 

@@ -88,7 +88,7 @@
 }
 
 .leadersList {
-    margin-top: 1rem;
+    margin: 1rem 0 0 0;
     border: 1px solid var(--secondary-color);
     box-shadow: 0 4px 8px var(--primary-color);
     border-radius: 20px;

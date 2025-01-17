@@ -5,8 +5,10 @@ import { useParams } from 'react-router';
 export const AdminContext = createContext();
 
 export const AdminProvider = ({children}) => {
-    const [adminHomeData, setAdminHomeData] = useState([])
+    const [leadersData, setLeadersData] = useState([])
     const [clientsData, setClientsData] = useState([])
+    const [udpatedClientsData, setUpdatedClientsData] = useState([]);
+    const [udpatedLeadersData, setUpdatedLeadersData] = useState([]);
     const [profilePhotos, setProfilePhotos] = useState({})
     const {id} = useParams()
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
@@ -39,12 +41,28 @@ export const AdminProvider = ({children}) => {
                             const clientsArray = data.clientsData.rows.map((row) => ({
                                 id: row.id,
                                 nom: row.nom_client,
-                                nom_leader: row.nom_leader
+                                nom_leader: row.nom_leader,
+                                email: row.email,
+                                leader_id : row.leader_id,
+                                phone: row.phone,
+                                active: row.active,
+                                priorite: row.priorite,
+                                additional_infos: row.additional_infos,
+                                date_presentation: row.date_presentation,
+                                echeance: row.echeance,
+
+
                             }))
-                            setAdminHomeData(dataArray)
-                            setClientsData(clientsArray)
+
+                            if (JSON.stringify(leadersData) !== JSON.stringify(dataArray)) {
+                                setLeadersData(dataArray);
+                            }
+                            if (JSON.stringify(clientsData) !== JSON.stringify(clientsArray)) {
+                                setClientsData(clientsArray);
+                            }
+                            
                             console.log("clientsData=", clientsArray)
-                            console.log("AdminHomeData =", adminHomeData)
+                            console.log("leadersData =", leadersData)
                             
                             try {
                                 
@@ -97,10 +115,10 @@ export const AdminProvider = ({children}) => {
             console.log("getAdmin called")
             getAdminHomeData();
     
-        },[])
+        },[leadersData, clientsData, id])
 
         return (
-            <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, adminHomeData, setAdminHomeData, clientsData, setClientsData }}>
+            <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData }}>
               {children}
             </AdminContext.Provider>
           );

@@ -30,8 +30,9 @@ import { LeaderProvider } from './pages/leader/LeaderContext';
 import { UserProvider } from './pages/user/UserContext';
 import { Form } from './pages/form/Form';
 import { FormHome } from './pages/form/FormHome';
-import store from './pages/form/Redux/store';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './pages/form/Redux/store'
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -82,7 +83,9 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
 
     <Route path="/form" element={
       <Provider store={store}> 
-        <FormHome />
+        <PersistGate loading={null} persistor={persistor}>
+            <FormHome />
+        </PersistGate>
       </Provider>
     }>
       <Route index element={<Form />} />

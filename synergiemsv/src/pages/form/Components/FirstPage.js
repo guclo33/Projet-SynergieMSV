@@ -1,21 +1,30 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage } from '../Redux/pageSlice'
 import { addKeyValue } from '../Redux/formSlice';
 
-export function FirstPage () {
-        const [file, setFile] = useState(null)
+export function FirstPage ({file, setFile}) {
+    const [validated,setValidated] = useState(false)    
+    
         
-        const form = useSelector((state) => state.form);
+    const form = useSelector((state) => state.form);
         
-        const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-        const handleFileChange = (e) => {
-            const selectedFile = e.target.files[0]
-            if(selectedFile){
-            setFile(e.target.files[0])
-            }
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0]
+        if(selectedFile){
+        setFile(e.target.files[0])
         }
+    }
+
+    useEffect(() => {
+        if(form["firstName"] && form["lastName"] && form["email"] && form["phone"] && file && form["forfait"]) {
+            setValidated(true)
+        } else {
+            setValidated(false)
+        }
+    }, [form])
     
 
     return (
@@ -65,14 +74,23 @@ export function FirstPage () {
                         <label htmlFor="teamLeader">Es-tu le leader?</label>
                         <input type="checkbox" name="teamLeader" checked={form.teamLeader}  onChange={(e) => dispatch(addKeyValue({key: 'teamLeader', value: e.target.value}))} required/>
                         <label htmlFor="leaderName">Nom du leader</label>
-                        <select name="leaderName" value={form.leaderName} onChange={(e) => dispatch(addKeyValue({key: 'leaderName', value: e.target.value}))} required>
+                        <select name="leaderName" value={form.leaderName} onChange={(e) => dispatch(addKeyValue({key: 'leaderName', value: e.target.value}))} >
                             <option value="leader1">Leader 1</option>
                             <option value="leader2">Leader 2</option>
                         </select>
                     </div>
                 ): null }
-            </div>
-                <button onClick={() => dispatch(addPage())}>Next</button>
+            </div>  
+                <button 
+                                disabled={!validated}
+                                style={{
+                                    backgroundColor: !validated ? '#ccc' : '#4CAF50',  
+                                    cursor: !validated ? 'not-allowed' : 'pointer',    
+                                    boxShadow: !validated ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.2)',  
+                                    opacity: !validated ? 0.4 : 1,  
+                                }} 
+                                onClick={() => dispatch(addPage())}>Suivant
+                </button>
         </div>
     )
 }

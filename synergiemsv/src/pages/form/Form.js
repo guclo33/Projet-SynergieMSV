@@ -6,6 +6,7 @@ import { addKeyValue } from './Redux/formSlice';
 import './form.css';
 import { FirstPage } from './Components/FirstPage';
 import { PagesDISC } from './Components/PagesDISC';
+import { QuestionsDev } from './Components/QuestionsDev';
 
 
 
@@ -24,9 +25,11 @@ export function Form() {
   return (
         <div className="questionnaire">
             <h1>Questionnaire Synergia</h1>
-            {pageNum === 1000 ?
+            {pageNum === 0 ?
                 (
-                    <FirstPage />
+                    <FirstPage file={file} setFile={setFile} />
+                ): pageNum === 25 ? (
+                    <QuestionsDev file={file}/>
                 ):(
                     <PagesDISC />
                 )}

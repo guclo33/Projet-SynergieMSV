@@ -7,16 +7,32 @@
     border: 1px solid var(--secondary-color);
     box-shadow: 0 4px 8px var(--primary-color);
     border-radius: 20px;
+    width:100%;
+    padding:2rem;
 }
 .page{
     display:grid;
     grid-template-rows: 3;
     padding:2rem;
+    width: 100%
 }
 
 .page button {
     width: 10rem;
     justify-self: center;
+    
+}
+
+.formButton {
+    display: flex;
+    justify-content: space-between;
+    margin:3rem 1rem 0 1rem;
+}
+
+.formButton button {
+    flex: 1;
+    max-width: 10rem;
+
 }
 .page h2{
     text-align: center;
@@ -39,6 +55,10 @@
     width: 100%;
     color: var(--text-color)
 }
+
+.form span{
+    justify-self: center;
+}
 .questions {
     flex:1;
     min-width: 40%;
@@ -49,8 +69,59 @@
 
 
 }
+.setPage{
+    display:flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.setPage p {
+    flex:1;
+    margin: 0.25rem;
+    color: var(--primary-color)
+}
 
 .questions label, .questions input, .questions select {
     margin: 1rem;
     color: var(--text-color);
 }
+
+input[type="range"] {
+    -webkit-appearance: none; /* Supprimer le style par défaut */
+    appearance: none; /* Pour Firefox */
+    width: 100%;  /* Largeur du curseur */
+    height: 1rem;  /* Hauteur du curseur */
+    background-color: var(--secondary-color); /* Couleur du curseur */
+    border-radius: 3rem; /* Rendre le curseur circulaire */
+    cursor: pointer; /* Changer le curseur à la souris */
+    color: var(--primary-color);
+    
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--primary-color);/* Couleur du curseur */
+    border-radius: 50%; /* Rendre le curseur circulaire */
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 1.5rem; /* Largeur du curseur */
+    height: 1.5rem; /* Hauteur du curseur */
+    background-color: var(--primary-color); /* Couleur du curseur */
+    border-radius: 50%; /* Rendre le curseur circulaire */
+    cursor: pointer;
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+
+  }
+  

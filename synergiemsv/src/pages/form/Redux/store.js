@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from 'redux-persist';
 import { combineReducers } from "@reduxjs/toolkit";
-//import cookieStorage from 'redux-persist-cookie-storage';
+import storageSession from "redux-persist/lib/storage/session";
 import cookies from 'js-cookie';
 import formReducer from "./formSlice"
 import pageReducer from "./pageSlice"
+import fileReducer from "./fileSlice"
 
 const cookieStorage = {
   getItem: (key) => {
@@ -26,6 +27,11 @@ const cookieStorage = {
   },
 };
 
+const filePersistConfig = {
+  key: "file", 
+  storage: storageSession,
+};
+
 const persistConfig = {
   key: 'root', 
   storage: cookieStorage, 
@@ -34,15 +40,17 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   form: formReducer,
-  page: pageReducer, 
+  page: pageReducer,
+  file: persistReducer(filePersistConfig, fileReducer),
 });
+
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: persistedReducer
 });
-
 
 const persistor = persistStore(store)
 

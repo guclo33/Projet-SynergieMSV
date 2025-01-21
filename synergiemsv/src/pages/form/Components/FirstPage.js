@@ -1,35 +1,70 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { setPage, addPage, removePage } from '../Redux/pageSlice'
-import { addKeyValue } from '../Redux/formSlice';
+import { setPage, addPage, removePage,  } from '../Redux/pageSlice'
+import { addKeyValue} from '../Redux/formSlice';
+import { setFile } from "../Redux/fileSlice";
 
-export function FirstPage ({file, setFile}) {
-    const [validated,setValidated] = useState(false)    
-    
+export function FirstPage () {
+    const [validated,setValidated] = useState(false)  
+    const [modify, setModify] = useState(false)
+    const [fileObj, setFileObj] = useState({})
         
     const form = useSelector((state) => state.form);
+    const file = useSelector((state) => state.file)
+    const {fileURL} = file
+    
         
     const dispatch = useDispatch();
 
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0]
-        if(selectedFile){
-        setFile(e.target.files[0])
-        }
-    }
-
     useEffect(() => {
-        if(form["firstName"] && form["lastName"] && form["email"] && form["phone"] && file && form["forfait"]) {
+        if(form["firstName"] && form["lastName"] && form["email"] && form["phone"] && fileURL && form["forfait"]) {
             setValidated(true)
         } else {
             setValidated(false)
         }
-    }, [form])
+    }, [fileURL])
+
+    useEffect(() => {
+        console.log("fileURL rechargé après refresh :", fileURL);
+    }, [fileURL]);
+
+    //fonction pour transformer file en base64
+    const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Convertit le fichier en Base64
+            reader.onload = () => resolve(reader.result); // Retourne le résultat Base64
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    /*useEffect(() => {
+        if(file) {
+            setFileURL(URL.createObjectURL(file))
+        } else {
+            setFileURL("")
+        }
+    },[file])*/
+
+    const handleFileChange = async (e) => {
+        const selectedFile = e.target.files[0]
+        
+        if(selectedFile){
+            const base64File = await convertFileToBase64(selectedFile)
+            dispatch(setFile(base64File))
+            setFileObj(selectedFile)
+            setModify(false)
+        }
+    }
+
+    console.log("file==", file, "fileURL ==",fileURL )
+
+    
     
 
     return (
         <div className="page">
-            <h2>Page 1</h2>
+            <h2>Informations</h2>
                 <p>Vous vous apprêtez à répondre à un court questionnaire de 24 questions. Vous êtes invités à y répondre assez spontanément : la première réponse qui vous vient en tête est probablement la bonne!
 
                 Pour chacune des questions suivantes, veuillez choisir l'énoncé qui vous correspond le plus, puis celui qui vous correspond le moins. Ensuite, attribuez une note de 1 à 9 aux deux affirmations restantes. (Veuillez ne pas donner la même note deux fois).
@@ -58,11 +93,28 @@ export function FirstPage ({file, setFile}) {
                 </div>
                 <div className="questions">    
                     <label htmlFor="file">Photo de profil</label>
-                    <input type="file"  accept="image/*"  onChange={handleFileChange} required/>
-                        {file && <p>Selected file: {file.name}</p>} 
+                    {fileURL ? modify ? (
+                        <div className="modifyProfil">
+                            <img className="profilPhoto" src={fileURL} alt={form.firstName + " " + form.lastName} />
+                            <input type="file"  accept="image/*"  onChange={handleFileChange} />
+                            <button className="annulerButton" onClick={()=> setModify(false)}>Annuler</button>
+                            
+                        
+                        </div> ): (
+                        <div className="questions">
+                            <img className="profilPhoto" src={fileURL} alt={form.firstName + " " + form.lastName} />
+                            <button onClick={() => setModify(true)}>Modifier</button>
+                        </div>
+                        
+                        ):(
+                        <>
+                        <input type="file"  accept="image/*"  onChange={handleFileChange} required/>
+                        {fileObj && <p>Selected file: {fileObj.name}</p>}
+                        </>)}
+                     
                 </div>
                 <div className="questions">       
-                    <label htmlfor="forfait">Forfait</label>
+                    <label htmlFor="forfait">Forfait</label>
                     <select name="forfait" value={form.forfait} onChange={(e) => dispatch(addKeyValue({key: 'forfait', value: e.target.value}))} required>
                         <option value="individuel">Individuel</option>
                         <option value="equipe">Équipe</option>
@@ -82,7 +134,7 @@ export function FirstPage ({file, setFile}) {
                 ): null }
             </div>  
                 <button 
-                                disabled={!validated}
+                                disabled={validated}
                                 style={{
                                     backgroundColor: !validated ? '#ccc' : '#4CAF50',  
                                     cursor: !validated ? 'not-allowed' : 'pointer',    

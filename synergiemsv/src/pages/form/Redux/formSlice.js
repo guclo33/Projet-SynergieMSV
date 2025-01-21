@@ -13,8 +13,9 @@ const formSlice = createSlice({
             const {key, value} = action.payload;
             state[key] = value
         }
-       }
-})
+       
+    
+}})
 
 export const {
     addKeyValue,

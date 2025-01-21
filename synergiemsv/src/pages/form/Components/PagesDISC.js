@@ -85,10 +85,13 @@ export function PagesDISC() {
                     onClick={() => dispatch(addPage())}>Suivant</button>
             </div>
             <div className="setPage">
+                <h5>Retourner à la page :</h5>
+                <div className="setPageNumber">
                     {pageArray.slice(0,pageNum+1).map( num => ( 
-                        <p key={num} onClick={(e) => dispatch(setPage(num))}>{num}</p>
+                        <p key={num} onClick={(e) => dispatch(setPage(num-1))}>{num}</p>
                     ))
                     }
+                </div>
             </div>
         </div>
     )

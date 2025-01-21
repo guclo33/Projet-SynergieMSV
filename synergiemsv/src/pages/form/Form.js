@@ -11,7 +11,7 @@ import { QuestionsDev } from './Components/QuestionsDev';
 
 
 export function Form() {
-    const [file, setFile] = useState(null)
+    
     const { user} = useContext(AuthContext);
     const form = useSelector((state) => state.form);
     const {pageNum} = useSelector((state) => state.page);
@@ -27,9 +27,9 @@ export function Form() {
             <h1>Questionnaire Synergia</h1>
             {pageNum === 0 ?
                 (
-                    <FirstPage file={file} setFile={setFile} />
+                    <FirstPage  />
                 ): pageNum === 25 ? (
-                    <QuestionsDev file={file}/>
+                    <QuestionsDev />
                 ):(
                     <PagesDISC />
                 )}

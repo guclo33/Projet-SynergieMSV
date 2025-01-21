@@ -2,7 +2,7 @@
 
 export const question1Array = [
     "Je suis ... Analytique",
-    "Je suis ...  Sociable",
+    "Je suis ... Sociable",
     "Je suis ... Indépendant",
     "Je suis ... Prudent",
     "Je considère important de viser des objectifs ambitieux",

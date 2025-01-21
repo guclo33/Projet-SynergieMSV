@@ -5,15 +5,16 @@ import { addKeyValue } from '../Redux/formSlice';
 
 export function QuestionDISC({questionArray}) {
     
-    const form = useSelector((state) => state.form);
-    const {pageNum} = useSelector((state) => state.page)
+    const form = useSelector((state) => state.session.form);
+    const {pageNum} = useSelector((state) => state.session.page)
     const questionNum = pageNum - 1
         
     const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        dispatch(addKeyValue({key: name, value: value}))
+        const numericValue = isNaN(value) ? value : Number(value)
+        dispatch(addKeyValue({key: name, value: numericValue}))
     }
 
     return (

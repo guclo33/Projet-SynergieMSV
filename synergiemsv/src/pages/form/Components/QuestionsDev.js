@@ -5,23 +5,33 @@ import { addKeyValue } from "../Redux/formSlice";
 import { addPage, removePage } from "../Redux/pageSlice";
 import { AuthContext } from "../../AuthContext";
 import { clearFile } from "../Redux/fileSlice";
+import { persistor, store } from "../Redux/store";
+import { testFormObject } from "../testFormObject";
 
 export function QuestionsDev () {
     const [validated, setValidated] = useState(false)
     const dispatch = useDispatch();
-    const form = useSelector((state) => state.form);
-    const page = useSelector((state) => state.page);
-    const file = useSelector((state) => state.file)
-    const {fileUrl} = file
+    const form = useSelector((state) => state.session.form);
+    const page = useSelector((state) => state.session.page);
+    const file = useSelector((state) => state.file);
+    const fileState = useSelector(state => state.file)
+    const fileUrl = fileState.fileURL;
+    
     const {apiUrl, user} = useContext(AuthContext)
 
     useEffect(() => {
         if(form[questionDev1] && form[questionDev2] && form[questionDev3]) {
             setValidated(true)
         } else {
-            validated(false)
+            setValidated(false)
         }
     },[form])
+
+    if (!fileState || !fileState._persist || !fileState._persist.rehydrated) {
+        return <div>Chargement...</div>; 
+    }
+
+    
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -46,13 +56,13 @@ export function QuestionsDev () {
     const sendFileData = async () => {
         if (!fileUrl) return; 
 
-        const file = base64ToFile(fileUrl, `${form.firstName} ${form.lastName}.png`); 
-        console.log("file après base64 to File", file)
+        const fileObj = await base64ToFile(fileUrl, `${form.firstName} ${form.lastName}.png`); 
+        console.log("file après base64 to File", fileObj)
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", fileObj);
 
         try {
-            const response = await fetch (`${apiUrl}/form/photo/${user.id}`, {
+            const response = await fetch (`${apiUrl}/form/photo/`, {
                 method : "POST",
                 credentials : "include",
                 body : formData
@@ -61,6 +71,8 @@ export function QuestionsDev () {
                 const data = await response.json();
                 console.log("successfully sent photo to AWS", data);
                 clearFile()
+                persistor.purge(); 
+                sessionStorage.clear();
             }
 
         } catch(error) {
@@ -71,24 +83,46 @@ export function QuestionsDev () {
     const sendFormData = async () => {
         
         try {
-            const response = await fetch(`${apiUrl}/form/${user.id}`, {
+            const response = await fetch(`${apiUrl}/form/`, {
                 method : "POST",
                 credentials : "include",
                 headers : {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify(form)
+                body : JSON.stringify(testFormObject)
                 
-            })
+            });
+            if(response.ok) {
+                console.log("image uploadé dans AWS");
+                //await sendFileData();
+            }
 
         } catch(error) {
             console.log("impossible d'envoyer le formdata", error)
         }
     }
 
+
+    console.log("form ==", form, "file avant transformation", fileUrl) 
+    console.log("File State:", fileState);
+    
+    
+    
+    
+    
+
+    if(fileUrl){
+    const fileFull = base64ToFile(fileUrl, `${form.firstName} ${form.lastName}.png`); 
+    console.log("file après base64 to File", fileFull)
+    const formData = new FormData();
+    formData.append("file", fileFull)
+    console.log("file===", formData )}
+
+    
+
     const handleSubmit = async () => {
         await sendFormData();
-        await sendFileData();
+        
         
     }
     

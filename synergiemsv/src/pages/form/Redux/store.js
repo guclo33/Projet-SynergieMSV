@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from 'redux-persist';
 import { combineReducers } from "@reduxjs/toolkit";
-import storageSession from "redux-persist/lib/storage/session";
+import sessionStorage from "redux-persist/lib/storage/session";
+import storage from "redux-persist/lib/storage";
 import cookies from 'js-cookie';
 import formReducer from "./formSlice"
 import pageReducer from "./pageSlice"
 import fileReducer from "./fileSlice"
 
-const cookieStorage = {
+/*const cookieStorage = {
   getItem: (key) => {
     return new Promise((resolve) => {
       resolve(cookies.get(key));  
@@ -25,31 +26,35 @@ const cookieStorage = {
       resolve();
     });
   },
-};
+};*/
 
 const filePersistConfig = {
   key: "file", 
-  storage: storageSession,
+  storage: storage,
 };
 
 const persistConfig = {
   key: 'root', 
-  storage: cookieStorage, 
+  storage: sessionStorage, 
   whitelist: ['form', 'page'], 
 };
 
-const rootReducer = combineReducers({
+const sessionPersistedReducer = persistReducer(persistConfig, combineReducers({
   form: formReducer,
   page: pageReducer,
-  file: persistReducer(filePersistConfig, fileReducer),
+}));
+
+
+const filePersistedReducer = persistReducer(filePersistConfig, fileReducer)
+
+const rootReducer = combineReducers({
+  session : sessionPersistedReducer,
+  file: filePersistedReducer
 });
 
 
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = configureStore({
-  reducer: persistedReducer
+  reducer: rootReducer
 });
 
 const persistor = persistStore(store)

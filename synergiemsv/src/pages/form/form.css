@@ -167,13 +167,17 @@ input[type="range"] {
 
   .profilPhoto{
     justify-content: center;
-    width: 5rem;   
-    height: 5rem; 
+    width: 6rem;   
+    height: 6rem; 
     border-radius: 50%; 
     object-fit: cover;  
     border: 2px solid #ccc;  
     padding: 2px;
 
+  }
+
+  .questions button {
+    height: 2rem;
   }
 
   .modifyProfil{

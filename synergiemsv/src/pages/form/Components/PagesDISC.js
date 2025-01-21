@@ -10,8 +10,8 @@ export function PagesDISC() {
     const [repondu, setRepondu] = useState(false);
     const [different, setDifferent] = useState(false);
     const [minMax, setMinMax] = useState(false)
-    const form = useSelector((state) => state.form);
-    const {pageNum} = useSelector((state) => state.page)
+    const form = useSelector((state) => state.session.form);
+    const {pageNum} = useSelector((state) => state.session.page)
         
     const dispatch = useDispatch();
     const questionNum = pageNum - 1

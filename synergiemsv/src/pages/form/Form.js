@@ -13,8 +13,8 @@ import { QuestionsDev } from './Components/QuestionsDev';
 export function Form() {
     
     const { user} = useContext(AuthContext);
-    const form = useSelector((state) => state.form);
-    const {pageNum} = useSelector((state) => state.page);
+    const form = useSelector((state) => state.session.form);
+    const {pageNum} = useSelector((state) => state.session.page);
     const dispatch = useDispatch();
 
     console.log("page",pageNum)

@@ -9,7 +9,7 @@ export function FirstPage () {
     const [modify, setModify] = useState(false)
     const [fileObj, setFileObj] = useState({})
         
-    const form = useSelector((state) => state.form);
+    const form = useSelector((state) => state.session.form);
     const file = useSelector((state) => state.file)
     const {fileURL} = file
     

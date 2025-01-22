@@ -9,8 +9,8 @@ const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 const {} = require("../model/formTasks")
 
-const createFormController = (req, res) => {
-    const {form} = req.body
+const createFormController = async (req, res) => {
+    const {form} = req.body;
     console.log("form", form)
 }
 

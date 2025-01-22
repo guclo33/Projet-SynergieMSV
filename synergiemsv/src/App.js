@@ -33,6 +33,7 @@ import { FormHome } from './pages/form/FormHome';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './pages/form/Redux/store'
+import { GestionGroupe } from './pages/admin/components/GestionGroupe';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -53,6 +54,7 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
 
       <Route path="roadmap" element={<Roadmap />} />
       <Route path="roadmap/:clientid" element={<Roadmap />} />
+      <Route path="gestion" element={<GestionGroupe />} />
       <Route path="details" element={<Details />} />
       <Route path="details/:clientid" element={<Details />} />
       <Route path="settings" element={<Settings />} />

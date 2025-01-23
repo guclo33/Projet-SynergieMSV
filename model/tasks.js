@@ -181,6 +181,43 @@ const updateUserPasswordQuery = async (password, id) => {
     return await pool.query("UPDATE users SET password = $1 WHERE id = $2", [password, id])
 }
 
+const createGroup = async (group_name, have_leader, nom_leader, leader_id, members_ids, date_presentation) => {
+
+    try {
+        
+        const result = await pool.query(
+            "INSERT INTO groupes (group_name, have_leader, nom_leader, leader_id, date_presentation) VALUES($1, $2, $3, $4, $5) RETURNING id",
+            [group_name, have_leader, nom_leader, leader_id, date_presentation]
+        );
+
+        const groupe_id = result.rows[0].id;
+        console.log("Nouvel ID du groupe :", groupe_id);
+
+        
+        if (members_ids.length > 0) {
+            await Promise.all(
+                members_ids.map(id => 
+                    pool.query(
+                        "INSERT INTO groupe_clients (groupe_id, client_id) VALUES($1, $2)",
+                        [groupe_id, id]
+                    )
+                )
+            );
+        }
+
+        console.log("Tous les clients ont été ajoutés au groupe !");
+    } catch (error) {
+        console.error("Erreur lors de la création du groupe :", error);
+        throw error; 
+    }
+};
+    
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData}
+const createLeader = async () => {
+
+}
+
+
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader}

@@ -5,7 +5,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 
@@ -603,6 +603,31 @@ const getProfilePhoto = async(req, res) => {
    
 }}
 
+const createGroupController = async (req, res) => {
+    const {group_name, have_leader, nom_leader, leader_id, members_ids, date_presentation, active} = req.body
+    console.log("voici le body", req.body)
+
+    try {
+        await createGroup(group_name, have_leader, nom_leader, leader_id, members_ids, date_presentation, active);
+        res.status(200).send("succesfully created group")
+
+    } catch (error) {
+        res.status(400).send("couldnt create group", error)
+    }
+}
+
+const createLeaderController = async (req, res) => {
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto };
+    try {
+        await createLeader();
+        res.status(200).send("succesfully created leader")
+
+    } catch (error) {
+        res.status(400).send("couldnt create leader", error)
+    }
+}
+
+
+
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController };

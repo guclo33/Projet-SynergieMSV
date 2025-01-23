@@ -6,13 +6,19 @@ const initialState = {
     leadersData : [],
     photosProfile : [],
     newGroup: {
-        groupe_name : null,
+        group_name : "",
         have_leader : false,
+        nom_leader : "",
         leader_id : null,
         members_ids : [],
         date_presentation : null,
+        active : true
 
 
+    },
+    newLeader : {
+        nom_leader : "",
+        email : "",
     },
     groupesData : []
 }
@@ -38,6 +44,27 @@ const adminSlice = createSlice({
         },
         setGroupesData(state, action) {
             state.groupesData = action.payload
+        },
+        setNewLeader(state, action) {
+            const { key, value } = action.payload
+            state.newLeader[key] = value
+        },
+        appendMembersIds(state,action) {
+            state.newGroup.members_ids.push(action.payload)
+        },
+        removeMembersIds(state,action) {
+            state.newGroup.members_ids = state.newGroup.members_ids.filter(id => id!== action.payload)
+        },
+        resetNewGroup(state,action) {
+            state.newGroup = {
+                group_name : "",
+                have_leader : false,
+                nom_leader : "",
+                leader_id : null,
+                members_ids : [],
+                date_presentation : null,
+                active : true
+            }
         }
 
        
@@ -49,7 +76,11 @@ export const {
     setGroupesData,
     setLeadersData,
     setNewGroup,
-    setPhotosProfile
+    setPhotosProfile,
+    setNewLeader,
+    appendMembersIds,
+    removeMembersIds,
+    resetNewGroup
 
 } = adminSlice.actions
 

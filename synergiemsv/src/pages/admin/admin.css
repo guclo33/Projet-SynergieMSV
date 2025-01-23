@@ -845,5 +845,62 @@ ul {
 
 .gestionGroupe {
     position: relative;
-    top: 6rem;
+    margin: 5%;
+}
+
+.gestionGroupe form{
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 4px 8px var(--primary-color);
+    border-radius: 20px;
+    display : flex;
+    padding: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.gestionGroupe form .question {
+    flex : 1;
+    min-width: 33%;
+    margin:1rem;
+}
+
+.gestionGroupe form h3 {
+    width: 100%;
+    text-align: center;
+}
+
+.gestionGroupe form .groupMembers {
+    min-width: 100%;
+    padding:2rem;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.gestionGroupe form .groupMembers .client {
+    flex:1;
+    min-width: 90%;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 1px 2px var(--primary-color);
+    border-radius: 20px;
+    display :flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 1rem;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.client button {
+    align-self: center;
+}
+
+input, select {
+    height: 2rem;
+    padding: 0 1rem;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 1px 2px var(--primary-color);
+    border-radius: .75rem;
+    align-content: center;
+    margin: 0 2rem;
 }

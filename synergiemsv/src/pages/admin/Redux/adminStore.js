@@ -32,7 +32,7 @@ import cookies from 'js-cookie';
 const persistConfig = {
   key: 'root', 
   storage: sessionStorage, 
-  whitelist: ["NewGroup", "clientsData", "LeadersData", "photosProfile", "groupesData" ], 
+  whitelist: ["newGroup", "clientsData", "LeadersData", "photosProfile", "groupesData", "newLeader" ], 
 };
 
 

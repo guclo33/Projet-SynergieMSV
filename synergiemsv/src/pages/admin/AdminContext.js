@@ -123,7 +123,7 @@ export const AdminProvider = ({children, store, persistor}) => {
             <Provider store={store}>
                 <PersistGate loading={<h1>Chargement...</h1>} persistor={persistor}>      
                     
-                    <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData }}>
+                    <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData, apiUrl }}>
                         {children}
                     </AdminContext.Provider>
                 </PersistGate> 

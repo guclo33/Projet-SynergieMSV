@@ -32,7 +32,10 @@ Cette plateforme a été développée pour centraliser la gestion des clients, g
 
 - **Frontend** :
   - React
+  - Redux
   - CSS (Grid, Flexbox)
+  - HTML
+  
 
 - **Backend** :
   - Node.js

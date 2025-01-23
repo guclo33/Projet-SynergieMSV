@@ -17,6 +17,7 @@ export function CreateurGroupe() {
                 <label htmlFor="groupe_name">Nom du nouveau groupe:</label>
                 <input type="text" name="groupe_name" value={newGroup.groupe_name} />
                 
+                
             </form>
             : <button onClick={()=> setCreatingGroup(true)}>Créer un nouveau groupe</button>}
         </>

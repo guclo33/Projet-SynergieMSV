@@ -34,6 +34,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './pages/form/Redux/store'
 import { GestionGroupe } from './pages/admin/components/GestionGroupe';
+import { adminStore, adminPersistor } from './pages/admin/Redux/adminStore';
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -44,8 +45,10 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     <Route path="/superadmin/:id" element={<SuperAdmin />} />
 
     <Route path="/admin/:id" element={
-      <AdminProvider>
-        <Admin />
+      <AdminProvider store={adminStore} persistor={adminPersistor}>
+        
+            <Admin />
+          
       </AdminProvider>
     }>
       <Route index element={<AdminHome />} />

@@ -842,3 +842,8 @@ ul {
     border: 2px solid #ccc;  
     padding: 2px;
 }
+
+.gestionGroupe {
+    position: relative;
+    top: 6rem;
+}

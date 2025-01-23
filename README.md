@@ -19,14 +19,7 @@ Une plateforme web conçue pour gérer efficacement les clients et les équipes 
 
 Cette plateforme a été développée pour centraliser la gestion des clients, générer des rapports, et optimiser les interactions entre les équipes. Elle inclut une interface conviviale permettant d'ajouter, de modifier, de visualiser les informations des clients et de générer des documents personnalisés à l'aide d'OpenAI. Ce texte sera également transposé dans un modèle Canva pour faciliter la finition. Pour l'instant seul la portion pour le rôle "admin" est disponible. 
 
-## Fonctionnalités
 
-- **Création d'utilisateur de plateforme** : Plateforme permettant de créer un mot de passe avec des sessions protégées et usage différent selon le type d'utilisateur.
-- **Création de "Profils** : Création d'un texte automatisé, c'est également par cette fonction que le client ainsi que les leaders d'équipe seront enregistré dans la base de données.
-- **Gestion des équipes** : Organisation des équipes liées aux leaders.
-- **Téléversement et téléchargement de fichiers** : Gestion des documents pour chaque leader d'équipe.
-- **Feuille de route** : liste de Todo pour avoir un meilleur suivi du progrès pour chaque client.
-- **Navigation intuitive** : Interface claire et responsive.
 
 ## Technologies utilisées
 
@@ -54,6 +47,9 @@ Cette plateforme a été développée pour centraliser la gestion des clients, g
   - AWS S3
 
 ## Description des pages
+
+Voici un aperçu de quelques pages principales de la plateforme.
+
 <img src="./synergiemsv/public/admin accueil.png" alt="Admin Accueil" width="400px">
 
 # Accueil de l'admin
@@ -83,6 +79,15 @@ Page d'accueil du côté client de la plateforme. Pour l'instant, peu de travail
 
 # Formulaire (en cours)
 Présentement le formulaire se fait via un site externe qui envoie les données en Excel. Cette page prendra la place prochainement afin que tout reste sur le même site et que les datas aillent directement dans la base de données. 
+
+## Fonctionnalités
+
+- **Création d'utilisateur de plateforme** : Plateforme permettant de créer un mot de passe avec des sessions protégées et usage différent selon le type d'utilisateur.
+- **Création de "Profils** : Création d'un texte automatisé, c'est également par cette fonction que le client ainsi que les leaders d'équipe seront enregistré dans la base de données.
+- **Gestion des équipes** : Organisation des équipes liées aux leaders.
+- **Téléversement et téléchargement de fichiers** : Gestion des documents pour chaque leader d'équipe.
+- **Feuille de route** : liste de Todo pour avoir un meilleur suivi du progrès pour chaque client.
+- **Navigation intuitive** : Interface claire et responsive.
 
 ## Deploiement
 

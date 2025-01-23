@@ -50,32 +50,44 @@ Cette plateforme a été développée pour centraliser la gestion des clients, g
 
 Voici un aperçu de quelques pages principales de la plateforme.
 
-<img src="./synergiemsv/public/admin accueil.png" alt="Admin Accueil" width="400px">
+
+
+<img src="./synergiemsv/public/admin accueil.png" alt="Admin Accueil" width="600px">
 
 # Accueil de l'admin
 Affichage de chaque client avec des informations pertinentes à la gestionnaire. La portion générateur de texte permet de se connecter à des api canva. En écrivant le nom de la personne ayant remplie le formulaire, un document complet se génerera sur Canva qui sera complété par des textes crées grace à des API OpenAi en fonction des réponses du questionnaire.
 
-<img src="./synergiemsv/public/admin Objectifs.png" alt="Admin Objectifs" width="400px">
+
+
+<img src="./synergiemsv/public/admin Objectifs.png" alt="Admin Objectifs" width="600px">
 
 # Objectifs des clients
 Page pour mettre en place des objectifs lors d'une rencontre avec le client. Le client reçois les informations sur son côté de la plateforme
 
-<img src="./synergiemsv/public/admin roadmap.png" alt="Admin Feuille de route" width="400px">
+
+
+<img src="./synergiemsv/public/admin roadmap.png" alt="Admin Feuille de route" width="600px">
 
 # Feuille de route des clients
 Page de "Todos" pour chaque client. Également possible d'ajouter ou retirer des tâche pour les clients de façon individuel ou bien à tous à la fois.
 
-<img src="./synergiemsv/public/admin informations.png" alt="Admin Informations" width="400px">
+
+
+<img src="./synergiemsv/public/admin informations.png" alt="Admin Informations" width="600px">
 
 # Information Client
 Page d'information incluant tout ce que la gestionnaire a besoin incluant le profil de personnalité complet. Comprend également un système de fichiers hébergé par AWS S3.
 
-<img src="./synergiemsv/public/client accueil2.png" alt="Client Accueil" width="400px">
+
+
+<img src="./synergiemsv/public/client accueil2.png" alt="Client Accueil" width="600px">
 
 # Accueil Client (non-terminé)
 Page d'accueil du côté client de la plateforme. Pour l'instant, peu de travaille a été fait sur le design, mais le client aura de l'information rapide en lien avec ses résultats, ainsi que ceux de son équipe.
 
-<img src="./synergiemsv/public/form.png" alt="Form" width="400px">
+
+
+<img src="./synergiemsv/public/form.png" alt="Form" width="600px">
 
 # Formulaire (en cours)
 Présentement le formulaire se fait via un site externe qui envoie les données en Excel. Cette page prendra la place prochainement afin que tout reste sur le même site et que les datas aillent directement dans la base de données. 

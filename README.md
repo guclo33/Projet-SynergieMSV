@@ -53,6 +53,9 @@ Cette plateforme a été développée pour centraliser la gestion des clients, g
   - Canva
   - AWS S3
 
+## Description des pages
+<img src="./synergiemsv/public/admin accueil.png" alt="Admin Accueil" width="200px">
+
 ## Deploiement
 
 Le site est déployé sur render, bien que pas encore fonctionnel à 100%.

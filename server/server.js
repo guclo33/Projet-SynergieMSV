@@ -8,6 +8,7 @@ const registerRoute = require("../routes/register");
 const loginRoute = require("../routes/login")
 const leaderRoute = require("../routes/leader")
 const userRoute = require("../routes/user")
+const formRoute = require("../routes/form")
 const cors = require('cors');
 require("dotenv").config();
 const Redis = require('ioredis');
@@ -80,6 +81,7 @@ app.use("/api/admin/:id", isAuthorizedAdmin, adminRoute)
 app.use("/api/leader/:id", isAuthorizedLeader, leaderRoute)
 app.use("/api/user/:id", isAuthorizedUser, userRoute)
 
+app.use("/api/form", formRoute)
 app.use("/api/register", registerRoute)
 app.use("/api/login", loginRoute)
 

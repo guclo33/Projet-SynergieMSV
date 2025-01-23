@@ -1,10 +1,12 @@
 import React, { createContext, useState, useEffect,useContext } from 'react';
 import { AuthContext, AuthProvider } from '../AuthContext';
 import { useParams } from 'react-router';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 export const AdminContext = createContext();
 
-export const AdminProvider = ({children}) => {
+export const AdminProvider = ({children, store, persistor}) => {
     const [leadersData, setLeadersData] = useState([])
     const [clientsData, setClientsData] = useState([])
     const [udpatedClientsData, setUpdatedClientsData] = useState([]);
@@ -12,7 +14,7 @@ export const AdminProvider = ({children}) => {
     const [profilePhotos, setProfilePhotos] = useState({})
     const {id} = useParams()
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
-
+    
 
     useEffect( () => {
             console.log(`${apiUrl}/api/admin/${id}`);
@@ -118,9 +120,14 @@ export const AdminProvider = ({children}) => {
         },[leadersData, clientsData, id])
 
         return (
-            <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData }}>
-              {children}
-            </AdminContext.Provider>
+            <Provider store={store}>
+                <PersistGate loading={<h1>Chargement...</h1>} persistor={persistor}>      
+                    
+                    <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData }}>
+                        {children}
+                    </AdminContext.Provider>
+                </PersistGate> 
+            </Provider>
           );
 
 

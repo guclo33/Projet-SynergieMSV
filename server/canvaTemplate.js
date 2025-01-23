@@ -20,10 +20,7 @@ let accessToken = "";
 let refreshToken = "";
 
 const getAuthUrl =() => {
-    console.log("Environnement :", process.env.NODE_ENV);
-    console.log("CANVA_RENDER_AUTHURL :", process.env.CANVA_RENDER_AUTHURL);
-    console.log("CANVA_AUTHURL :", process.env.CANVA_AUTHURL);
-    console.log("authURL:", authURL)
+
     return authURL
 }
 

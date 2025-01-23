@@ -1,12 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { persistStore, persistReducer } from 'redux-persist';
 import { combineReducers } from "@reduxjs/toolkit";
+import adminReducer from "./adminSlice"
 import sessionStorage from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
 import cookies from 'js-cookie';
-import formReducer from "./formSlice"
-import pageReducer from "./pageSlice"
-import fileReducer from "./fileSlice"
+
 
 /*const cookieStorage = {
   getItem: (key) => {
@@ -28,35 +27,28 @@ import fileReducer from "./fileSlice"
   },
 };*/
 
-const filePersistConfig = {
-  key: "file", 
-  storage: storage,
-};
+
 
 const persistConfig = {
   key: 'root', 
   storage: sessionStorage, 
-  whitelist: ['form', 'page'], 
+  whitelist: ["NewGroup", "clientsData", "LeadersData", "photosProfile", "groupesData" ], 
 };
 
-const sessionPersistedReducer = persistReducer(persistConfig, combineReducers({
-  form: formReducer,
-  page: pageReducer,
-}));
 
 
-const filePersistedReducer = persistReducer(filePersistConfig, fileReducer)
 
-const rootReducer = combineReducers({
-  session : sessionPersistedReducer,
-  file: filePersistedReducer
+const persistedReducer = persistReducer(persistConfig, adminReducer)
+
+
+
+
+const adminStore = configureStore({
+  reducer: {
+    admin: persistedReducer,
+  }
 });
 
+const adminPersistor = persistStore(adminStore)
 
-const store = configureStore({
-  reducer: rootReducer
-});
-
-const persistor = persistStore(store)
-
-export {store, persistor }
+export {adminStore, adminPersistor }

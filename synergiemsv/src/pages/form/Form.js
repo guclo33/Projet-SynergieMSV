@@ -1,21 +1,39 @@
-import React, {useContext} from 'react';
-import { NavLink } from 'react-router-dom';
-import { Outlet } from 'react-router';
+import React, {useContext, useState} from 'react';
 import { AuthContext } from '../AuthContext';
-import image from '../../Images/logo2 sans fond.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage } from './Redux/pageSlice'
+import { addKeyValue } from './Redux/formSlice';
+import './form.css';
+import { FirstPage } from './Components/FirstPage';
+import { PagesDISC } from './Components/PagesDISC';
+import { QuestionsDev } from './Components/QuestionsDev';
 
 
 
 export function Form() {
+    
     const { user} = useContext(AuthContext);
-    const state = useSelector((state) => state.someData); // Accéder aux données du store
+    const form = useSelector((state) => state.session.form);
+    const {pageNum} = useSelector((state) => state.session.page);
     const dispatch = useDispatch();
 
-  return (
-        <div>
+    console.log("page",pageNum)
 
+    
+
+
+  return (
+        <div className="questionnaire">
+            <h1>Questionnaire Synergia</h1>
+            {pageNum === 0 ?
+                (
+                    <FirstPage  />
+                ): pageNum === 25 ? (
+                    <QuestionsDev />
+                ):(
+                    <PagesDISC />
+                )}
+                
         </div>
   );
 }

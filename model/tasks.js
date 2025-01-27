@@ -13,9 +13,17 @@ const getAdminHomeData = async () => {
 
     const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c JOIN leader l ON c.leader_id = l.id ORDER BY id")
 
+    const groupesData = await pool.query("SELECT * from groupes")
+
+    const groupesClients = await pool.query("SELECT * from groupe_clients")
+
     const data = {
         leadersData,
-        clientsData
+        clientsData,
+        groupesData : {
+            groupesData,
+            groupesClients
+        }
     }
     return data
 }
@@ -214,8 +222,8 @@ const createGroup = async (group_name, have_leader, nom_leader, leader_id, membe
     
 
 
-const createLeader = async () => {
-
+const createLeader = async (nom_leader, email) => {
+    return await pool.query("INSERT INTO leader (nom_leader, email) VALUES ($1, $2)", [nom_leader, email])
 }
 
 

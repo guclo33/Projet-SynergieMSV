@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "crypto-js": "^4.2.0",
+    "crypto.js": "^3.3.4",
     "js-cookie": "^3.0.5",
     "lz-string": "^1.5.0",
     "react": "^18.3.1",

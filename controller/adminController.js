@@ -617,10 +617,10 @@ const createGroupController = async (req, res) => {
 }
 
 const createLeaderController = async (req, res) => {
-
+    const {nom_leader, email} = req.body
 
     try {
-        await createLeader();
+        await createLeader(nom_leader, email);
         res.status(200).send("succesfully created leader")
 
     } catch (error) {

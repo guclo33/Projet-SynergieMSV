@@ -87,6 +87,16 @@ export function CreateurGroupe() {
                 },
                 body: JSON.stringify(newLeader)
             })
+            if(response.ok){
+                console.log("leader créé avec succès")
+                const addedLeader = {
+                    nom : newLeader.nom_leader,
+                    email : newLeader.email
+                }
+                leadersData.push(addedLeader)
+                setNewLeaderModal(false)
+
+            }
 
         } catch( error) {
             console.log("couldn't add leader", error)
@@ -141,6 +151,7 @@ export function CreateurGroupe() {
                 <div className="question">
                     <label htmlFor="nom_leader">Quel est le nom du leader?</label>
                     <select  name="nom_leader" value={newGroup.nom_leader} onChange={handleChange}>
+                        <option>-- Sélectionnez un leader --</option>
                         {leadersData.map(leader => (
                             <option key={leader.id} value={leader.nom}>
                                 {leader.nom}, {leader.email}
@@ -181,7 +192,7 @@ export function CreateurGroupe() {
             <Modal className="modal" isOpen={newLeaderModal} onRequestClose={() => setNewLeaderModal(false)}>
             <div className="modalContent">
                 <h2>Ajouter un nouveau leader</h2>
-                <form onSubmit={handleAddLeader}>
+                <div>
                     <div className="inputModal">
                         <label htmlfor="nom_leader">Nom complet</label>
                         <input className="text" name="nom_leader" value={newLeader.nom_leader} type="text" onChange={handleLeaderChange}/>
@@ -191,8 +202,8 @@ export function CreateurGroupe() {
                         <input type="text" name="email" value={newGroup.email} onChange={handleLeaderChange} />
                     </div>
                 
-                    <button className="submitAddLeader" name="submitAddLeaders" type="submit">Soumettre</button>
-                </form>
+                    <button className="submitAddLeader" name="submitAddLeaders" onClick={handleAddLeader}>Soumettre</button>
+                </div>
             
                 <button name="unShowModal" onClick={()=> setNewLeaderModal(false)}>Fermer</button>
             </div>

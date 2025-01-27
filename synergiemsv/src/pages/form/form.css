@@ -54,22 +54,41 @@
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    color: var(--text-color)
+    color: var(--text-color);
+    justify-content: center;
 }
 
 .form span{
     justify-self: center;
 }
 .questions {
-    flex:1;
-    min-width: 40%;
+    flex:1 1 40rem;
+    min-width: 15rem;
+    max-width: 100%;
     display : grid;
+   
     grid-template-columns: 1fr 4fr;
-    flex-wrap: wrap;
-    align-items: center;
+    justify-content: center;
     margin: 1rem;
 
 
+}
+
+.questionsPhoto, .modifyProfil {
+    flex:1 1 100%;
+    min-width: 15rem;
+    max-width: 100%;
+    display : flex;
+    justify-content: space-evenly;
+    margin: 1rem
+}
+
+
+
+.firstButton {
+    text-align: center;
+    grid-column: 1/-1;
+    grid-row: 5;
 }
 
 .question label {
@@ -120,7 +139,7 @@
     cursor:pointer;
 }
 
-.questions label, .questions input, .questions select {
+.questions label, .questions input, .questions select, .questionsPhoto label {
     margin: 1rem;
     font-weight: bold;
     color: var(--primary-color);
@@ -167,8 +186,8 @@ input[type="range"] {
 
   .profilPhoto{
     justify-content: center;
-    width: 6rem;   
-    height: 6rem; 
+    width: 8rem;   
+    height: 8rem; 
     border-radius: 50%; 
     object-fit: cover;  
     border: 2px solid #ccc;  

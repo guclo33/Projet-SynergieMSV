@@ -1,8 +1,9 @@
 import React, { createContext, useState, useEffect,useContext } from 'react';
 import { AuthContext, AuthProvider } from '../AuthContext';
 import { useParams } from 'react-router';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { setGroupesData } from './Redux/adminSlice';
 
 export const AdminContext = createContext();
 
@@ -12,6 +13,7 @@ export const AdminProvider = ({children, store, persistor}) => {
     const [udpatedClientsData, setUpdatedClientsData] = useState([]);
     const [udpatedLeadersData, setUpdatedLeadersData] = useState([]);
     const [profilePhotos, setProfilePhotos] = useState({})
+    const dispatch = useDispatch()
     const {id} = useParams()
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     
@@ -55,6 +57,14 @@ export const AdminProvider = ({children, store, persistor}) => {
 
 
                             }))
+                            console.log("groupes Data", data.groupesData)
+                            const groupesData = {
+                                groupesData : data.groupesData.groupesData.rows,
+                                groupesClients : data.groupesData.groupesClients.rows
+                            }
+                            dispatch(setGroupesData(groupesData))
+
+                            
 
                             if (JSON.stringify(leadersData) !== JSON.stringify(dataArray)) {
                                 setLeadersData(dataArray);
@@ -120,14 +130,11 @@ export const AdminProvider = ({children, store, persistor}) => {
         },[leadersData, clientsData, id])
 
         return (
-            <Provider store={store}>
-                <PersistGate loading={<h1>Chargement...</h1>} persistor={persistor}>      
-                    
-                    <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData, apiUrl }}>
-                        {children}
-                    </AdminContext.Provider>
-                </PersistGate> 
-            </Provider>
+            
+            <AdminContext.Provider value={{ profilePhotos, setProfilePhotos, leadersData, setLeadersData, clientsData, setClientsData, apiUrl }}>
+                {children}
+            </AdminContext.Provider>
+            
           );
 
 

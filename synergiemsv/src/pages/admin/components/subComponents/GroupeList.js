@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AdminContext } from "../../AdminContext";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { AuthContext } from "../../../AuthContext";
-import { setLeadersData } from "../../Redux/adminSlice";
+import { setLeadersData, updateSingleGroupsData } from "../../Redux/adminSlice";
 
 export function GroupeList() {
     const [active, setActive] = useState(true)
@@ -19,6 +19,7 @@ export function GroupeList() {
     const [clientsIdUpdated, setClientsIdUpdated] = useState([])
     const [restOfClients, setRestOfClients] = useState([])
     const [addRemoveIdArray, setAddRemoveIdArray] = useState({})
+    
     
     const {groupesData, groupesClients} = useSelector((state) => state.admin.groupesData)
     const [modifiedGroup , setModifiedGroup] = useState({})
@@ -196,14 +197,14 @@ export function GroupeList() {
     const handleSubmit = async () => {
 
         try{
-            const response = await fetch(`${apiUrl}/admin/${user.id}/gestion/groupe`, {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/gestion/groupe`, {
                 method : "PUT",
                 credentials:"include",
                 headers : {
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify({
-                    group_id: modifiedGroup.group_id,
+                    group_id: selectedId,
                     group_name : modifiedGroup.group_name,
                     have_leader : modifiedGroup.have_leader,
                     nom_leader : modifiedGroup.leader ? modifiedGroup.leader.nom_leader : modifiedGroup.nom_leader ,
@@ -216,7 +217,19 @@ export function GroupeList() {
                 })
             });
             if (response.ok) {
-                console.log("group successfully updated")
+                console.log("group successfully updated");
+                /*const groupeData = {
+                    active: modifiedGroup,
+                    date_presentation: modifiedGroup.date_presentation,
+                    group_name: modifiedGroup.group_name,
+                    have_leader: modifiedGroup.have_leader,
+                    id : selectedId,
+                    leader_id: modifiedGroup.leader ? modifiedGroup.leader.leader_id : modifiedGroup.leader_id,
+                    nom_leader : modifiedGroup.leader ? modifiedGroup.leader.nom_leader : modifiedGroup.nom_leader,
+                }
+                dispatch(updateSingleGroupsData({groupeData : groupeData, id : selectedId}))*/
+                setModify(false);
+                window.location.reload()
                 return
             } else {
                 console.log("probleme au niveau du server pour l'update de groupe")

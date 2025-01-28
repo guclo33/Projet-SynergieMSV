@@ -641,6 +641,8 @@ const updateGroupController = async(req, res) => {
         ids_to_remove
     } = req.body
     
+    console.log("REQ.BODY", req.body)
+
     try {
         await updateGroup(group_id, group_name, have_leader, nom_leader,leader_id, date_presentation,active,ids_to_add,ids_to_remove)
         res.status(200).send("successfully updated group")

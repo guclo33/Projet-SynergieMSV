@@ -5,7 +5,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 
@@ -626,8 +626,29 @@ const createLeaderController = async (req, res) => {
     } catch (error) {
         res.status(400).send("couldnt create leader", error)
     }
+};
+
+const updateGroupController = async(req, res) => {
+    const {
+        group_id,
+        group_name,
+        have_leader,
+        nom_leader,
+        leader_id,
+        date_presentation,
+        active,
+        ids_to_add,
+        ids_to_remove
+    } = req.body
+    
+    try {
+        await updateGroup(group_id, group_name, have_leader, nom_leader,leader_id, date_presentation,active,ids_to_add,ids_to_remove)
+        res.status(200).send("successfully updated group")
+    } catch(error) {
+        console.log("could'nt update group", error)
+    }
 }
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController };
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController};

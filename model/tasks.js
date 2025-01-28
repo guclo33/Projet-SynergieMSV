@@ -226,6 +226,21 @@ const createLeader = async (nom_leader, email) => {
     return await pool.query("INSERT INTO leader (nom_leader, email) VALUES ($1, $2)", [nom_leader, email])
 }
 
+const updateGroup = async (group_id, group_name, have_leader, nom_leader,leader_id, date_presentation, active,ids_to_add,ids_to_remove) => {
+
+    await pool.query("UPDATE groupes SET group_name = $1, have_leader = $2, nom_leader = $3, leader_id = $4, date_presentation = $5, active = $6 WHERE id = $7", [group_name, have_leader, nom_leader,leader_id, date_presentation, active])
+
+    if(ids_to_add.length > 0){
+        return await pool.query("INSERT INTO groupe_clients (group_id, client_id) SELECT $1, unnest($2::int[])", [group_id, ids_to_add])
+    }
+
+    if(ids_to_remove.length > 0) {
+        return await pool.query("DELETE FROM groupe_clients WHERE groupe_id = $1 AND client_id IN (SELECT unnest($2::int[]))", [group_id, ids_to_remove])
+    }
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader}
+}
+
+
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup}

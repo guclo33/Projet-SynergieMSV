@@ -7,13 +7,19 @@ const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Comman
 const { getSignedUrl} = require('@aws-sdk/s3-request-presigner')
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
-const {createPreformUrl, getPreformData} = require("../model/formTasks")
+const {createPreformUrl, getPreformData, createForm} = require("../model/formTasks")
 
 const storedForms = {};
 
 const createFormController = async (req, res) => {
-    const {form} = req.body;
-    console.log("form", form)
+    const {form, info} = req.body;
+    console.log("form", form, "INFO", info)
+    try{
+        await createForm(form, info)
+        res.status(200).send("succesfully created form")
+    }catch(error) {
+        res.status(400).send("Couldn't insert Form")
+    }
 }
 
 const uploadProfilPhotoController = (req, res) => {

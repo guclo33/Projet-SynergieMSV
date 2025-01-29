@@ -142,7 +142,9 @@ export function GroupeList() {
                     group_name: selectedGroup.group_name,
                     group_id: selectedGroup.id,
                     have_leader: selectedGroup.have_leader,
-                    nom_leader: selectedGroup.nom_leader
+                    nom_leader: selectedGroup.nom_leader,
+                    leader_id : selectedGroup.leader_id,
+                    date_presentation : selectedGroup.date_presentation
                 })
             });
     
@@ -269,10 +271,10 @@ export function GroupeList() {
             <label htmlFor="active?">Voir vos groupes inactifs</label>
             <input type="checkbox" checked={!active} onChange={() => setActive(!active)} />
     
-            {/* 🔥 `groupList` englobe tous les groupes */}
+           
             <div className="groupList">
                 {activeGroups.map(group => {
-                    // 🔥 Condition : Mode "modification"
+                    
                     if (expand && selectedId === group.id && modify) {
                         return (
                             <div key={group.id} data-name={group.id} className="groupModify">
@@ -334,7 +336,7 @@ export function GroupeList() {
                         );
                     }
     
-                    // 🔥 Condition : Affichage détaillé du groupe sélectionné (expand)
+                    
                     if (expand && selectedId === group.id) {
                         return (
                             <div key={group.id} data-name={group.id} className="group" onClick={handleExpand}>

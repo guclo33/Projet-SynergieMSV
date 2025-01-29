@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage } from '../Redux/pageSlice'
-import { addKeyValue } from '../Redux/formSlice';
+import { addValueForm } from '../Redux/formSlice';
 import { QuestionDISC } from "./QuestionDISC";
 import { question1Array, question2Array, question3Array, question4Array } from "../questionArray";
 
@@ -10,8 +10,8 @@ export function PagesDISC() {
     const [repondu, setRepondu] = useState(false);
     const [different, setDifferent] = useState(false);
     const [minMax, setMinMax] = useState(false)
-    const form = useSelector((state) => state.session.form);
-    const {pageNum} = useSelector((state) => state.session.page)
+    const {form, info} = useSelector((state) => state.session.form);
+    const {pageNum, totalPage} = useSelector((state) => state.session.page)
         
     const dispatch = useDispatch();
     const questionNum = pageNum - 1
@@ -29,6 +29,8 @@ export function PagesDISC() {
         }
 
     }, [answersArray])
+
+    console.log("FORM=", form, "INFO=", info)
 
     useEffect(()=>{
         const valeursUnique = new Set(answersArray)
@@ -87,7 +89,7 @@ export function PagesDISC() {
             <div className="setPage">
                 <h5>Retourner à la page :</h5>
                 <div className="setPageNumber">
-                    {pageArray.slice(0,pageNum+1).map( num => ( 
+                    {pageArray.slice(0,totalPage+1).map( num => ( 
                         <p key={num} onClick={(e) => dispatch(setPage(num-1))}>{num}</p>
                     ))
                     }

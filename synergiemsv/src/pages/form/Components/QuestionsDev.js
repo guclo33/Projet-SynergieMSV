@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { questionDev1, questionDev2, questionDev3 } from "../questionArray";
 import { useDispatch, useSelector } from "react-redux";
-import { addKeyValue } from "../Redux/formSlice";
+import { addValueForm, addValueInfo } from "../Redux/formSlice";
 import { addPage, removePage } from "../Redux/pageSlice";
 import { AuthContext } from "../../AuthContext";
 import { clearFile } from "../Redux/fileSlice";
@@ -11,7 +11,7 @@ import { testFormObject } from "../testFormObject";
 export function QuestionsDev () {
     const [validated, setValidated] = useState(false)
     const dispatch = useDispatch();
-    const form = useSelector((state) => state.session.form);
+    const {form, info} = useSelector((state) => state.session.form);
     const page = useSelector((state) => state.session.page);
     const file = useSelector((state) => state.file);
     const fileState = useSelector(state => state.file)
@@ -35,7 +35,7 @@ export function QuestionsDev () {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        dispatch(addKeyValue({key: name, value: value}))
+        dispatch(addValueForm({key: name, value: value}))
     }
 
     //pour mettre le fichier en base64
@@ -83,17 +83,21 @@ export function QuestionsDev () {
     const sendFormData = async () => {
         
         try {
-            const response = await fetch(`${apiUrl}/form/`, {
+            const response = await fetch(`${apiUrl}/api/form/`, {
                 method : "POST",
                 credentials : "include",
                 headers : {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify(testFormObject)
+                body : JSON.stringify({
+                    form: form,
+                    info: info,
+
+                })
                 
             });
             if(response.ok) {
-                console.log("image uploadé dans AWS");
+                console.log("formulaire ajouté à la base de donnée");
                 //await sendFileData();
             }
 
@@ -103,7 +107,7 @@ export function QuestionsDev () {
     }
 
 
-    console.log("form ==", form, "file avant transformation", fileUrl) 
+    console.log("form ==", form, "Infos =", info, "file avant transformation", fileUrl) 
     console.log("File State:", fileState);
     
     

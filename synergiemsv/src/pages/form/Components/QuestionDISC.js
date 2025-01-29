@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage } from '../Redux/pageSlice'
-import { addKeyValue } from '../Redux/formSlice';
+import { addValueForm } from '../Redux/formSlice';
 
 export function QuestionDISC({questionArray}) {
     
-    const form = useSelector((state) => state.session.form);
+    const {form} = useSelector((state) => state.session.form);
     const {pageNum} = useSelector((state) => state.session.page)
     const questionNum = pageNum - 1
         
@@ -13,14 +13,14 @@ export function QuestionDISC({questionArray}) {
 
     useEffect(() => {
         if (form[questionArray[questionNum]] === undefined) {
-            dispatch(addKeyValue({ key: questionArray[questionNum], value: 5 }));
+            dispatch(addValueForm({ key: questionArray[questionNum], value: 5 }));
         }
     }, [form, questionArray, questionNum, dispatch])
 
     const handleChange = (e) => {
         const {name, value} = e.target;
         const numericValue = value !== "" && !isNaN(value) ? Number(value) : value;
-        dispatch(addKeyValue({key: name, value: numericValue}))
+        dispatch(addValueForm({key: name, value: numericValue}))
     }
 
     return (

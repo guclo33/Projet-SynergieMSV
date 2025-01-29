@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     pageNum: 0,
+    totalPage : 0
 }
 
 
@@ -15,6 +16,10 @@ const pageSlice = createSlice({
         },
         addPage(state){
             state.pageNum += 1
+
+            if(state.pageNum >= state.totalPage){
+                state.totalPage = state.pageNum
+            }
 
         },
         removePage(state){

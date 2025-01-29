@@ -37,7 +37,7 @@ export function GroupeList() {
 
     useEffect(() => {
         setFormUrl("")
-        console.log("formUrl reseted:", formUrl);
+        
     }, [selectedId]);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export function GroupeList() {
         
     }, [groupesData])
 
-    console.log("GROUPES DATA ====", groupesData, "GROUPES CLIENTS", groupesClients, "ACTIVE GROUP ===", activeGroups, "modifiedGroup===", modifiedGroup, "CLIENTSIDUPDATED", clientsIdUpdated, "profilesPhotos===", profilePhotos, "LEADERSDATA===", leadersData)
+    
 
     
 
@@ -72,7 +72,7 @@ export function GroupeList() {
             ...realIdsArray.filter(item => !clientsIdUpdated.includes(item))   
         ]
 
-        console.log("SELECCTED MEMBER ==", selectedMembersId, "ReALIdSArRaY ===", realIdsArray, "CLIENTS DATA!!!!", clientsData, "NEWVALUESSS", newValues)
+        
 
         if(clientsIdUpdated.length > realIdsArray.length ) {
             setAddRemoveIdArray({
@@ -106,7 +106,7 @@ export function GroupeList() {
          
     }
         
-        console.log("expand", expand, "selectedID==", selectedId, "NAME", name)
+        
     };
 
     const handleReduire = () => {
@@ -148,7 +148,7 @@ export function GroupeList() {
     
             const data = await response.json();
             if (data.id) {
-                console.log("DATA!!! ==", data)
+                
                 const Url = `${apiUrlLocal}/form?id=${data.id}`;
                 setFormUrl(Url);
                 
@@ -198,7 +198,7 @@ export function GroupeList() {
     
 
     
-    console.log("GROUPES DATA ====", groupesData, "GROUPES CLIENTS", groupesClients, "ACTIVE GROUP ===", activeGroups, "modifiedGroup===", modifiedGroup, "CLIENTSIDUPDATED", clientsIdUpdated, "AddRemoveIdArray", addRemoveIdArray)
+    c
 
     const handleSubmit = async () => {
 

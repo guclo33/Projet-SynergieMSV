@@ -44,7 +44,7 @@ export function CreateurGroupe() {
     const handleMemberId = (e) => {
         const selectedId = Number(e.target.value)
         setSingleClientId(selectedId)
-        console.log("adding this value", selectedId)
+        
         if(!newGroup.members_ids.includes(selectedId)) {
         dispatch(appendMembersIds(selectedId))
         }
@@ -52,7 +52,7 @@ export function CreateurGroupe() {
 
     const handleRemoveClient = (e, value) => {
         e.preventDefault();
-        console.log(" removing id #", value)
+        
         dispatch(removeMembersIds(value))
     }
 
@@ -127,7 +127,7 @@ export function CreateurGroupe() {
         }
     }
     
-    console.log("cliensData ===", clientsData, "newGroup ===", newGroup, "newLeader===", newLeader, "groupClientsArray ===", groupClientsArray)
+    
 
     return (
         <>

@@ -198,7 +198,7 @@ export function GroupeList() {
     
 
     
-    c
+    
 
     const handleSubmit = async () => {
 

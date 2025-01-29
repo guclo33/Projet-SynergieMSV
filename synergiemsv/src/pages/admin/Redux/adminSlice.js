@@ -46,20 +46,21 @@ const adminSlice = createSlice({
             state.groupesData = action.payload
         },
         updateSingleGroupsData(state, action) {
-            console.log("BEFORE UPDATE:", JSON.parse(JSON.stringify(state.groupesData.groupesData)))
-            const groupArray = JSON.parse(JSON.stringify(state.groupesData.groupesData))
-            if (!Array.isArray(state.groupesData)) {
-                console.error("❌ ERREUR: `groupesData` n'est pas un tableau!", state.groupesData);
-                return; 
+            console.log("BEFORE UPDATE:", JSON.parse(JSON.stringify(state.groupesData.groupesData)));
+
+            if (!Array.isArray(state.groupesData.groupesData)) {
+                console.error("❌ ERREUR: `groupesData` n'est pas un tableau!", state.groupesData.groupesData);
+                return;
             }
-            
-            const { groupeData, id} = action.payload
-            
-            const selectedGroup = groupArray.find(groupe => groupe.id === id)
-            
-            if (selectedGroup) {
-                Object.assign(selectedGroup, groupeData);
-            }
+
+            const { groupeData, id } = action.payload;
+
+            state.groupesData.groupesData = state.groupesData.groupesData.map(groupe =>
+                groupe.id === id ? { ...groupe, ...groupeData } : groupe
+            );
+
+            console.log("AFTER UPDATE:", state.groupesData.groupesData);
+    
         },
         setNewLeader(state, action) {
             const { key, value } = action.payload

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AdminContext } from "../../AdminContext";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { AuthContext } from "../../../AuthContext";
-import { setLeadersData, updateSingleGroupsData } from "../../Redux/adminSlice";
+import { setLeadersData, updateSingleGroupsData, setGroupesData } from "../../Redux/adminSlice";
 
 export function GroupeList() {
     const [active, setActive] = useState(true)
@@ -19,20 +19,21 @@ export function GroupeList() {
     const [clientsIdUpdated, setClientsIdUpdated] = useState([])
     const [restOfClients, setRestOfClients] = useState([])
     const [addRemoveIdArray, setAddRemoveIdArray] = useState({})
-    
-    
+    const [activeGroups, setActiveGroups] = useState([])
     const {groupesData, groupesClients} = useSelector((state) => state.admin.groupesData)
     const [modifiedGroup , setModifiedGroup] = useState({})
     const dispatch = useDispatch()
     const apiUrlLocal = process.env.REACT_APP_RENDER_API || 'http://localhost:3001'
     
+    
+
     useEffect(() => {
         const selectedGroup = groupesData.find(group => group.id === selectedId);
         const selectedGroupClients = groupesClients.filter(client => client.groupe_id === selectedId);
         const clientsArray = selectedGroupClients.map(client => client.client_id)
         setModifiedGroup(selectedGroup)
         setClientsIdUpdated(clientsArray)
-    }, [selectedId, modify])
+    }, [selectedId, modify, groupesData, groupesClients])
 
     useEffect(() => {
         setFormUrl("")
@@ -43,11 +44,12 @@ export function GroupeList() {
         console.log("expand has changed, checking formUrl:", formUrl);
     }, [expand]);
 
-    let activeGroups = []
-    if(groupesData) {
-        activeGroups = groupesData.filter(group => group.active === active)
+    
+    useEffect(() => {
+        const selectedGroup = groupesData.filter(group => group.active === active)
+        setActiveGroups(selectedGroup) 
         
-    }
+    }, [groupesData])
 
     console.log("GROUPES DATA ====", groupesData, "GROUPES CLIENTS", groupesClients, "ACTIVE GROUP ===", activeGroups, "modifiedGroup===", modifiedGroup, "CLIENTSIDUPDATED", clientsIdUpdated, "profilesPhotos===", profilePhotos, "LEADERSDATA===", leadersData)
 
@@ -59,7 +61,7 @@ export function GroupeList() {
         setFilteredClientsData(filteredClients)
         setRestOfClients(restOfClientsArray)
         console.log("filteredClientsDATA=", filteredClientsData)
-    }, [modify, expand, clientsIdUpdated])
+    }, [expand, clientsIdUpdated, groupesData, groupesClients])
 
     useEffect(() => {
         const selectedMembersId = groupesClients.filter(group => group.groupe_id === selectedId);
@@ -90,6 +92,10 @@ export function GroupeList() {
         }
     }, [clientsIdUpdated])
     
+    if(!groupesData || !clientsData) {
+        return <h2>...LOADING</h2>
+    }
+
 
     const handleExpand = (e) => {
         const name = Number(e.currentTarget.dataset.name); 
@@ -218,7 +224,7 @@ export function GroupeList() {
             });
             if (response.ok) {
                 console.log("group successfully updated");
-                /*const groupeData = {
+                const groupeData = {
                     active: modifiedGroup,
                     date_presentation: modifiedGroup.date_presentation,
                     group_name: modifiedGroup.group_name,
@@ -227,9 +233,23 @@ export function GroupeList() {
                     leader_id: modifiedGroup.leader ? modifiedGroup.leader.leader_id : modifiedGroup.leader_id,
                     nom_leader : modifiedGroup.leader ? modifiedGroup.leader.nom_leader : modifiedGroup.nom_leader,
                 }
-                dispatch(updateSingleGroupsData({groupeData : groupeData, id : selectedId}))*/
+                dispatch(updateSingleGroupsData({groupeData : groupeData, id : selectedId}))
                 setModify(false);
-                window.location.reload()
+                const response2 = await fetch(`${apiUrl}/api/admin/${user.id}`, {
+                    method: "GET",
+                    credentials: "include",
+                    });
+                    if(response2.ok) {
+                    
+                    const data = await response2.json();
+                    console.log("got the new data", data)
+                    const groupesData = {
+                        groupesData : data.groupesData.groupesData.rows,
+                        groupesClients : data.groupesData.groupesClients.rows
+                    }
+                    dispatch(setGroupesData(groupesData))
+                }
+                //window.location.reload()
                 return
             } else {
                 console.log("probleme au niveau du server pour l'update de groupe")
@@ -247,118 +267,139 @@ export function GroupeList() {
         <div className="gestionGroupe">
             <h2>Vos groupes de formation :</h2>
             <label htmlFor="active?">Voir vos groupes inactifs</label>
-            <input type="checkbox" checked={!active} onChange={()=> setActive(!active)} />
+            <input type="checkbox" checked={!active} onChange={() => setActive(!active)} />
+    
+            {/* 🔥 `groupList` englobe tous les groupes */}
             <div className="groupList">
-            
-                {activeGroups.map(group =>(
-                    
-                    (expand===true && selectedId === group.id) ? (  
-                        modify ? (
-                            <div key={group.id} data-name={group.id} className="groupModify" onClick={handleExpand}>
+                {activeGroups.map(group => {
+                    // 🔥 Condition : Mode "modification"
+                    if (expand && selectedId === group.id && modify) {
+                        return (
+                            <div key={group.id} data-name={group.id} className="groupModify">
                                 <h3>Nom du groupe</h3>
-                                <input type="text" name="group_name" value={modifiedGroup.group_name} onChange={modifyGroup}/>
+                                <input type="text" name="group_name" value={modifiedGroup?.group_name || "Loading..."} onChange={modifyGroup} />
+                                
                                 <h3>Date de la présentation</h3>
-                                <input type="datetime-local" name="date_presentation" value={modifiedGroup.date_presentation} onChange={modifyGroup}/>
+                                <input type="datetime-local" name="date_presentation" value={modifiedGroup?.date_presentation || ""} onChange={modifyGroup} />
+                                
                                 <h3>Possède un leader?</h3>
-                                <input type="checkbox" name="have_leader" checked={modifiedGroup.have_leader} onChange={modifyGroup}/>
+                                <input type="checkbox" name="have_leader" checked={modifiedGroup?.have_leader || false} onChange={modifyGroup} />
+                                
                                 <h3>Nom du leader</h3>
                                 <select name="leader" value={JSON.stringify(leader)} onChange={modifyGroupLeader}>
                                     <option value={group.nom_leader}>Pas de changement</option>
                                     {leadersData.map(leader => (
-                                        <option key={leader.id} value={JSON.stringify({nom_leader : leader.nom, leader_id : leader.id })}>{leader.nom}</option>
-                                    ))}
-                                </select>
-                                <h3>Groupe actif?</h3>
-                                <input type="checkbox" name="active" checked={modifiedGroup.active} onChange={modifyGroup}/>
-                                <h4>Membres du groupe :</h4>
-                                <div className="groupMembers">
-                                {filteredClientsData.length > 0 ? 
-                                filteredClientsData.map(client => (
-                                    <div className="clientModify">
-                                        <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
-                                        <p>{client.nom}</p>
-                                        <p>{client.email}</p>
-                                        <button data-name={client.id} onClick={handleRemoveClient}>X</button>
-                                        
-                                    </div> )) : null}
-
-                                </div>
-                                <div className="addingMember">
-                                    <label htmlFor="members_ids">Ajouter des clients déjà existants</label>
-                                    <select  name="members_ids" value={selectedClientId} onChange={handleMemberId}>
-                                        <option>-- Sélectionner un autre client --</option>
-                                        {restOfClients.map(client => (
-                                        <option key={client.id} value={client.id}>
-                                            {client.nom}, {client.email}
+                                        <option key={leader.id} value={JSON.stringify({ nom_leader: leader.nom, leader_id: leader.id })}>
+                                            {leader.nom}
                                         </option>
                                     ))}
+                                </select>
+    
+                                <h3>Groupe actif?</h3>
+                                <input type="checkbox" name="active" checked={modifiedGroup?.active || false} onChange={modifyGroup} />
+    
+                                <h4>Membres du groupe :</h4>
+                                <div className="groupMembers">
+                                    {filteredClientsData?.length > 0 ? (
+                                        filteredClientsData.map(client => (
+                                            <div key={client.id} className="clientModify">
+                                                <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
+                                                <p>{client.nom}</p>
+                                                <p>{client.email}</p>
+                                                <button data-name={client.id} onClick={handleRemoveClient}>X</button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>Aucun membre</p>
+                                    )}
+                                </div>
+    
+                                <div className="addingMember">
+                                    <label htmlFor="members_ids">Ajouter des clients existants</label>
+                                    <select name="members_ids" value={selectedClientId} onChange={handleMemberId}>
+                                        <option>-- Sélectionner un autre client --</option>
+                                        {restOfClients.map(client => (
+                                            <option key={client.id} value={client.id}>
+                                                {client.nom}, {client.email}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
+    
                                 <div className="modifyGroupButtons">
                                     <button onClick={handleSubmit}>Modifier</button>
-                                    <button onClick={()=>setModify(false)}>Annuler</button>
+                                    <button onClick={() => setModify(false)}>Annuler</button>
                                 </div>
                             </div>
-                        ) : (
-
-                        
+                        );
+                    }
+    
+                    // 🔥 Condition : Affichage détaillé du groupe sélectionné (expand)
+                    if (expand && selectedId === group.id) {
+                        return (
+                            <div key={group.id} data-name={group.id} className="group" onClick={handleExpand}>
+                                <h3>Nom du groupe</h3>
+                                <p>{group.group_name}</p>
+    
+                                <h3>Date de la présentation</h3>
+                                <p>{group.date_presentation ? new Date(group.date_presentation).toLocaleString('en-CA') : "Date non définie"}</p>
+    
+                                <div className="groupMembers">
+                                    {group.have_leader && (
+                                        <>
+                                            <h4>Leader :</h4>
+                                            <div className="client">
+                                                <img className="imgSmall" src={profilePhotos[group.nom_leader] || iconeProfile} alt={group.nom_leader} />
+                                                <p>{group.nom_leader}</p>
+                                                <p>{leadersData.find(leader => leader.nom === group.nom_leader)?.email || "Email inconnu"}</p>
+                                            </div>
+                                        </>
+                                    )}
+    
+                                    <h4>Membres du groupe :</h4>
+                                    {filteredClientsData?.length > 0 ? (
+                                        filteredClientsData.map(client => (
+                                            <div key={client.id} className="client">
+                                                <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
+                                                <p>{client.nom}</p>
+                                                <p>{client.email}</p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>Aucun membre</p>
+                                    )}
+                                </div>
+    
+                                <div className="groupButton">
+                                    <button onClick={() => setModify(true)}>Modifier</button>
+                                    <button onClick={handleUrl}>Générer un lien de questionnaire</button>
+                                    <button onClick={handleReduire}>Réduire</button>
+                                </div>
+    
+                                {formUrl && (
+                                    <div className="groupA">
+                                        <a href={formUrl} rel="noopener noreferrer">{formUrl}</a>
+                                        <button onClick={handleCopy}>Copier</button>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }
+    
+                    // 🔥 Condition par défaut : Affichage réduit (fermé)
+                    return (
                         <div key={group.id} data-name={group.id} className="group" onClick={handleExpand}>
                             <h3>Nom du groupe</h3>
                             <p>{group.group_name}</p>
                             <h3>Date de la présentation</h3>
                             <p>{group.date_presentation ? new Date(group.date_presentation).toLocaleString('en-CA') : "Date non définie"}</p>
-                            
-                            
-                                <div className="groupMembers">
-                                    { group.have_leader ? (
-                                    <>  
-                                       <h4>Leader :</h4>
-                                        <div className="client">
-                                            <img className="imgSmall" src={profilePhotos[group.nom_leader] || iconeProfile} alt={group.nom_leader} />
-                                            <p>{group.nom_leader}</p>
-                                            <p>{leadersData.filter(leader => leader.nom === group.nom_leader).email}</p>
-                                        </div>
-                                    </>) : null}
-                                <h4>Membres du groupe :</h4>
-                            {filteredClientsData.length > 0 ? 
-                            filteredClientsData.map(client => (
-                                <div className="client">
-                                    <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
-                                    <p>{client.nom}</p>
-                                    <p>{client.email}</p>
-                                    
-                                </div>
-                            ))
-                            : null}
-                            </div>
-                            <div className="groupButton">
-                                <button onClick={()=>(setModify(true))}>Modifier</button>
-                                <button onClick={handleUrl}>Générer un lien de questionnaire</button>
-                                <button onClick={handleReduire}>Réduire</button>
-                            </div>
-                            
-                                {formUrl && 
-                                <div className="groupA">
-                                    <a href={formUrl} rel="noopener noreferrer">{formUrl}</a>
-                                    <button onClick={handleCopy}>Copier</button>
-                                </div>}
-                                
-                            
-                        </div> 
-                    )) : (
-                    <div key={group.id} data-name={group.id} className="group" onClick={handleExpand}>
-                        <h3>Nom du groupe</h3>
-                        <p>{group.group_name}</p>
-                        <h3>Date de la présentation</h3>
-                        <p>{group.date_presentation ? new Date(group.date_presentation).toLocaleString('en-CA') : "Date non définie"}</p>
-                        <h3>Nom du leader</h3>
-                        <p>{group.have_leader === true ? group.nom_leader : "Groupe sans leader"}</p>
-                    </div> )
-                ))}
+                            <h3>Nom du leader</h3>
+                            <p>{group.have_leader ? group.nom_leader : "Groupe sans leader"}</p>
+                        </div>
+                    );
+                })}
             </div>
-            
         </div>
-    )
+    );
+    
 }
-
-

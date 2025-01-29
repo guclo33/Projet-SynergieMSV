@@ -13,9 +13,9 @@ const getAdminHomeData = async () => {
 
     const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c JOIN leader l ON c.leader_id = l.id ORDER BY id")
 
-    const groupesData = await pool.query("SELECT * from groupes")
+    const groupesData = await pool.query("SELECT * from groupes ORDER BY id")
 
-    const groupesClients = await pool.query("SELECT * from groupe_clients")
+    const groupesClients = await pool.query("SELECT * from groupe_clients ORDER BY id")
 
     const data = {
         leadersData,

@@ -22,7 +22,7 @@ export function PagesDISC() {
     console.log("AnswerArray =", answersArray)
 
     useEffect(() => {
-        if(form[question1Array[questionNum]] && form[question2Array[questionNum]] && form[question3Array[questionNum]] && form[question4Array[questionNum]]){
+        if( form[question1Array[questionNum]] >= 0 && form[question1Array[questionNum]] <= 10 && form[question2Array[questionNum]] >=0 && form[question2Array[questionNum]] <=10 && form[question3Array[questionNum]] >=0 && form[question3Array[questionNum]] <=10 && form[question4Array[questionNum]] >= 0 && form[question4Array[questionNum]] <= 10){
             setRepondu(true)
         } else {
         setRepondu(false)
@@ -41,7 +41,7 @@ export function PagesDISC() {
     },[answersArray])
 
     useEffect(() => {
-        if(answersArray.includes("0") && answersArray.includes("10")) {
+        if(answersArray.includes(0) && answersArray.includes(10)) {
             setMinMax(true)
         } else {
         setMinMax(false)

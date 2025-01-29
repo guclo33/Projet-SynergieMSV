@@ -91,7 +91,7 @@ export function FirstPage () {
                 <label htmlFor="phone">Téléphone</label>
                 <input name= "phone" type="tel" value={form.phone} onChange={(e) => dispatch(addKeyValue({key: 'phone', value: e.target.value}))} required />
                 </div>
-                <div className="questions">    
+                <div className="questionsPhoto">    
                     <label htmlFor="file">Photo de profil</label>
                     {fileURL ? modify ? (
                         <div className="modifyProfil">
@@ -101,7 +101,7 @@ export function FirstPage () {
                             
                         
                         </div> ): (
-                        <div className="questions">
+                        <div className="questionsPhoto">
                             <img className="profilPhoto" src={fileURL} alt={form.firstName + " " + form.lastName} />
                             <button onClick={() => setModify(true)}>Modifier</button>
                         </div>
@@ -113,7 +113,26 @@ export function FirstPage () {
                         </>)}
                      
                 </div>
-                <div className="questions">       
+                
+                <button 
+                                disabled={validated}
+                                className="firstButton"
+                                style={{
+                                    backgroundColor: !validated ? '#ccc' : '#4CAF50',  
+                                    cursor: !validated ? 'not-allowed' : 'pointer',    
+                                    boxShadow: !validated ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.2)',  
+                                    opacity: !validated ? 0.4 : 1,  
+                                }} 
+                                onClick={() => dispatch(addPage())}>Suivant
+                </button>
+        </div>
+    </div>
+    )
+}
+
+
+
+/*<div className="questions">       
                     <label htmlFor="forfait">Forfait</label>
                     <select name="forfait" value={form.forfait} onChange={(e) => dispatch(addKeyValue({key: 'forfait', value: e.target.value}))} required>
                         <option value="individuel">Individuel</option>
@@ -132,17 +151,4 @@ export function FirstPage () {
                         </select>
                     </div>
                 ): null }
-            </div>  
-                <button 
-                                disabled={validated}
-                                style={{
-                                    backgroundColor: !validated ? '#ccc' : '#4CAF50',  
-                                    cursor: !validated ? 'not-allowed' : 'pointer',    
-                                    boxShadow: !validated ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.2)',  
-                                    opacity: !validated ? 0.4 : 1,  
-                                }} 
-                                onClick={() => dispatch(addPage())}>Suivant
-                </button>
-        </div>
-    )
-}
+            </div>  */

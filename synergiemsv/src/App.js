@@ -45,11 +45,16 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
     <Route path="/superadmin/:id" element={<SuperAdmin />} />
 
     <Route path="/admin/:id" element={
-      <AdminProvider store={adminStore} persistor={adminPersistor}>
+      <Provider store={adminStore}>
+        <PersistGate loading={<h1>Chargement...</h1>} persistor={adminPersistor}>
+      
+          <AdminProvider >
         
             <Admin />
           
-      </AdminProvider>
+          </AdminProvider>
+        </PersistGate>
+      </Provider>
     }>
       <Route index element={<AdminHome />} />
       <Route path="objectifs" element={<Objectifs />} />

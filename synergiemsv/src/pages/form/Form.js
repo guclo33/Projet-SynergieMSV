@@ -5,6 +5,7 @@ import { setPage, addPage, removePage } from './Redux/pageSlice'
 import { addValueForm, addValueInfo } from './Redux/formSlice';
 import './form.css';
 import { FirstPage } from './Components/FirstPage';
+import { LastPage } from './Components/LastPage';
 import { PagesDISC } from './Components/PagesDISC';
 import { QuestionsDev } from './Components/QuestionsDev';
 import { decryptParams } from './Components/cryptoFunctions';
@@ -66,21 +67,27 @@ export function Form() {
         const decryptedData = decryptParams(decodeURIComponent(encryptedData));
         console.log("🔓 Données déchiffrées :", decryptedData);
     }*/
-
+    const renderPage = () => {
+        if (pageNum === 0) {
+            return <FirstPage />;
+        }
+        if (pageNum === 25) {
+            return <QuestionsDev />;
+        }
+        if(pageNum === 26) {
+            return <LastPage />
+        }
+        if(pageNum >= 1 && pageNum <=24){
+        return <PagesDISC />;
+        }
+        return <h1>ERREUR</h1>
+    };
 
 
   return (
         <div className="questionnaire">
             <h1>Questionnaire Synergia</h1>
-            {pageNum === 0 ?
-                (
-                    <FirstPage  />
-                ): pageNum === 25 ? (
-                    <QuestionsDev />
-                ):(
-                    <PagesDISC />
-                )}
-                
+            {renderPage()}
         </div>
   );
 }

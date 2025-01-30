@@ -8,7 +8,7 @@ const {createFormController, uploadProfilPhotoController, createUrl, getUrlParam
 
 router.post("/", createFormController);
 
-router.post("/photo", uploadProfilPhotoController)
+router.post("/photo",upload.single("file"), uploadProfilPhotoController)
 
 router.post("/url", createUrl)
 

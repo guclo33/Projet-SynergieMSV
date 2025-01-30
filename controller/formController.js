@@ -22,8 +22,34 @@ const createFormController = async (req, res) => {
     }
 }
 
-const uploadProfilPhotoController = (req, res) => {
+const uploadProfilPhotoController = async (req, res) => {
+    const file = req.file
+    const decodedFileName = decodeURIComponent(file.originalname)
+    const filePath = `Synergia/Photos/${decodedFileName}`
+    
+    console.log("req.file =", file, "filePath", filePath, 'decodedFileName', decodedFileName)
 
+    try {
+        const upload = new Upload({
+            client: s3Client,
+            params: {
+              Bucket: process.env.AWS_BUCKET_NAME,
+              Key: filePath,
+              Body: file.buffer, 
+              ContentType: file.mimetype,
+            },
+          });
+      
+          upload.on('httpUploadProgress', (progress) => {
+            console.log(`Uploaded ${progress.loaded}/${progress.total} bytes`);
+          });
+      
+          const result = await upload.done(); 
+          res.status(200).json({ message: 'Fichier uploadé avec succès', location: result.Location });
+        } catch (error) {
+          console.error('Error during upload:', error);
+          res.status(500).send('Error during upload');
+        }
 }
 
 const createUrl = async( req, res) => {

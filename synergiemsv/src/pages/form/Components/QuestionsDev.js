@@ -56,13 +56,17 @@ export function QuestionsDev () {
     const sendFileData = async () => {
         if (!fileUrl) return; 
 
-        const fileObj = await base64ToFile(fileUrl, `${form.firstName} ${form.lastName}.png`); 
-        console.log("file après base64 to File", fileObj)
+        const fileObj = await base64ToFile(fileUrl, `${info.firstName} ${info.lastName}.png`); 
+        
         const formData = new FormData();
         formData.append("file", fileObj);
+        
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value, " (Type: " + typeof value + ")");
+        }
 
         try {
-            const response = await fetch (`${apiUrl}/form/photo/`, {
+            const response = await fetch (`${apiUrl}/api/form/photo`, {
                 method : "POST",
                 credentials : "include",
                 body : formData
@@ -73,6 +77,7 @@ export function QuestionsDev () {
                 clearFile()
                 persistor.purge(); 
                 sessionStorage.clear();
+                dispatch(addPage())
             }
 
         } catch(error) {
@@ -98,7 +103,7 @@ export function QuestionsDev () {
             });
             if(response.ok) {
                 console.log("formulaire ajouté à la base de donnée");
-                //await sendFileData();
+                await sendFileData();
             }
 
         } catch(error) {
@@ -125,7 +130,7 @@ export function QuestionsDev () {
     
 
     const handleSubmit = async () => {
-        await sendFormData();
+        await sendFileData();
         
         
     }

@@ -478,7 +478,7 @@ textarea {
     box-sizing: border-box;
 }
 
-ul {
+.dropzone ul {
     list-style: none;
     margin-block-start: 0;
     margin-block-end: 0;

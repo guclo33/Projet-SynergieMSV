@@ -15,8 +15,8 @@ const createFormController = async (req, res) => {
     const {form, info} = req.body;
     console.log("form", form, "INFO", info)
     try{
-        await createForm(form, info)
-        res.status(200).send("succesfully created form")
+        const id = await createForm(form, info)
+        res.status(200).json({ id })
     }catch(error) {
         res.status(400).send("Couldn't insert Form")
     }
@@ -79,5 +79,31 @@ const getUrlParams = async( req, res) => {
     }
 }
 
+const generateProfileController = async(req, res) => {
+    const { formId } = req.params;
+    if(!formId) {   
+        res.status(400).send("Did not receive the formId");
+    } 
 
-module.exports = {createFormController, uploadProfilPhotoController, createUrl, getUrlParams}
+    const pythonFile = path.join(__dirname, './../GenerateurTexte/Synergia MLM.py');
+
+    exec(`python "${pythonFile}" "${formId}"`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.status(500).json({ error: stderr });
+        }
+
+        if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return res.status(500).json({ error: stderr });
+        }
+
+        
+        res.json({ message: stdout });
+    })
+
+}
+
+
+
+module.exports = {createFormController, uploadProfilPhotoController, createUrl, getUrlParams, generateProfileController}

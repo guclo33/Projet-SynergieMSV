@@ -16,15 +16,18 @@ const createForm = async (form, info) => {
         console.log("RESULT", result);
 
         let client_id;
+        let form_id;
+
         if (result.rows.length > 0) {
             client_id = result.rows[0].id;
             const leader_id = result.rows[0].leader_id;
 
-            const form_id = await client.query(
+            const form_result = await client.query(
                 "INSERT INTO questionnaire (client_id, form) VALUES ($1, $2::jsonb) RETURNING id", 
                 [client_id, form]
             );
 
+            form_id = form_result.rows[0].id;
             console.log("NEW FORM ID", form_id);
 
             await client.query(
@@ -60,10 +63,12 @@ const createForm = async (form, info) => {
 
             client_id = result2.rows[0].id;
 
-            const form_id = await client.query(
+            const form_result = await client.query(
                 "INSERT INTO questionnaire (client_id, form) VALUES ($1, $2::jsonb) RETURNING id", 
                 [client_id, form]
             );
+
+            form_id = form_result.rows[0].id;
 
             console.log("NEW FORM ID", form_id);
 
@@ -86,6 +91,7 @@ const createForm = async (form, info) => {
         }
 
         await client.query('COMMIT'); 
+        return form_id
     } catch (error) {
         await client.query('ROLLBACK'); 
         console.error("Erreur lors de l'accès à la base de données :", error);

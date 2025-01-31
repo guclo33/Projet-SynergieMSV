@@ -85,6 +85,24 @@ export function QuestionsDev () {
         }
     }
 
+    const generateProfile = async (formId) => {
+
+        try{
+            const response = fetch(`${apiUrl}/api/form/generateProfile/${formId}`, {
+                method: "GET",
+                credentials : "include",
+            });
+            if(response.ok){
+                data = await response.json();
+                console.log("Message from python", data.message)
+                console.log("profil généré avec succès")
+            }
+        } catch (error) {
+            console.log("couldn't generate profile")
+        }
+
+    }
+
     const sendFormData = async () => {
         
         try {
@@ -102,8 +120,11 @@ export function QuestionsDev () {
                 
             });
             if(response.ok) {
-                console.log("formulaire ajouté à la base de donnée");
+                const data = await response.json()
+                const formId = data.id
+                console.log("formulaire ajouté à la base de donnée avec l'id =", formId);
                 await sendFileData();
+                //await generateProfile(formId)
             }
 
         } catch(error) {

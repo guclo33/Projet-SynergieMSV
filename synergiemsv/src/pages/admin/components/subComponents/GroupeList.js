@@ -4,6 +4,7 @@ import { AdminContext } from "../../AdminContext";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { AuthContext } from "../../../AuthContext";
 import { setLeadersData, updateSingleGroupsData, setGroupesData } from "../../Redux/adminSlice";
+import { Link } from "react-router-dom";
 
 export function GroupeList() {
     const [active, setActive] = useState(true)
@@ -56,8 +57,20 @@ export function GroupeList() {
     
 
     useEffect(() => {
-        const filteredClients = clientsData.filter(client => clientsIdUpdated.includes(client.id))
+        let filteredClients = clientsData.filter(client => clientsIdUpdated.includes(client.id))
         const restOfClientsArray = clientsData.filter(client => !clientsIdUpdated.includes(client.id))
+        const selectedGroup = groupesData.find(group => group.id === selectedId);
+        console.log("selectedGroup",selectedGroup, "SELECTEDID", selectedId)
+        if(selectedGroup && selectedGroup.have_leader) {
+            const leader = leadersData.find(leader => leader.id === selectedGroup.leader_id);
+            const leaderClientId = leader.clientid
+            console.log("LEADER=", leader, "leadersClientId", leaderClientId)
+            filteredClients = filteredClients.filter(client => client.id !== leaderClientId)
+
+            console.log("FILTEREDCLIENTS", filteredClients)
+        }
+
+
         setFilteredClientsData(filteredClients)
         setRestOfClients(restOfClientsArray)
         console.log("filteredClientsDATA=", filteredClientsData)
@@ -352,7 +365,7 @@ export function GroupeList() {
                                             <h4>Leader :</h4>
                                             <div className="client">
                                                 <img className="imgSmall" src={profilePhotos[group.nom_leader] || iconeProfile} alt={group.nom_leader} />
-                                                <p>{group.nom_leader}</p>
+                                                <p><Link to={`../details/${leadersData.find(leader => leader.nom === group.nom_leader).clientid}`}>{group.nom_leader}</Link></p>
                                                 <p>{leadersData.find(leader => leader.nom === group.nom_leader)?.email || "Email inconnu"}</p>
                                             </div>
                                         </>
@@ -363,7 +376,7 @@ export function GroupeList() {
                                         filteredClientsData.map(client => (
                                             <div key={client.id} className="client">
                                                 <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
-                                                <p>{client.nom}</p>
+                                                <p><Link to={`../details/${client.id}`}>{client.nom}</Link></p>
                                                 <p>{client.email}</p>
                                             </div>
                                         ))

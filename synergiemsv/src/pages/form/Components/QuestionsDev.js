@@ -93,7 +93,7 @@ export function QuestionsDev () {
                 credentials : "include",
             });
             if(response.ok){
-                data = await response.json();
+                const data = await response.json();
                 console.log("Message from python", data.message)
                 console.log("profil généré avec succès")
             }
@@ -124,7 +124,7 @@ export function QuestionsDev () {
                 const formId = data.id
                 console.log("formulaire ajouté à la base de donnée avec l'id =", formId);
                 await sendFileData();
-                //await generateProfile(formId)
+                await generateProfile(formId)
             }
 
         } catch(error) {

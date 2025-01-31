@@ -48,7 +48,7 @@ export function Details() {
         }, [clientid])
     
     
-    
+        console.log("DETAILSDATA = ", detailsData)
     
     return(
         <div className="details">

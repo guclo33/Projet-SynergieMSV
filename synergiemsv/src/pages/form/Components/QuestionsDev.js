@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { questionDev1, questionDev2, questionDev3 } from "../questionArray";
 import { useDispatch, useSelector } from "react-redux";
-import { addKeyValue } from "../Redux/formSlice";
+import { addValueForm, addValueInfo } from "../Redux/formSlice";
 import { addPage, removePage } from "../Redux/pageSlice";
 import { AuthContext } from "../../AuthContext";
 import { clearFile } from "../Redux/fileSlice";
@@ -11,7 +11,7 @@ import { testFormObject } from "../testFormObject";
 export function QuestionsDev () {
     const [validated, setValidated] = useState(false)
     const dispatch = useDispatch();
-    const form = useSelector((state) => state.session.form);
+    const {form, info} = useSelector((state) => state.session.form);
     const page = useSelector((state) => state.session.page);
     const file = useSelector((state) => state.file);
     const fileState = useSelector(state => state.file)
@@ -35,7 +35,7 @@ export function QuestionsDev () {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        dispatch(addKeyValue({key: name, value: value}))
+        dispatch(addValueForm({key: name, value: value}))
     }
 
     //pour mettre le fichier en base64
@@ -56,13 +56,17 @@ export function QuestionsDev () {
     const sendFileData = async () => {
         if (!fileUrl) return; 
 
-        const fileObj = await base64ToFile(fileUrl, `${form.firstName} ${form.lastName}.png`); 
-        console.log("file après base64 to File", fileObj)
+        const fileObj = await base64ToFile(fileUrl, `${info.firstName} ${info.lastName}.png`); 
+        
         const formData = new FormData();
         formData.append("file", fileObj);
+        
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value, " (Type: " + typeof value + ")");
+        }
 
         try {
-            const response = await fetch (`${apiUrl}/form/photo/`, {
+            const response = await fetch (`${apiUrl}/api/form/photo`, {
                 method : "POST",
                 credentials : "include",
                 body : formData
@@ -73,6 +77,7 @@ export function QuestionsDev () {
                 clearFile()
                 persistor.purge(); 
                 sessionStorage.clear();
+                dispatch(addPage())
             }
 
         } catch(error) {
@@ -80,21 +85,46 @@ export function QuestionsDev () {
         }
     }
 
+    const generateProfile = async (formId) => {
+
+        try{
+            const response = fetch(`${apiUrl}/api/form/generateProfile/${formId}`, {
+                method: "GET",
+                credentials : "include",
+            });
+            if(response.ok){
+                const data = await response.json();
+                console.log("Message from python", data.message)
+                console.log("profil généré avec succès")
+            }
+        } catch (error) {
+            console.log("couldn't generate profile")
+        }
+
+    }
+
     const sendFormData = async () => {
         
         try {
-            const response = await fetch(`${apiUrl}/form/`, {
+            const response = await fetch(`${apiUrl}/api/form/`, {
                 method : "POST",
                 credentials : "include",
                 headers : {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify(testFormObject)
+                body : JSON.stringify({
+                    form: form,
+                    info: info,
+
+                })
                 
             });
             if(response.ok) {
-                console.log("image uploadé dans AWS");
-                //await sendFileData();
+                const data = await response.json()
+                const formId = data.id
+                console.log("formulaire ajouté à la base de donnée avec l'id =", formId);
+                await sendFileData();
+                await generateProfile(formId)
             }
 
         } catch(error) {
@@ -103,7 +133,7 @@ export function QuestionsDev () {
     }
 
 
-    console.log("form ==", form, "file avant transformation", fileUrl) 
+    console.log("form ==", form, "Infos =", info, "file avant transformation", fileUrl) 
     console.log("File State:", fileState);
     
     
@@ -121,7 +151,7 @@ export function QuestionsDev () {
     
 
     const handleSubmit = async () => {
-        await sendFormData();
+        await sendFileData();
         
         
     }

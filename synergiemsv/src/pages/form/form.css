@@ -90,6 +90,11 @@
     grid-column: 1/-1;
     grid-row: 5;
 }
+.form .setPage{
+    grid-column: 1/-1;
+    width:100%;
+    
+}
 
 .question label {
     grid-column: 1;

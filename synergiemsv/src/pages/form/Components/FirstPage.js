@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage,  } from '../Redux/pageSlice'
-import { addKeyValue} from '../Redux/formSlice';
+import { addValueForm, addValueInfo} from '../Redux/formSlice';
 import { setFile } from "../Redux/fileSlice";
 
 export function FirstPage () {
     const [validated,setValidated] = useState(false)  
     const [modify, setModify] = useState(false)
     const [fileObj, setFileObj] = useState({})
-        
-    const form = useSelector((state) => state.session.form);
+    const {pageNum, totalPage} = useSelector((state) => state.session.page)
+    const {form, info} = useSelector((state) => state.session.form);
     const file = useSelector((state) => state.file)
     const {fileURL} = file
     
@@ -17,16 +17,24 @@ export function FirstPage () {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(form["firstName"] && form["lastName"] && form["email"] && form["phone"] && fileURL && form["forfait"]) {
+        if(info["firstName"] && info["lastName"] && info["email"] && info["phone"] && fileURL) {
             setValidated(true)
         } else {
             setValidated(false)
         }
-    }, [fileURL])
+    }, [fileURL, form])
 
     useEffect(() => {
         console.log("fileURL rechargé après refresh :", fileURL);
     }, [fileURL]);
+
+    useEffect(() => {
+        if(info && info.firstName) {
+            dispatch(addValueForm({key:"Prénom", value: info.firstName}))
+        }
+    }, [info.firstName])
+
+    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
 
     //fonction pour transformer file en base64
     const convertFileToBase64 = (file) => {
@@ -57,9 +65,11 @@ export function FirstPage () {
         }
     }
 
-    console.log("file==", file, "fileURL ==",fileURL )
+    console.log("file==", file, "fileURL ==",fileURL, "info=", info )
 
-    
+    const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
     
 
     return (
@@ -77,32 +87,32 @@ export function FirstPage () {
             <div className="form">
                 <div className="questions">
                     <label htmlFor="firstName">Prénom</label>
-                    <input name="firstName" type="text" value={form.firstName} onChange={(e) => dispatch(addKeyValue({key: 'firstName', value: e.target.value}))} required/>
+                    <input name="firstName" type="text" value={info.firstName} onChange={(e) => dispatch(addValueInfo({key: 'firstName', value: capitalizeFirstLetter(e.target.value)}))} required/>
                 </div>   
                 <div className="questions">  
                     <label htmlFor="lastName">Nom</label>
-                    <input name="lastName" type="text" value={form.lastName} onChange={(e) => dispatch(addKeyValue({key: 'lastName', value: e.target.value}))} required/>
+                    <input name="lastName" type="text" value={info.lastName} onChange={(e) => dispatch(addValueInfo({key: 'lastName', value: capitalizeFirstLetter(e.target.value)}))} required/>
                 </div>     
                 <div className="questions">
                     <label htmlFor="email">Email</label>
-                    <input name="email" type="email" value={form.email} onChange={(e) => dispatch(addKeyValue({key: 'email', value: e.target.value}))} required/>
+                    <input name="email" type="email" value={info.email} onChange={(e) => dispatch(addValueInfo({key: 'email', value: e.target.value.toLowerCase()}))} required/>
                 </div>   
                 <div className="questions">    
                 <label htmlFor="phone">Téléphone</label>
-                <input name= "phone" type="tel" value={form.phone} onChange={(e) => dispatch(addKeyValue({key: 'phone', value: e.target.value}))} required />
+                <input name= "phone" type="tel" value={info.phone} onChange={(e) => dispatch(addValueInfo({key: 'phone', value: e.target.value}))} required />
                 </div>
                 <div className="questionsPhoto">    
                     <label htmlFor="file">Photo de profil</label>
                     {fileURL ? modify ? (
                         <div className="modifyProfil">
-                            <img className="profilPhoto" src={fileURL} alt={form.firstName + " " + form.lastName} />
+                            <img className="profilPhoto" src={fileURL} alt={info.firstName + " " + info.lastName} />
                             <input type="file"  accept="image/*"  onChange={handleFileChange} />
                             <button className="annulerButton" onClick={()=> setModify(false)}>Annuler</button>
                             
                         
                         </div> ): (
                         <div className="questionsPhoto">
-                            <img className="profilPhoto" src={fileURL} alt={form.firstName + " " + form.lastName} />
+                            <img className="profilPhoto" src={fileURL} alt={info.firstName + " " + info.lastName} />
                             <button onClick={() => setModify(true)}>Modifier</button>
                         </div>
                         
@@ -115,7 +125,7 @@ export function FirstPage () {
                 </div>
                 
                 <button 
-                                disabled={validated}
+                                disabled={!validated}
                                 className="firstButton"
                                 style={{
                                     backgroundColor: !validated ? '#ccc' : '#4CAF50',  
@@ -125,6 +135,15 @@ export function FirstPage () {
                                 }} 
                                 onClick={() => dispatch(addPage())}>Suivant
                 </button>
+                <div className="setPage">
+                                <h5>Retourner à la page :</h5>
+                                <div className="setPageNumber">
+                                    {pageArray.slice(0,totalPage+1).map( num => ( 
+                                        <p key={num} onClick={(e) => dispatch(setPage(num-1))}>{num}</p>
+                                    ))
+                                    }
+                                </div>
+                </div>
         </div>
     </div>
     )

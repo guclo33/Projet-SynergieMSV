@@ -36,7 +36,7 @@ const filePersistConfig = {
 const persistConfig = {
   key: 'root', 
   storage: sessionStorage, 
-  whitelist: ['form', 'page'], 
+  whitelist: ['form', 'page', 'info'], 
 };
 
 const sessionPersistedReducer = persistReducer(persistConfig, combineReducers({

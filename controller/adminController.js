@@ -577,11 +577,11 @@ const getProfilePhoto = async(req, res) => {
     console.log("nomLeader et clientName", nomLeader, clientName)
     const s3params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `Synergia/${nomLeader}/photos/${clientName}.png`,
+        Key: `Synergia/Photos/${clientName}.png`,
         Expires: 7200,
     }
 
-    console.log("nomLeader et clientName", nomLeader, clientName,"s3Params", s3params)
+    
     
     try {
 

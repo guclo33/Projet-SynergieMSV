@@ -11,7 +11,7 @@ const loginQuery = async (userNameOrEmail) =>  {
 const getAdminHomeData = async () => {
     const leadersData = await pool.query("SELECT DISTINCT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, c.date_presentation as date_presentation, c.echeance as echeance, c.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id ORDER BY c.priorite" );
 
-    const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c JOIN leader l ON c.leader_id = l.id ORDER BY id")
+    const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c LEFT JOIN leader l ON c.leader_id = l.id ORDER BY id")
 
     const groupesData = await pool.query("SELECT * from groupes ORDER BY id")
 
@@ -152,7 +152,7 @@ const getDetailsData = async (clientid, id) => {
 
     //Pour Admin
 
-    const info = await pool.query("SELECT * FROM client left JOIN profile ON client.id = profile.client_id and client.profile_id is not null left JOIN leader ON client.leader_id = leader.id and client.leader_id is not null where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
+    const info = await pool.query("SELECT * FROM client JOIN client_profile on client.id = client_profile.client_id join profile ON client_profile.profile_id = profile.id JOIN leader ON client.leader_id = leader.id and client.leader_id is not null where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
 
     console.log("info", info)
 

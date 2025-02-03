@@ -23,6 +23,7 @@ export function GroupeList() {
     const [activeGroups, setActiveGroups] = useState([])
     const {groupesData, groupesClients} = useSelector((state) => state.admin.groupesData)
     const [modifiedGroup , setModifiedGroup] = useState({})
+    const [search, setSearch] = useState("")
     const dispatch = useDispatch()
     const apiUrlLocal = process.env.REACT_APP_RENDER_API || 'http://localhost:3001'
     
@@ -48,9 +49,10 @@ export function GroupeList() {
     
     useEffect(() => {
         const selectedGroup = groupesData.filter(group => group.active === active)
-        setActiveGroups(selectedGroup) 
+        const searchedGroup = selectedGroup.filter(group => group.group_name.toLowerCase().includes(search))
+        setActiveGroups(searchedGroup) 
         
-    }, [groupesData])
+    }, [groupesData, active, search])
 
     
 
@@ -211,7 +213,10 @@ export function GroupeList() {
         
     }
     
-
+    const handleSearch = (e) => {
+        const {value} = e.target
+        setSearch(value.toLowerCase())
+    }
     
     
 
@@ -281,8 +286,12 @@ export function GroupeList() {
     return (
         <div className="gestionGroupe">
             <h2>Vos groupes de formation :</h2>
-            <label htmlFor="active?">Voir vos groupes inactifs</label>
-            <input type="checkbox" checked={!active} onChange={() => setActive(!active)} />
+            <div className="activeSearch">
+                <label htmlFor="active?">Voir vos groupes inactifs</label>
+                <input type="checkbox" checked={!active} onChange={() => setActive(!active)} />
+                <label htmlFor="search">Recherchez votre groupe</label>
+                <input name="search" type="search" onChange={handleSearch} value={search} />
+            </div>
     
            
             <div className="groupList">

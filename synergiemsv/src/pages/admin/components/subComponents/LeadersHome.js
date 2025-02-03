@@ -10,6 +10,7 @@ export function LeadersHome () {
     const [active, setActive] = useState(true)
     const [modifyId, setModifyId] = useState(null);
     const {profilePhotos, setClientsData, clientsData, leadersData} = useContext(AdminContext)
+    const [search, setSearch] = useState("")
     
     console.log("profilePhotos =", profilePhotos)
     
@@ -111,10 +112,16 @@ export function LeadersHome () {
             console.log("couldn't update leader overview data" , error)
         }
     }
+    
+    const handleSearch = (e) => {
+        const {value} = e.target
+        setSearch(value.toLowerCase())
+    }
 
     console.log("newInfos", newInfos)
 
     const leadersActif = clientsData.filter(leader => leader.active !== undefined && leader.active === active);
+    const clientSearched = leadersActif.filter(client => client.nom.toLowerCase().includes(search))
 
     return (
         <div className="leadersHome">
@@ -122,8 +129,11 @@ export function LeadersHome () {
              <div className="input">  
                 <input id = "active" type="checkbox" checked={!active} onChange={handleCheck} />
                 <label htmlFor="active">Voir les clients inactifs</label>
+                <label htmlFor="search">Recherchez votre groupe</label>
+                <input name="search" type="search" onChange={handleSearch} value={search} />
+            
             </div> 
-            {leadersActif.map((leader) => (
+            {clientSearched.map((leader) => (
                 modifyId == leader.id ? (
                     <form className="leadersList" onSubmit={handleSubmit}>
                         <div className="info">

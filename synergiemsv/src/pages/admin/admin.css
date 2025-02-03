@@ -59,6 +59,10 @@
 
 .leadersHome h2, .leadersHome .input {
     text-align: center;
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
 }
 
 .AdminHome h3{
@@ -949,7 +953,7 @@ textarea {
     display: grid;
     grid-template-rows: auto auto auto auto auto;
     grid-template-columns: 1fr 1fr 1fr;
-    margin: 2rem 0;
+    margin: 0.5rem 0;
     border: 1px solid var(--secondary-color);
     box-shadow: 0 1px 2px var(--primary-color);
     border-radius: 20px;
@@ -1098,4 +1102,11 @@ textarea {
     grid-row: 5;
     grid-column: 1/-1;
     justify-self: center;
+}
+
+.activeSearch {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
 }

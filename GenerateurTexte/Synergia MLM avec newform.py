@@ -1,9 +1,7 @@
 import os
 import sys
-import pandas as pd
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
-pd.set_option('future.no_silent_downcasting', True)
 from openai import OpenAI
 from docx import Document
 from AWS_S3 import synergia_upload_s3

@@ -32,7 +32,7 @@ const createForm = async (form, info) => {
 
             await client.query(
                 "INSERT INTO questionnaire_client (client_id, questionnaire_id) VALUES ($1, $2)",
-                [client_id, form_id.rows[0].id]
+                [client_id, form_id]
             );
 
             await client.query("UPDATE client SET date_presentation = $1 WHERE id = $2", [info.date_presentation, client_id])
@@ -60,8 +60,9 @@ const createForm = async (form, info) => {
                 "INSERT INTO client (nom_client, email, leader_id, phone, date_presentation) VALUES($1, $2, $3, $4, $5) RETURNING id", 
                 [fullName, info.email, info.leader_id, info.phone, info.date_presentation]
             );
-
+            
             client_id = result2.rows[0].id;
+            console.log("CLIENT_ID==", client_id)
 
             const form_result = await client.query(
                 "INSERT INTO questionnaire (client_id, form) VALUES ($1, $2::jsonb) RETURNING id", 
@@ -74,7 +75,7 @@ const createForm = async (form, info) => {
 
             await client.query(
                 "INSERT INTO questionnaire_client (client_id, questionnaire_id) VALUES ($1, $2)",
-                [client_id, form_id.rows[0].id]
+                [client_id, form_id]
             );
 
             const exist = await client.query(

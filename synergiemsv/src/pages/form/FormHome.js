@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import { NavLink } from 'react-router-dom';
 import { Outlet } from 'react-router';
 import { AuthContext } from '../AuthContext';
+import { Form } from 'react-router-dom';
 import image from '../../Images/logo2 sans fond.png';
 
 export function FormHome() {
@@ -9,7 +10,13 @@ export function FormHome() {
 
   return (
     <div className="form">
-                <nav className="navForm">
+      <Outlet/>
+    </div>
+  );
+}
+
+/*
+<nav className="navForm">
                     <ul>
                         
                         <li><NavLink to={user ? `/${user.role}/${user.id}` : '/'} end className={({ isActive }) => (isActive ? 'isActive' : '')} >Accueil</NavLink></li>
@@ -19,6 +26,5 @@ export function FormHome() {
                 </nav>
                 
                 <Outlet />
-            </div>
-  );
-}
+
+*/

@@ -63,6 +63,13 @@ export function PagesDISC() {
     console.log("different = ", different, "repondu=", repondu, "minMax=", minMax, "validated =", validated)
 
    console.log("pageArray.slice(0,pageNum+1)", pageArray.slice(0,pageNum+1))
+
+   const handleNextPage = ()=> {
+        dispatch(addPage());
+        setTimeout(() => {  
+        window.scrollTo({ top: 0, behavior: 'smooth' }) 
+        },50)
+       }
     
     return (
         <div className="page">
@@ -84,7 +91,7 @@ export function PagesDISC() {
                         boxShadow: !validated ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.2)',  
                         opacity: !validated ? 0.4 : 1,  
                     }} 
-                    onClick={() => dispatch(addPage())}>Suivant</button>
+                    onClick={handleNextPage}>Suivant</button>
             </div>
             <div className="setPage">
                 <h5>Retourner à la page :</h5>

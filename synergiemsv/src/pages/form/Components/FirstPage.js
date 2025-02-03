@@ -12,18 +12,67 @@ export function FirstPage () {
     const {pageNum, totalPage} = useSelector((state) => state.session.page)
     const {form, info} = useSelector((state) => state.session.form);
     const file = useSelector((state) => state.file)
-    const {fileURL} = file
+    const {fileURL} = file;
+    const [errors, setErrors] = useState({ email: '', phone: '' });
+    
     
         
     const dispatch = useDispatch();
 
+
+
     useEffect(() => {
-        if(info["firstName"] && info["lastName"] && info["email"] && info["phone"] && fileURL) {
+        const newErrors = { email: '', phone: '' };
+        let valid = true
+
+        function formatPhoneNumber(input) {
+                
+            const cleaned = input.replace(/\D/g, "");
+              
+                
+            if (cleaned.length === 11 && cleaned[0] === "1") {
+                // Format : 1-XXX-XXX-XXXX
+                return `${cleaned[0]}-${cleaned.slice(1, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+            }
+            // Si le numéro contient 10 chiffres
+            else if (cleaned.length === 10) {
+                // Format : XXX-XXX-XXXX
+                return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+            }
+            // Dans le cas où le nombre de chiffres est inattendu, retourner la valeur nettoyée ou lever une erreur
+            return cleaned;
+            }
+
+            if (info.phone) {
+            const cleanedPhone = info.phone.replace(/\D/g, "");
+            // Le numéro est valide s'il contient 10 chiffres ou 11 chiffres commençant par "1"
+            if (cleanedPhone.length !== 10 && !(cleanedPhone.length === 11 && cleanedPhone[0] === "1")) {
+                newErrors.phone = "Numéro de téléphone invalide";
+                valid = false;
+            } else {
+                // Si valide, on formate et met à jour l'info dans le store
+                const formattedPhone = formatPhoneNumber(info.phone);
+                dispatch(addValueInfo({ key: "phone", value: formattedPhone }));
+            }
+            } else {
+            // Si le champ est vide et qu'il est requis, vous pouvez ajouter une erreur
+            newErrors.phone = "Le numéro de téléphone est requis";
+            valid = false;
+            }
+            
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
+            newErrors.email = "Email invalide";
+            valid = false;
+          }
+         
+          setErrors(newErrors)
+        
+        if(info["firstName"] && info["lastName"] && valid && fileURL) {
             setValidated(true)
         } else {
             setValidated(false)
         }
-    }, [fileURL, form])
+    }, [fileURL, form, info])
 
     useEffect(() => {
         console.log("fileURL rechargé après refresh :", fileURL);
@@ -36,6 +85,25 @@ export function FirstPage () {
     }, [info.firstName])
 
     const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+
+    function formatPhoneNumber(input) {
+            
+            const cleaned = input.replace(/\D/g, "");
+          
+            
+            if (cleaned.length === 11 && cleaned[0] === "1") {
+              // Format : 1-XXX-XXX-XXXX
+              return `${cleaned[0]}-${cleaned.slice(1, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+            }
+            // Si le numéro contient 10 chiffres
+            else if (cleaned.length === 10) {
+              // Format : XXX-XXX-XXXX
+              return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+            }
+            // Dans le cas où le nombre de chiffres est inattendu, retourner la valeur nettoyée ou lever une erreur
+            return cleaned;
+          }
+
 
     //fonction pour transformer file en base64
     const convertFileToBase64 = (file) => {
@@ -144,6 +212,10 @@ export function FirstPage () {
                                 }} 
                                 onClick={handleNextPage}>Suivant
                 </button>
+                <div className="formatError">
+                    <p>{errors.email? errors.email : null}</p>
+                    <p>{errors.phone? errors.phone : null}</p>
+                </div>
                 <div className="setPage">
                                 <h5>Retourner à la page :</h5>
                                 <div className="setPageNumber">

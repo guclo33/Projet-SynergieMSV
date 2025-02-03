@@ -152,7 +152,7 @@ const getDetailsData = async (clientid, id) => {
 
     //Pour Admin
 
-    const info = await pool.query("SELECT * FROM client JOIN client_profile on client.id = client_profile.client_id join profile ON client_profile.profile_id = profile.id JOIN leader ON client.leader_id = leader.id and client.leader_id is not null where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
+    const info = await pool.query("SELECT * FROM client left JOIN client_profile on client.id = client_profile.client_id left join profile ON client_profile.profile_id = profile.id left JOIN leader ON client.leader_id = leader.id where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
 
     console.log("info", info)
 

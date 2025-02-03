@@ -73,7 +73,7 @@ export function PagesDISC() {
     
     return (
         <div className="page">
-            <h1>Question {pageNum}</h1>
+            <h1>Question {pageNum} sur 25</h1>
             <QuestionDISC questionArray={question1Array}/>
             <QuestionDISC questionArray={question2Array}/>
             <QuestionDISC questionArray={question3Array}/>

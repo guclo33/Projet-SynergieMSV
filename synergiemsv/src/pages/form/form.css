@@ -124,7 +124,19 @@
 
 .setPage {
     display: grid;
-    grid-template-rows: 1fr 1fr
+    grid-template-rows: 1fr 1fr;
+    grid-row: 7;
+}
+
+.formatError {
+    width:100%;
+    align-self: center;
+    justify-self: center;
+    
+}
+
+.formatError p {
+    color: red;
 }
 
 .setPage h5 {

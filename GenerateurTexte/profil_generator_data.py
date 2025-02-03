@@ -20,7 +20,7 @@ def get_profil_data (id) :
     
     form = fetched_form[0]
     
-    cursor.execute("SELECT nom_client FROM client WHERE client_id = %s", [fetched_form[1]])
+    cursor.execute("SELECT nom_client FROM client WHERE id = %s", [fetched_form[1]])
     fetched_name = cursor.fetchone()
     
     cursor.execute("SELECT group_name FROM groupes JOIN groupe_clients ON groupes.id = groupe_clients.groupe_id WHERE client_id = %s", [fetched_form[1]])

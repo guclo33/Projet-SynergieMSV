@@ -7,8 +7,6 @@ pd.set_option('future.no_silent_downcasting', True)
 from openai import OpenAI
 from docx import Document
 from AWS_S3 import synergia_upload_s3
-from canvaAutofill import autofill_job
-from fonction_database import update_database
 from dotenv import load_dotenv
 import profil_generator_data
 import json
@@ -116,7 +114,7 @@ bref_user2= f"Voici un deuxième exemple de Monsieur test. Dans un texte de **MA
 
 bref_assistant2= "Guillaume est une personne méthodique et analytique, guidée par un désir de comprendre les choses en détail et de s'assurer que tout suit un ordre logique. Son approche structurée et son attention aux détails font de lui un professionnel organisé, capable de garantir des résultats d'excellence. Il vise des standards élevés et cherche constamment à perfectionner son travail.\n Sa prudence et son analyse réfléchie des situations montrent sa capacité à évaluer les options avant de prendre des décisions. Bien qu'il préfère analyser les données plutôt que d'agir sur des impulsions, il est déterminé à atteindre ses objectifs une fois sa décision prise. Cette rigueur est renforcée par une grande patience et une tolérance pour les situations complexes, lui permettant de persévérer même dans les environnements exigeants.\n Dans ses interactions sociales, Guillaume est plus réservé, préférant se concentrer sur les faits concrets plutôt que sur les discussions superficielles. Il valorise le tact et la bienveillance dans ses relations, mais est avant tout motivé par le besoin d'assurer une qualité irréprochable dans tout ce qu'il fait. Sa capacité à évaluer l'impact de ses actions sur les autres montre un souci de préserver l'équilibre.\n En somme, Guillaume est une personne rigoureuse, organisée et analytique, engagée à atteindre des résultats de haute qualité tout en maintenant une approche réfléchie et structurée."
 
-bref_prompt= f"""Maintenant, voici le véritable questionnaire de **** {first_name} **** qui nous servira pour toute la suite de la conversation. Execute la même tâche que les deux exemples précédents dans un **MAXIMUM DE 200 MOTS** en utilisant principalement cette portion du formulaire "form_1_15 :\n {form_1_15}. Voici les questions 16 à 24 du formulaire "form_16_24" : {form_16_24}. SVP, intègre très subtilement les réponses de cette dernière portion du formulaire afin d'ajouter un léger accent au profil, simplement en captant l’essence des motivations profondes de la personne mais sans que cette section ne prenne le dessus. Fais 3 paragraphes
+bref_prompt= f"""Maintenant, voici le véritable questionnaire de {first_name} qui nous servira pour toute la suite de la conversation. Execute la même tâche que les deux exemples précédents dans un **MAXIMUM DE 200 MOTS** en utilisant principalement cette portion du formulaire "form_1_15 :\n {form_1_15}. Voici les questions 16 à 24 du formulaire "form_16_24" : {form_16_24}. SVP, intègre très subtilement les réponses de cette dernière portion du formulaire afin d'ajouter un léger accent au profil, simplement en captant l’essence des motivations profondes de la personne mais sans que cette section ne prenne le dessus. Fais 3 paragraphes
 
 À partir du form_1_15, dis-moi quels serait les % disc de la personne. Exemple : Marie-Soleil est 85% rouge, 78% jaune, 30% verte et 28% bleu."""
 

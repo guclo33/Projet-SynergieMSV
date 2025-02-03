@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage,  } from '../Redux/pageSlice'
 import { addValueForm, addValueInfo} from '../Redux/formSlice';
 import { setFile } from "../Redux/fileSlice";
+import image from '../../../Images/logo2 sans fond.png';
 
 export function FirstPage () {
     const [validated,setValidated] = useState(false)  
@@ -70,11 +71,19 @@ export function FirstPage () {
     const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     }
+
+    const handleNextPage = ()=> {
+        dispatch(addPage());
+        setTimeout(() => {  
+            window.scrollTo({ top: 0, behavior: 'smooth' }) 
+            },50)
+    }
     
 
     return (
         <div className="page">
             <h2>Informations</h2>
+            
                 <p>Vous vous apprêtez à répondre à un court questionnaire de 24 questions. Vous êtes invités à y répondre assez spontanément : la première réponse qui vous vient en tête est probablement la bonne!
 
                 Pour chacune des questions suivantes, veuillez choisir l'énoncé qui vous correspond le plus, puis celui qui vous correspond le moins. Ensuite, attribuez une note de 1 à 9 aux deux affirmations restantes. (Veuillez ne pas donner la même note deux fois).
@@ -133,7 +142,7 @@ export function FirstPage () {
                                     boxShadow: !validated ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.2)',  
                                     opacity: !validated ? 0.4 : 1,  
                                 }} 
-                                onClick={() => dispatch(addPage())}>Suivant
+                                onClick={handleNextPage}>Suivant
                 </button>
                 <div className="setPage">
                                 <h5>Retourner à la page :</h5>

@@ -9,6 +9,7 @@ import { LastPage } from './Components/LastPage';
 import { PagesDISC } from './Components/PagesDISC';
 import { QuestionsDev } from './Components/QuestionsDev';
 import { decryptParams } from './Components/cryptoFunctions';
+import image from '../../Images/logo2 sans fond.png'
 
 
 
@@ -87,6 +88,7 @@ export function Form() {
   return (
         <div className="questionnaire">
             <h1>Questionnaire Synergia</h1>
+            <img className="formLogo" src={image} alt="logo SynergieMSV" />
             {renderPage()}
         </div>
   );

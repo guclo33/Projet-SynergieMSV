@@ -151,7 +151,7 @@ export function QuestionsDev () {
     
 
     const handleSubmit = async () => {
-        await sendFileData();
+        await sendFormData();
         
         
     }

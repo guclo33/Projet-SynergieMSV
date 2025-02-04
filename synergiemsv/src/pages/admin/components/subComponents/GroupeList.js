@@ -281,7 +281,46 @@ export function GroupeList() {
             console.log("couldn't update the group", error)
         }
     }
-    
+    const handleShowProfile =(e) => {
+        const {id, checked} = e.target
+        const value = Boolean(!checked)
+        console.log("ID", id, "VALUE", value, "CHECKED", checked)
+
+        try {
+            const response = fetch(`${apiUrlLocal}/api/admin/${user.id}/group/showProfile/${id}`,{
+                method: "PUT",
+                credentials: "include",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : value
+            });
+            if(response.ok) {
+                console.log("réussi la mise à jour du showProfile!")
+            }
+
+        } catch(error) {
+        console.log("N'a pas updater ShowProfile", error)
+        }
+    }
+
+    const handleGenerateCanva =(e) => {
+        const {id} = e.target
+        
+        try {
+            const response = fetch(`${apiUrlLocal}/api/admin/${user.id}/group/generateCanva/${id}`,{
+                method: "GET",
+                credentials: "include",
+            });
+            if(response.ok) {
+                console.log("réussi l'autofill Canva")
+            }
+
+        } catch(error) {
+        console.log("N'a pas fait l'autofill Canva", error)
+        }
+    }
+
     
     return (
         <div className="gestionGroupe">
@@ -376,6 +415,13 @@ export function GroupeList() {
                                                 <img className="imgSmall" src={profilePhotos[group.nom_leader] || iconeProfile} alt={group.nom_leader} />
                                                 <p><Link to={`../details/${leadersData.find(leader => leader.nom === group.nom_leader).clientid}`}>{group.nom_leader}</Link></p>
                                                 <p>{leadersData.find(leader => leader.nom === group.nom_leader)?.email || "Email inconnu"}</p>
+                                                <div className="showProfileInput">
+                                                    <button id={group.leader_id} className="canva" onClick={handleGenerateCanva}>Générer Canva</button>
+                                                    <label htmlFor="showProfile">Montrer profil?</label>
+                                                    <input id={leadersData.find(leader => leader.nom === group.nom_leader).clientid} type="checkbox" name="showProfile" checked={clientsData.find(leader => leader.nom_client === group.nom_leader)?.showProfile || false} onChange={handleShowProfile}/>
+                                                    
+                                                </div>
+                                                
                                             </div>
                                         </>
                                     )}
@@ -387,6 +433,12 @@ export function GroupeList() {
                                                 <img className="imgSmall" src={profilePhotos[client.nom] || iconeProfile} alt={client.nom} />
                                                 <p><Link to={`../details/${client.id}`}>{client.nom}</Link></p>
                                                 <p>{client.email}</p>
+                                                <div className="showProfileInput">
+                                                    <button id={client.id} className="canva" onClick={handleGenerateCanva}>Générer Canva</button>
+                                                    <label htmlFor="showProfile">Montrer profil?</label>
+                                                    <input id={client.id} type="checkbox" name="showProfile" checked={client && client.showProfile  ? client.showProfile : false} onChange={handleShowProfile}/>
+                                                </div>
+                                                
                                             </div>
                                         ))
                                     ) : (

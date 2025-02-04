@@ -59,7 +59,7 @@ export function FirstPage () {
             newErrors.phone = "Le numéro de téléphone est requis";
             valid = false;
             }
-            
+
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
             newErrors.email = "Email invalide";
             valid = false;
@@ -84,25 +84,9 @@ export function FirstPage () {
         }
     }, [info.firstName])
 
-    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
 
-    function formatPhoneNumber(input) {
-            
-            const cleaned = input.replace(/\D/g, "");
-          
-            
-            if (cleaned.length === 11 && cleaned[0] === "1") {
-              // Format : 1-XXX-XXX-XXXX
-              return `${cleaned[0]}-${cleaned.slice(1, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
-            }
-            // Si le numéro contient 10 chiffres
-            else if (cleaned.length === 10) {
-              // Format : XXX-XXX-XXXX
-              return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
-            }
-            // Dans le cas où le nombre de chiffres est inattendu, retourner la valeur nettoyée ou lever une erreur
-            return cleaned;
-          }
+    
 
 
     //fonction pour transformer file en base64
@@ -146,11 +130,19 @@ export function FirstPage () {
             window.scrollTo({ top: 0, behavior: 'smooth' }) 
             },50)
     }
-    
+    const handleSetPage = (num) => {
+            
+            if(!validated && num-1>pageNum){
+                return
+            }
+            dispatch(setPage(num-1))
+            
+        }
 
     return (
         <div className="page">
-            <h2>Informations</h2>
+            <h1 className="formTitle">Questionnaire Synergia</h1>
+            
             
                 <p>Vous vous apprêtez à répondre à un court questionnaire de 24 questions. Vous êtes invités à y répondre assez spontanément : la première réponse qui vous vient en tête est probablement la bonne!
 
@@ -220,7 +212,13 @@ export function FirstPage () {
                                 <h5>Retourner à la page :</h5>
                                 <div className="setPageNumber">
                                     {pageArray.slice(0,totalPage+1).map( num => ( 
-                                        <p key={num} onClick={(e) => dispatch(setPage(num-1))}>{num}</p>
+                                        <p 
+                                        style={{
+                                            backgroundColor: !validated ? "red" : "white",
+                                            filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
+                                        }}
+
+                                        key={num} onClick={() => handleSetPage(num)}>{num}</p>
                                     ))
                                     }
                                 </div>

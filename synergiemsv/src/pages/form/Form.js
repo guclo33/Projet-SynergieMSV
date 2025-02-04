@@ -23,7 +23,9 @@ export function Form() {
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
 
     console.log("page",pageNum)
-    
+    window.addEventListener("storage", (event) => {
+        console.log("Événement storage :", event);
+      });
 
     useEffect(()=> {
         const urlParams = new URLSearchParams(window.location.search)
@@ -78,16 +80,16 @@ export function Form() {
         if(pageNum === 26) {
             return <LastPage />
         }
-        if(pageNum >= 1 && pageNum <=24){
+        //if(pageNum >= 1 && pageNum <=24){
         return <PagesDISC />;
-        }
+        //}
         return <h1>ERREUR</h1>
     };
 
 
   return (
         <div className="questionnaire">
-            <h1>Questionnaire Synergia</h1>
+            
             <img className="formLogo" src={image} alt="logo SynergieMSV" />
             {renderPage()}
         </div>

@@ -31,6 +31,7 @@
         "xlsx": "^0.18.5"
     },
     "scripts": {
+        "postinstall": "cd GenerateurTexte && pip install -r requirements.txt && cd ..",
         "start": "nodemon ./server/server.js"
     }
 }

@@ -15,7 +15,7 @@ export function PagesDISC() {
         
     const dispatch = useDispatch();
     const questionNum = pageNum - 1
-    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
 
     const answersArray = [form[question1Array[questionNum]], form[question2Array[questionNum]], form[question3Array[questionNum]], form[question4Array[questionNum]]];
 
@@ -70,6 +70,15 @@ export function PagesDISC() {
         window.scrollTo({ top: 0, behavior: 'smooth' }) 
         },50)
        }
+
+    const handleSetPage = (num) => {
+        
+        if(!validated && num-1>pageNum){
+            return
+        }
+        dispatch(setPage(num-1))
+        
+    }
     
     return (
         <div className="page">
@@ -80,7 +89,7 @@ export function PagesDISC() {
             <QuestionDISC questionArray={question4Array}/>
             <span style={{ color: repondu? "green" : "red"}}>Toutes les questions sont répondues</span>
             <span style={{ color: different? "green" : "red"}}>Toutes les réponses sont différentes</span>
-            <span style={{ color: minMax? "green" : "red"}}>Tu as une réponse à 0 et une à 10</span>
+            <span style={{ color: minMax? "green" : "red"}}>Tu dois avoir une sélection correspondant à 0 ainsi qu'une à 10</span>
             <div className="formButton">
                 <button onClick={() => dispatch(removePage())}>Retour</button>
                 <button 
@@ -97,7 +106,12 @@ export function PagesDISC() {
                 <h5>Retourner à la page :</h5>
                 <div className="setPageNumber">
                     {pageArray.slice(0,totalPage+1).map( num => ( 
-                        <p key={num} onClick={(e) => dispatch(setPage(num-1))}>{num}</p>
+                        <p 
+                        style={{
+                            backgroundColor: (!validated && pageNum === num-1) ? "red" : "white",
+                            filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
+                        }}
+                        id={num} key={num} onClick={() => handleSetPage(num)}>{num}</p>
                     ))
                     }
                 </div>

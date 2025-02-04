@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { questionDev1, questionDev2, questionDev3 } from "../questionArray";
 import { useDispatch, useSelector } from "react-redux";
 import { addValueForm, addValueInfo } from "../Redux/formSlice";
-import { addPage, removePage } from "../Redux/pageSlice";
+import { addPage, removePage, setPage } from "../Redux/pageSlice";
 import { AuthContext } from "../../AuthContext";
 import { clearFile } from "../Redux/fileSlice";
 import { persistor, store } from "../Redux/store";
@@ -12,10 +12,13 @@ export function QuestionsDev () {
     const [validated, setValidated] = useState(false)
     const dispatch = useDispatch();
     const {form, info} = useSelector((state) => state.session.form);
-    const page = useSelector((state) => state.session.page);
+    
+    const {pageNum, totalPage} = useSelector((state) => state.session.page)
     const file = useSelector((state) => state.file);
     const fileState = useSelector(state => state.file)
+    const pageArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]
     const fileUrl = fileState.fileURL;
+    
     
     const {apiUrl, user} = useContext(AuthContext)
 
@@ -31,6 +34,8 @@ export function QuestionsDev () {
         return <div>Chargement...</div>; 
     }
 
+    
+      
     
     
 
@@ -156,17 +161,27 @@ export function QuestionsDev () {
         
         
     }
+
+    const handleSetPage = (num) => {
+            
+            if(!validated && num-1>pageNum){
+                return
+            }
+            dispatch(setPage(num-1))
+            
+        }
     
     return(
         <div className="page">
             <h2>Questions à développement</h2>
             <div className="questionDev">
                 <h3>{questionDev1}</h3>
-                <textarea  name={questionDev1} value={form[questionDev1] ? form[questionDev1] : ""} onChange={handleChange} />
+                <textarea name={questionDev1} value={form[questionDev1] ? form[questionDev1] : ""} onChange={handleChange}               
+                />
             </div>
             <div className="questionDev">
                 <h3>{questionDev2}</h3>
-                <textarea type="text" name={questionDev2} value={form[questionDev2] ? form[questionDev2] : ""} onChange={handleChange} />
+                <textarea  type="text" name={questionDev2} value={form[questionDev2] ? form[questionDev2] : ""} onChange={handleChange} />
             </div>
             <div className="questionDev">
                 <h3>{questionDev3}</h3>
@@ -184,6 +199,20 @@ export function QuestionsDev () {
                     }}
                     onClick={handleSubmit}>Soumettre
                 </button>
+            </div>
+            <div className="setPage">
+                            <h5>Retourner à la page :</h5>
+                            <div className="setPageNumber">
+                                {pageArray.slice(0,totalPage+1).map( num => ( 
+                                    <p 
+                                    style={{
+                                        backgroundColor: !validated ? "red" : "white",
+                                        filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
+                                    }}
+                                    key={num} onClick={() => handleSetPage(num)}>{num}</p>
+                                ))
+                                }
+                </div>
             </div>
         </div>
     )

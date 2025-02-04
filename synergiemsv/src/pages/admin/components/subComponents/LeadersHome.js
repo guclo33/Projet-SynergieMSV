@@ -129,7 +129,7 @@ export function LeadersHome () {
              <div className="input">  
                 <input id = "active" type="checkbox" checked={!active} onChange={handleCheck} />
                 <label htmlFor="active">Voir les clients inactifs</label>
-                <label htmlFor="search">Recherchez votre groupe</label>
+                <label htmlFor="search">Recherchez votre client</label>
                 <input name="search" type="search" onChange={handleSearch} value={search} />
             
             </div> 

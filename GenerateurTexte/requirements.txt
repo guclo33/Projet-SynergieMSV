@@ -1,0 +1,7 @@
+openai
+python-docx
+python-dotenv
+pandas
+requests
+psycopg2-binary
+boto3

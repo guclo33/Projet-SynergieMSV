@@ -1131,3 +1131,14 @@ textarea {
     gap: 1rem;
     justify-content: center;
 }
+
+.editableField{
+    display: flex;
+}
+
+.editableField textarea {
+    min-height: 15rem;
+    overflow: auto;
+    flex:6;
+    
+}

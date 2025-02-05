@@ -1,10 +1,12 @@
 import React, {useState, useRef} from "react";
+import { EditableField } from "./editableField";
 
 
 export function Profile({detailsData}) {
     const [view, setView] = useState(false)
     const {info} = detailsData
     const sectionRef = useRef(null)
+    const [newInfo, setNewInfo] = useState({})
     
     const handleClick = () => {
         setView(!view)
@@ -14,6 +16,14 @@ export function Profile({detailsData}) {
         sectionRef.current.scrollIntoView({ behavior: "smooth" })
         }},100)
     }
+
+    const handleChange = (fieldName, newValue) => {
+        // Logique : faire un setState local ou un appel API
+        // Par exemple, si vous stockez `info` dans un state local :
+        setNewInfo(prev => ({ ...prev, [fieldName]: newValue }));
+    
+        // ou un appel : updateInfo(fieldName, newValue);
+      }
 
     if(!detailsData.info.profile_id) {
         return (
@@ -50,38 +60,131 @@ export function Profile({detailsData}) {
 
             </div>
             <div className="texteProfile">
-                <h5>En bref :</h5>
-                <p>{info.enbref}</p>
-                <h5>Tes forces mis en lumière:</h5>
-                <p>{info.forcesenlumieres}</p>
-                <h5>Tes défis portentiels:</h5>
-                <p>{info.defispotentiels}</p>
-                <h5>Perception du changement:</h5>
-                <p>{info.perceptionchangement}</p>
-                <h5>Perception des relations interpersonnelles :</h5>
-                <p>{info.relationsinterpersonnelles}</p>
-                <h5>Perception de la structure et de la prévisibilité :</h5>
-                <p>{info.perceptionstructure}</p>
-                <h5>Perceptions des défis, problèmes et difficultés :</h5>
-                <p>{info.perceptionproblemes}</p>
+                <EditableField
+                    label="En bref"
+                    name="enbref"
+                    value={info.enbref}
+                    
+                />
+                
+                
+                <EditableField
+                    label="Tes forces mis en lumière:"
+                    name="forcesenlumieres"
+                    value={info.forcesenlumieres}
+                    
+                />
+                
+                <EditableField
+                    label="Tes défis portentiels:"
+                    name="defispotentiels"
+                    value={info.defispotentiels}
+                    
+                />
+                
+                <EditableField
+                    label="Perception du changement:"
+                    name="perceptionchangement"
+                    value={info.perceptionchangement}
+                    
+                />
+                
+                <EditableField
+                    label="Perception des relations interpersonnelles :"
+                    name="relationsinterpersonnelles"
+                    value={info.relationsinterpersonnelles}
+                    
+                />
+                
+                <EditableField
+                    label="Perception de la structure et de la prévisibilité :"
+                    name="perceptionstructure"
+                    value={info.perceptionstructure}
+                    
+                />
+               
+                <EditableField
+                    label="Perceptions des défis, problèmes et difficultés :"
+                    name="perceptionproblemes"
+                    value={info.perceptionproblemes}
+                    
+                />
+                
+                
                 <h4>Tes archétypes</h4>
-                <h5>Tes motivations naturelle :</h5>
-                <p>{info.motivationsnaturelles}</p>
-                <h5>{info.archnum1}</h5>
-                <p>{info.textarch1}</p>
-                <h5>{info.archnum2}</h5>
-                <p>{info.textarch2}</p>
-                <h5>Toi et le marché du travail</h5>
-                <p>{info.toitravail}</p>
-                <h5>S'adapter au rouge</h5>
-                <p>{info.adapterouge}</p>
-                <h5>S'adapter au bleu</h5>
-                <p>{info.adaptebleu}</p>
-                <h5>S'adapter au vert</h5>
-                <p>{info.adaptevert}</p>
-                <h5>S'adapter au jaune</h5>
-                <p>{info.adaptejaune}</p>
-                <p></p>
+                <EditableField
+                    label="Tes motivations naturelle :"
+                    name="motivationsnaturelles"
+                    value={info.motivationsnaturelles}
+                    
+                />
+                
+                <EditableField
+                    label=""
+                    name="archnum1"
+                    value={info.archnum1}
+                    
+                />
+                
+                <EditableField
+                    label=""
+                    name="textarch1"
+                    value={info.textarch1}
+                    
+                />
+                
+                <EditableField
+                    label=""
+                    name="archnum2"
+                    value={info.archnum2}
+                    
+                />
+                
+                <EditableField
+                    label="En bref"
+                    name="textarch2"
+                    value={info.textarch2}
+                    
+                />
+                
+                <EditableField
+                    label="Toi et le marché du travail"
+                    name="toitravail"
+                    value={info.toitravail}
+                    
+                />
+                
+                <EditableField
+                    label="S'adapter au rouge"
+                    name="adapterouge"
+                    value={info.adapterouge}
+                    
+                />
+                
+                <EditableField
+                    label="S'adapter au bleu"
+                    name="adaptebleu"
+                    value={info.adaptebleu}
+                    
+                />
+                
+                <EditableField
+                    label="S'adapter au vert"
+                    name="adaptevert"
+                    value={info.adaptevert}
+                    
+                />
+                
+                <EditableField
+                    label="S'adapter au jaune"
+                    name="adaptejaune"
+                    value={info.adaptejaune}
+                    
+                />
+                
+                                
+                
+                
             </div>
             </>
             ) : null}

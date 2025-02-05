@@ -349,7 +349,7 @@ const getDetailsById = async (req,res) => {
     console.log("clientID:" , clientid, "ID", id)
     try{
         const data = await getDetailsData(clientid, id)
-        console.log(data)
+        console.log("DATAFORM", data.form)
         
         res.status(200).json(data)
     } catch(error) {

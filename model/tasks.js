@@ -156,19 +156,17 @@ const getDetailsData = async (clientid, id) => {
 
     console.log("info", info)
 
-    if(info.rows.length === 0) {
-        const info = await pool.query("SELECT * FROM client JOIN profile ON client.id = profile.client_id where client.id = $1", [clientid])
-        const data = {
-            info: info.rows[info.rows.length -1]
-        }
-        return data
-    }
     
-    const equipe = await pool.query(" SELECT id, nom_client as nom, email, phone FROM client WHERE leader_id = (SELECT leader_id FROM client WHERE id = $1);", [clientid])
+    //À améliorer pour s'ajuster à la nouvelle formule de Groupe
+    const equipe = await pool.query("SELECT id, nom_client as nom, email, phone FROM client WHERE leader_id = (SELECT leader_id FROM client WHERE id = $1)", [clientid])
+
+    const form = await pool.query("SELECT form FROM questionnaire WHERE client_id = $1 ORDER BY id DESC", [clientid])
+    console.log("FORM", form)
 
     const data = {
         info: info.rows[0],
-        equipe : equipe.rows
+        equipe : equipe.rows,
+        form : form.rows
     }
     console.log("voici le detailsData:", data)
     return data

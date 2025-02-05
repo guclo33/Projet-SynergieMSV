@@ -46,7 +46,7 @@ export function Profile({detailsData}) {
                 <p>{info.archnum1}</p>
                 <p>{info.archnum2}</p>
                 <img href={`C:/Users/Guillaume Cloutier/Projets/Projet Synergia/synergiemsv/src/Images/archetypes/${info.archnum1}`} alt="archétype#1"/>
-                <img href={`C:/Users/Guillaume Cloutier/Projets/Projet Synergia/synergiemsv/src/Images/archetypes/${info.archnum2}`} alt="archétype#1"/>
+                <img href={`C:/Users/Guillaume Cloutier/Projets/Projet Synergia/synergiemsv/src/Images/archetypes/${info.archnum2}`} alt="archétype#2"/>
 
             </div>
             <div className="texteProfile">

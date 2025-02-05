@@ -6,6 +6,7 @@ import { Profile } from "./Profile";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { useContext } from "react";
 import { AdminContext } from "../../AdminContext";
+import { DetailForm } from "./DetailsForm";
 
 export function DetailsById({detailsData}) {
     const {profilePhotos} = useContext(AdminContext)
@@ -25,6 +26,7 @@ export function DetailsById({detailsData}) {
                 <GeneralInfos detailsData={detailsData} />
                 <Documents detailsData={detailsData}/>
                 <Profile detailsData={detailsData}/>
+                <DetailForm form={detailsData.form}/>
              
             
         </div>

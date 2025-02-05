@@ -22,6 +22,10 @@ export function PagesDISC() {
     console.log("AnswerArray =", answersArray)
 
     useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [pageNum, totalPage]);
+
+    useEffect(() => {
         if( form[question1Array[questionNum]] >= 0 && form[question1Array[questionNum]] <= 10 && form[question2Array[questionNum]] >=0 && form[question2Array[questionNum]] <=10 && form[question3Array[questionNum]] >=0 && form[question3Array[questionNum]] <=10 && form[question4Array[questionNum]] >= 0 && form[question4Array[questionNum]] <= 10){
             setRepondu(true)
         } else {
@@ -66,10 +70,7 @@ export function PagesDISC() {
 
    const handleNextPage = ()=> {
         dispatch(addPage());
-        setTimeout(() => {  
-        window.scrollTo({ top: 0, behavior: 'smooth' }) 
-        },150)
-       }
+   }
 
     const handleSetPage = (num) => {
         
@@ -108,7 +109,7 @@ export function PagesDISC() {
                     {pageArray.slice(0,totalPage+1).map( num => ( 
                         <p 
                         style={{
-                            backgroundColor: (!validated && pageNum === num-1) ? "red" : "white",
+                            //backgroundColor: (!validated && pageNum === num-1) ? "red" : "white",
                             filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
                         }}
                         id={num} key={num} onClick={() => handleSetPage(num)}>{num}</p>

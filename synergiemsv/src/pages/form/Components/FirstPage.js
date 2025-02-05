@@ -15,7 +15,9 @@ export function FirstPage () {
     const {fileURL} = file;
     const [errors, setErrors] = useState({ email: '', phone: '' });
     
-    
+    useEffect(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, [pageNum, totalPage]);
         
     const dispatch = useDispatch();
 
@@ -126,9 +128,7 @@ export function FirstPage () {
 
     const handleNextPage = ()=> {
         dispatch(addPage());
-        setTimeout(() => {  
-            window.scrollTo({ top: 0, behavior: 'smooth' }) 
-            },50)
+        
     }
     const handleSetPage = (num) => {
             
@@ -214,7 +214,7 @@ export function FirstPage () {
                                     {pageArray.slice(0,totalPage+1).map( num => ( 
                                         <p 
                                         style={{
-                                            backgroundColor: !validated ? "red" : "white",
+                                            //backgroundColor: !validated ? "red" : "white",
                                             filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
                                         }}
 

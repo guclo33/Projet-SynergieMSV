@@ -30,14 +30,19 @@ export function QuestionsDev () {
         }
     },[form])
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, [pageNum, totalPage]);
+
+
     if (!fileState || !fileState._persist || !fileState._persist.rehydrated) {
         return <div>Chargement...</div>; 
     }
 
     
-      
+   
     
-    
+        
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -206,7 +211,7 @@ export function QuestionsDev () {
                                 {pageArray.slice(0,totalPage+1).map( num => ( 
                                     <p 
                                     style={{
-                                        backgroundColor: !validated ? "red" : "white",
+                                        //backgroundColor: !validated ? "red" : "white",
                                         filter: pageNum === num - 1 ? "brightness(0.8)" : "none"
                                     }}
                                     key={num} onClick={() => handleSetPage(num)}>{num}</p>

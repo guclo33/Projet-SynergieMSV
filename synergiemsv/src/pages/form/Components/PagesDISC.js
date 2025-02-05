@@ -68,7 +68,7 @@ export function PagesDISC() {
         dispatch(addPage());
         setTimeout(() => {  
         window.scrollTo({ top: 0, behavior: 'smooth' }) 
-        },50)
+        },150)
        }
 
     const handleSetPage = (num) => {

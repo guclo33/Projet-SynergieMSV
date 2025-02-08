@@ -516,7 +516,7 @@ textarea {
     border-radius: 20px;*/
 }
 
-.couleur h6, .couleur p {
+.couleur h6, .couleur p, .couleur input {
     border: 1px solid var(--secondary-color);
     height: 100%;
     width : 100%;

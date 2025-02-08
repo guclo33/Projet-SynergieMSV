@@ -130,7 +130,7 @@ const getDetailsData = async (clientid, id) => {
     if(!clientid) {
         const info = await pool.query("SELECT * FROM client left JOIN profile ON client.id = profile.client_id and client.profile_id is not null left JOIN leader ON client.leader_id = leader.id and client.leader_id is not null JOIN users ON users.client_id = client.id WHERE users.id = $1 ORDER BY profile.id DESC LIMIT 1", [id])
 
-    console.log("info", info)
+    
 
     if(info.rows.length === 0) {
         const info = await pool.query("SELECT * FROM client JOIN profile ON client.id = profile.client_id JOIN users ON client.id = users.client_id where users.id = $1", [id])
@@ -152,23 +152,23 @@ const getDetailsData = async (clientid, id) => {
 
     //Pour Admin
 
-    const info = await pool.query("SELECT * FROM client left JOIN client_profile on client.id = client_profile.client_id left join profile ON client_profile.profile_id = profile.id left JOIN leader ON client.leader_id = leader.id where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
+    const info = await pool.query("SELECT *, profile.id AS profileId FROM client left JOIN client_profile on client.id = client_profile.client_id left join profile ON client_profile.profile_id = profile.id left JOIN leader ON client.leader_id = leader.id where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
 
-    console.log("info", info)
+    
 
     
     //À améliorer pour s'ajuster à la nouvelle formule de Groupe
     const equipe = await pool.query("SELECT id, nom_client as nom, email, phone FROM client WHERE leader_id = (SELECT leader_id FROM client WHERE id = $1)", [clientid])
 
     const form = await pool.query("SELECT form FROM questionnaire WHERE client_id = $1 ORDER BY id DESC", [clientid])
-    console.log("FORM", form)
+    
 
     const data = {
         info: info.rows[0],
         equipe : equipe.rows,
         form : form.rows
     }
-    console.log("voici le detailsData:", data)
+    
     return data
 }
 
@@ -177,6 +177,15 @@ const updateDetailsGeneralInfosQuery = async (email, phone, price_sold, active, 
     await pool.query("UPDATE leader SET price_sold = $1, active = $2, additional_infos = $3 WHERE client_id = $4",[price_sold,active, additional_infos, clientid])
     return {success:true}
     
+}
+
+const updateProfile = async (query, value, profile_id) => {
+    if(value&& value.bleu){
+        console.log("updating DB for colours")
+        return await pool.query(query, [value.bleu, value.rouge, value.jaune, value.vert, profile_id])
+    }
+    
+    await pool.query(query, [value, profile_id])
 }
 
 const updateUserInfosQuery =  async (username, email, id) => {
@@ -239,6 +248,18 @@ const updateGroup = async (group_id, group_name, have_leader, nom_leader,leader_
 
 }
 
+const fetchToken = async () => {
+    const data = await pool.query("SELECT * FROM canva_token")
+    return data.rows[0]
+}
+
+const updateToken = async (query, value) => {
+    console.log("Updating token with", query, value)
+    await pool.query(query, value)
+    console.log("Done updating Token")
+    return
+}
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup}
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken}

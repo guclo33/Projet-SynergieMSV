@@ -3,6 +3,8 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 const { URLSearchParams } = require("url");
 const crypto = require("crypto");
 require('dotenv').config();
+const { exec } = require('child_process');
+const { updateToken, fetchToken } = require('../model/tasks');
 
 const codeVerifier = crypto.randomBytes(96).toString("base64url");
 const codeChallenge = crypto
@@ -22,6 +24,11 @@ let refreshToken = "";
 const getAuthUrl =() => {
 
     return authURL
+}
+
+const getAuthUrlProfile =() => {
+    const authUrlProfile = process.env.NODE_ENV === "production" ? process.env.CANVA_RENDER_AUTHURL_PROFILE + codeChallenge : process.env.CANVA_AUTHURL_PROFILE + codeChallenge
+    return authUrlProfile
 }
 
 const getUser = (req, res) => {
@@ -62,7 +69,7 @@ const getUser = (req, res) => {
     
 }*/
 
-const templateDataset = async (templateId, accessToken, refreshToken) => {
+const templateDataset = async (templateId, accessToken, refreshToken, authCode) => {
     const templateInfos = await fetch(`https://api.canva.com/rest/v1/brand-templates/${templateId}/dataset`,   {
     method: "GET",
     credentials: 'include',
@@ -76,14 +83,19 @@ const templateDataset = async (templateId, accessToken, refreshToken) => {
 
         const info = await templateInfos.json();
         console.log (info)
+
+        const query = "UPDATE canva_token SET accesstoken = $1, refreshtoken = $2, authcode = $3, templateid = $4"
+        const value = [accessToken, refreshToken, authCode, templateId ]
+
+        await updateToken(query, value)
         
         await fs.writeFileSync('accessToken.json', JSON.stringify({ accessToken: accessToken, refreshToken: refreshToken, templateId : templateId }));
-        return info
+        
         
     }; 
 
 
-const template = async (accessToken, refreshToken) => {
+const template = async (accessToken, refreshToken, authCode) => {
     let templateId = ""
     if (!accessToken) {
         console.error("Access token is undefined or missing.");
@@ -105,7 +117,7 @@ const template = async (accessToken, refreshToken) => {
         console.log(templateIdInfos);
         
         try {
-            await templateDataset(templateId, accessToken, refreshToken);
+            await templateDataset(templateId, accessToken, refreshToken, authCode);
         } catch (err) {
             console.log("Could not get template dataset", err)
         }
@@ -150,6 +162,8 @@ const connectCanva = async (req,res, next) => {
         accessToken = await data.access_token;
         refreshToken = await data.refresh_token;
 
+        
+
         /*req.session.user.token = {
             accessToken: accessToken,
             refreshToken: refreshToken
@@ -163,7 +177,7 @@ const connectCanva = async (req,res, next) => {
         });
 
 
-        await template(accessToken, refreshToken);
+        await template(accessToken, refreshToken, authCode);
 
         
 
@@ -185,16 +199,114 @@ const connectCanva = async (req,res, next) => {
     }
 
 }
+/*
+const connectCanvaDetail = async (req,res, next) => {
+    const authCode = req.query.code;
+    const state = req.query.state;
+    const apiUrl = process.env.REACT_APP_RENDER_API || 'http://127.0.0.1:3000';
+    const redirectURL = req.session.redirectURL;
+    const redirectURI = `${apiUrl}/api/details/canva`;
+    
+    
+    console.log("authCode===", authCode)
+
+    if(authCode) {
+        try{
+        console.log("fetching api canva")
+        const credentials = `${clientId}:${clientSecret}`;
+        const base64Credentials = Buffer.from(credentials).toString('base64');
+        const response = await fetch("https://api.canva.com/rest/v1/oauth/token", {
+            method: "POST",
+            headers: {
+              "Authorization": `Basic ${base64Credentials}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            credentials: 'include',
+            body: new URLSearchParams({
+                grant_type: "authorization_code",
+                code_verifier: codeVerifier,
+                code: authCode, 
+                redirect_uri: redirectURI
+            })
+        });
+        const data = await response.json();
+        console.log("data: ", data)
+        accessToken = await data.access_token;
+        refreshToken = await data.refresh_token;
+
+        /*req.session.user.token = {
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        };
+
+        // Save the session after storing the token
+        req.session.save((err) => {
+            if (err) {
+                console.error("Session save error", err);
+            }
+        });
 
 
+        await template(accessToken, refreshToken);
+
+        
+
+        console.log(`accessToken = ${accessToken}. refreshToken = ${refreshToken}` )
+        //await res.send(data);
+        
+        
+
+
+        res.redirect(`${state}`)
+        
+        
+    
+        
+        
+      } catch (err) {
+        console.error(err);
+        res.status(500).send("Error fetching token", err);
+      }
+    } else {
+      res.status(404).send("Could not get code");
+    }
+
+}*/
+
+
+const generateTemplate = async (req, res) => {
+    const jsonData = req.body
+    
+    const {clientid} = req.params 
+    console.log("clientid", clientid)
+    
+    
+    
+
+
+        try {
+            exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
+                if (error) {
+                  console.error("Erreur d'exécution:", error);
+                } else {
+                  console.log("Résultat stdout :", stdout);
+                  console.error("Messages stderr :", stderr);
+                }})
+        } catch(error) {
+            console.log("pas réussi à générer template")
+        }
+}
 
 
 
 
 module.exports = {
     connectCanva,
+    //connectCanvaDetail,
     getAuthUrl,
     getUser,
+    getAuthUrlProfile,
+    generateTemplate
     /*setAuthStatus*/
 }
 

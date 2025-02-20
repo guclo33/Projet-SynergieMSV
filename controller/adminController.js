@@ -5,7 +5,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 
@@ -349,7 +349,7 @@ const getDetailsById = async (req,res) => {
     console.log("clientID:" , clientid, "ID", id)
     try{
         const data = await getDetailsData(clientid, id)
-        console.log(data)
+        
         
         res.status(200).json(data)
     } catch(error) {
@@ -366,6 +366,33 @@ const updateDetailsGeneralInfos = async (req, res) => {
         res.status(200).send("Succesfully updated details general infos")
     } catch(error) {
         res.status(400).send(error)
+    }
+}
+
+const updateProfileController = async (req,res) => {
+    const {name, value, profile_id} = req.body
+    console.log("starting update profile controller")
+    console.log("BODY", req.body)
+    if(name){
+    try {
+        console.log("updating infos")
+        const query = `UPDATE profile SET ${name} = $1 WHERE id = $2`
+        await updateProfile(query, value, profile_id);
+        res.status(200).send("Succesfully updated profile")
+
+    } catch(error) {
+        console.log("error updating profile", error)
+        res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
+    }}
+
+    try{
+        console.log("updating colors")
+        const query = `UPDATE profile SET bleu = $1, rouge = $2, jaune = $3, vert = $4 WHERE id = $5`
+        await updateProfile(query, value, profile_id);
+        res.status(200).send("Succesfully updated profile")
+
+    } catch(error) {
+        res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
     }
 }
 
@@ -654,4 +681,4 @@ const updateGroupController = async(req, res) => {
 
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController};
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController};

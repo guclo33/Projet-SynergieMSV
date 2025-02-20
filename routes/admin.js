@@ -9,7 +9,8 @@ const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController} = require ("../controller/adminController")
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController} = require ("../controller/adminController");
+const { connectCanvaDetail, generateTemplate } = require("../server/canvaTemplate");
 
 
 router.get("/", getAdminHomeDataController)
@@ -36,9 +37,15 @@ router.delete("/roadmap/:clientid", deleteRoadmapTodos)
 
 router.get("/details", getAdminHomeDataController)
 
+router.put("/details/profileUpdate", updateProfileController)
+
+router.post("/details/canva/:clientid", generateTemplate)
+
 router.get("/details/:clientid", getDetailsById )
 
 router.put("/details/:clientid", updateDetailsGeneralInfos)
+
+
 
 router.put("/settings", updateUserInfos),
 

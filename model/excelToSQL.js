@@ -14,7 +14,8 @@ const sheetName = workbook.SheetNames[7]; // Prend la première feuille
 const worksheet = workbook.Sheets[sheetName];
 
 // 📌 Convertir les données Excel en JSON
-const jsonData = XLSX.utils.sheet_to_json(worksheet);
+let jsonData = XLSX.utils.sheet_to_json(worksheet);
+jsonData = jsonData.filter((row, index) => index >= 22);
 console.log("🔍 Données Excel :", jsonData);
 
 // 📌 Fonction pour insérer les données dans PostgreSQL

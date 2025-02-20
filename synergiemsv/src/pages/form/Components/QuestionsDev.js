@@ -135,7 +135,7 @@ export function QuestionsDev () {
                 const formId = data.id
                 console.log("formulaire ajouté à la base de donnée avec l'id =", formId);
                 await sendFileData();
-                await generateProfile(formId)
+                //await generateProfile(formId)
             }
 
         } catch(error) {

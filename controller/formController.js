@@ -85,7 +85,7 @@ const generateProfileController = async(req, res) => {
     if(!formId) {   
         res.status(400).send("Did not receive the formId");
     } 
-
+    console.log("Starting Python execute")
     const pythonFile = path.join(__dirname, './../GenerateurTexte/Synergia MLM avec newform.py');
 
     exec(`python "${pythonFile}" "${formId}"`, (error, stdout, stderr) => {
@@ -99,6 +99,7 @@ const generateProfileController = async(req, res) => {
             return res.status(500).json({ error: stderr });
         }
 
+        console.log("execution completed", stdout);
         
         res.json({ message: stdout });
     })

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const session = require('express-session');
 const PORT = process.env.PORT || 3000;
-const {connectCanva, getAuthUrl, getUser, setAuthStatus} = require("./canvaTemplate");
+const {connectCanva, getAuthUrl, getAuthUrlProfile, getUser, connectCanvaDetail, setAuthStatus} = require("./canvaTemplate");
 const adminRoute = require("../routes/admin");
 const registerRoute = require("../routes/register");
 const loginRoute = require("../routes/login")
@@ -90,9 +90,17 @@ app.get("/api/canva/authurl/", (req,res) => {
   res.json({authURL})
 })
 
+
+app.get("/api/canva/authurl/profile", (req,res) => {
+  const authURL = getAuthUrlProfile();
+  res.json({authURL})
+})
+
 app.get("/api/user/:id", getUser)
 
-app.get("/api/canva/auth", connectCanva);
+app.get("/api/canva/auth", connectCanva)
+
+//app.get("/api/details/canva", connectCanvaDetail);
 
 app.get('/api/auth/check', (req, res) => {
   console.log("req.user:", req.user)

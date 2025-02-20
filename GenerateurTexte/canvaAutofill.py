@@ -2,12 +2,35 @@ import requests
 import json
 import time
 import webbrowser
-
+import psycopg2
+from dotenv import load_dotenv
+import os
+"""
 with open('accessToken.json', 'r') as file:
     data = json.load(file)
     access_token = data.get('accessToken')
     refresh_token = data.get("refreshToken")
     template_id = data.get("templateId")
+"""
+
+conn = psycopg2.connect(
+    dbname= os.getenv("DB_RENDER_DATABASE"),
+    user= os.getenv("DB_RENDER_USER"),
+    password= os.getenv("DB_RENDER_PASSWORD"),
+    host= os.getenv("DB_RENDER_HOST")
+)
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM canva_token")
+
+canva_token = cursor.fetchone()
+
+
+access_token=canva_token[2]
+refresh_token=canva_token[3]
+template_id=canva_token[4]
+
+
 
 
 def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert) :
@@ -160,4 +183,6 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
     else:
         print(f"Erreur lors de la création du job: {response.status_code}")
     
-    
+conn.commit()
+cursor.close()
+conn.close()

@@ -75,9 +75,9 @@ def context_append(assistant, user) :
 #Pour avoir les pourcentage de Couleur et d'archétype
 
 bleu = profil_generator_data.moyenne_bleu(form["form_1_15"])
-rouge = profil_generator_data.moyenne_bleu(form["form_1_15"])
-jaune = profil_generator_data.moyenne_bleu(form["form_1_15"])
-vert = profil_generator_data.moyenne_bleu(form["form_1_15"])
+rouge = profil_generator_data.moyenne_rouge(form["form_1_15"])
+jaune = profil_generator_data.moyenne_jaune(form["form_1_15"])
+vert = profil_generator_data.moyenne_vert(form["form_1_15"])
 explorateur = profil_generator_data.moyenne_explorateur(form["form_16_24"])
 protecteur = profil_generator_data.moyenne_protecteur(form["form_16_24"])
 bouffon = profil_generator_data.moyenne_bouffon(form["form_16_24"])

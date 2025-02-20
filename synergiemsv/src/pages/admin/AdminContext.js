@@ -54,10 +54,11 @@ export const AdminProvider = ({children, store, persistor}) => {
                                 additional_infos: row.additional_infos,
                                 date_presentation: row.date_presentation,
                                 echeance: row.echeance,
-
+                                form_ids: row.form_ids,
+                                profile_ids: row.profile_ids,
 
                             }))
-                            console.log("groupes Data", data.groupesData)
+                            
                             const groupesData = {
                                 groupesData : data.groupesData.groupesData.rows,
                                 groupesClients : data.groupesData.groupesClients.rows
@@ -73,8 +74,7 @@ export const AdminProvider = ({children, store, persistor}) => {
                                 setClientsData(clientsArray);
                             }
                             
-                            console.log("clientsData=", clientsArray)
-                            console.log("leadersData =", leadersData)
+                            
                             
                             try {
                                 
@@ -106,7 +106,7 @@ export const AdminProvider = ({children, store, persistor}) => {
                                 })
 
                                 await Promise.all(promises)
-                                console.log("Photos Profile", profilePhotos)
+                                
                             
                                 
                             } catch (error) {

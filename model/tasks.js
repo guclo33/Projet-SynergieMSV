@@ -11,7 +11,7 @@ const loginQuery = async (userNameOrEmail) =>  {
 const getAdminHomeData = async () => {
     const leadersData = await pool.query("SELECT DISTINCT l.id as leaderid, l.client_id as clientid,l.active as active,c.nom_client as nom, c.email as email, c.phone as phone, c.date_presentation as date_presentation, c.echeance as echeance, c.priorite as priorite FROM leader l JOIN client c ON l.client_id = c.id ORDER BY c.priorite" );
 
-    const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader FROM client c LEFT JOIN leader l ON c.leader_id = l.id ORDER BY id")
+    const clientsData = await pool.query("SELECT c.id, c.nom_client, c.email, c.leader_id, c.phone, c.active, c.priorite, c.additional_infos, c.date_presentation, c.echeance,  l.nom_leader, array_agg(p.profile_id) AS profile_ids, array_agg(f.questionnaire_id) as form_ids FROM client c LEFT JOIN leader l ON c.leader_id = l.id left join questionnaire_client f on c.id = f.client_id left join client_profile p on c.id = p.client_id group by c.id, c.nom_client, l.nom_leader ORDER BY c.id")
 
     const groupesData = await pool.query("SELECT * from groupes ORDER BY id")
 

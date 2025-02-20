@@ -20,6 +20,12 @@ export function Profile({detailsData}) {
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
     const {user} = useContext(AuthContext)
     const {clientid} = useParams()
+    const queryString = window.location.search; 
+
+    const urlParams = new URLSearchParams(queryString);
+
+    const authValue = urlParams.get("auth"); // "true" ou null s’il n’y a pas "auth"
+    
     
     useEffect(() =>{
             const fetchAuthUrl= async () =>{
@@ -140,8 +146,8 @@ export function Profile({detailsData}) {
 
     return(
         <div className="profile">
-            <button onClick={handleCanva}>Connecter Canva</button>
-            <button onClick={generateCanva}>Générer template Canva</button>
+            {!authValue ? <button onClick={handleCanva}>Connecter Canva</button> : null}
+            {authValue ? <button onClick={generateCanva}>Générer template Canva</button> : null}
             <button ref={sectionRef} onClick={handleClick}>Voir profil</button>
             {view ? (
                 

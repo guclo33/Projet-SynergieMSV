@@ -4,9 +4,10 @@ import { AdminContext } from "../../AdminContext";
 import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { AuthContext } from "../../../AuthContext";
 import { setLeadersData, updateSingleGroupsData, setGroupesData } from "../../Redux/adminSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function GroupeList() {
+    const [isLoading, setIsLoading] = useState(false);
     const [active, setActive] = useState(true)
     const [selectedId, setSelectedId] = useState(null)
     const [expand, setExpand] = useState(false)
@@ -27,7 +28,7 @@ export function GroupeList() {
     const dispatch = useDispatch()
     const apiUrlLocal = process.env.REACT_APP_RENDER_API || 'http://localhost:3001'
     
-    
+    const navigate = useNavigate()
 
     useEffect(() => {
         const selectedGroup = groupesData.find(group => group.id === selectedId);
@@ -63,6 +64,7 @@ export function GroupeList() {
         const restOfClientsArray = clientsData.filter(client => !clientsIdUpdated.includes(client.id))
         const selectedGroup = groupesData.find(group => group.id === selectedId);
         console.log("selectedGroup",selectedGroup, "SELECTEDID", selectedId)
+        console.log("CLIENTSDATA",clientsData, "FILTEREDCLIENTS", filteredClients)
         if(selectedGroup && selectedGroup.have_leader) {
             const leader = leadersData.find(leader => leader.id === selectedGroup.leader_id);
             const leaderClientId = leader.clientid
@@ -321,7 +323,39 @@ export function GroupeList() {
         }
     }
 
-    
+    const handleGenerateProfile = async (e) => {
+        const formId = e.target.name
+        const clientId = e.target.id
+        console.log("formId", formId)
+        setIsLoading(true)
+        try{
+            const response = await fetch(`${apiUrl}/api/form/generateProfile/${formId}`, {
+                method: "GET",
+                credentials : "include",
+            });
+            if(response.ok){
+                const data = await response.json();
+                console.log("Message from python", data.message)
+                console.log("profil généré avec succès")
+                navigate(`/admin/${user.id}/details/${clientId}`)
+            }
+        } catch (error) {
+            console.log("couldn't generate profile")
+        } finally {
+            setIsLoading(false)
+        }
+
+    }
+
+    if(isLoading){
+        return(
+            
+                <div className="loading-overlay">
+                  <div className="spinner"></div>
+                </div>
+        )
+    }
+
     return (
         <div className="gestionGroupe">
             <h2>Vos groupes de formation :</h2>
@@ -434,7 +468,13 @@ export function GroupeList() {
                                                 <p><Link to={`../details/${client.id}`}>{client.nom}</Link></p>
                                                 <p>{client.email}</p>
                                                 <div className="showProfileInput">
+                                                    
+                                                    <button id={client.id} name={client.form_ids[client.form_ids.length -1]} className="canva" onClick={handleGenerateProfile}>Générer Profil</button>
+
+                                                    {client.profile_ids[0] ?
                                                     <button id={client.id} className="canva" onClick={handleGenerateCanva}>Générer Canva</button>
+                                                    : null}
+                                                    
                                                     <label htmlFor="showProfile">Montrer profil?</label>
                                                     <input id={client.id} type="checkbox" name="showProfile" checked={client && client.showProfile  ? client.showProfile : false} onChange={handleShowProfile}/>
                                                 </div>

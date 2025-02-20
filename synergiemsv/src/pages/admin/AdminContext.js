@@ -54,7 +54,8 @@ export const AdminProvider = ({children, store, persistor}) => {
                                 additional_infos: row.additional_infos,
                                 date_presentation: row.date_presentation,
                                 echeance: row.echeance,
-
+                                form_ids: row.form_ids,
+                                profile_ids: row.profile_ids,
 
                             }))
                             

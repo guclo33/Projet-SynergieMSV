@@ -16,7 +16,7 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-cursor.execute("SELECT * from profile WHERE client_id = %s ORDER BY id DESC LIMIT 1", (clientid))
+cursor.execute("SELECT * from profile WHERE client_id = %s ORDER BY id DESC LIMIT 1", (clientid,))
 
 data = cursor.fetchone()
 print(data)

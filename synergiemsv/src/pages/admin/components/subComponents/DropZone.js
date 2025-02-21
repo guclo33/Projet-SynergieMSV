@@ -12,19 +12,37 @@ export function DropZone({detailsData, category, apiUrl}) {
     const [files, setFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState()
     const {user} = useContext(AuthContext)
-    const {info} = detailsData
+    const {info, group} = detailsData
+
     
 
     const fetchFiles = useCallback(async () => {
-        const encodedLeaderName = encodeURIComponent(info.nom_leader)
-        console.log("calling fetchfiles with apiurl:", apiUrl, "category:", category, "nom leader", info.nom_leader)
+        let encodedGroupName = ""
+        if(group && group.group_name){
+            encodedGroupName = encodeURIComponent(group.group_name)
+        }
+        const encodedClientName = encodeURIComponent(info.nom_client)
+        console.log("calling fetchfiles with apiurl:", apiUrl, "category:", category, "nom_client", info.nom_client)
         try {
-            const response = await fetch(`${apiUrl}/${category}/list/${encodedLeaderName}`, {
+            const response = await fetch(`${apiUrl}/${category}/list/${encodedClientName}/${encodedGroupName}`, {
                 method: "GET",
                 credentials: "include",
             });
             if (response.ok) {
+                if(category === "photos") {
+                    const data = await response.json();
+                    if (data.files.length === 0) {
+                        // Plus de fichier => on peut faire setFiles([]) ou autre
+                        return setFiles([]);
+                      }
+                      // Sinon, on prend le premier
+                      const filename = data.files[0].Key.split("/").pop();
+                      return setFiles([filename]);
+                    
+                    
+                }
                 const data = await response.json();
+                
                 console.log("data", data)
                 const filenames = data.files.map(file => file.split("/").pop())
 
@@ -47,7 +65,7 @@ export function DropZone({detailsData, category, apiUrl}) {
         formData.append('fileName', encodeURIComponent(acceptedFiles[0].name));
 
         try {
-            const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_leader}`, {
+            const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_client}/${group.group_name}`, {
                 method: "POST",
                 credentials : "include",
                 body : formData
@@ -64,11 +82,16 @@ export function DropZone({detailsData, category, apiUrl}) {
     },[apiUrl, category, detailsData]);
 
     const downloadFile = async (fileName) => {
-        const encodedLeaderName = encodeURIComponent(info.nom_leader)
+        const encodedClientName = encodeURIComponent(info.nom_client)
+        let encodedGroupName = ""
+        if(group && group.group_name){
+            encodedGroupName = encodeURIComponent(group.group_name)
+        }
+        
         console.log("apiUrl", apiUrl, "category", category, 'encoded leader', info.nom_leader, 'filename', fileName)
-        console.log("apiURL", `${apiUrl}/${category}/download/${encodedLeaderName}/${fileName}`)
+        console.log("apiURL", `${apiUrl}/${category}/download/${encodedClientName}/${fileName}/${encodedGroupName}`)
         try {
-            const response = await fetch(`${apiUrl}/${category}/download/${encodedLeaderName}/${fileName}`, {
+            const response = await fetch(`${apiUrl}/${category}/download/${encodedClientName}/${fileName}/${encodedGroupName}`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -85,14 +108,21 @@ export function DropZone({detailsData, category, apiUrl}) {
     };
 
     const deleteFile = async(fileName) => {
-        const encodedLeaderName = encodeURIComponent(info.nom_leader)
+        let encodedGroupName = ""
+        if(group && group.group_name){
+            encodedGroupName = encodeURIComponent(group.group_name)
+        }
+        const encodedClientName = encodeURIComponent(info.nom_client)
+        
         try {
-            const response = await fetch(`${apiUrl}/${category}/delete/${encodedLeaderName}/${fileName}`, {
+            const response = await fetch(`${apiUrl}/${category}/delete/${encodedClientName}/${fileName}/${encodedGroupName}`, {
                 method: 'DELETE',
                 credentials: "include"
             });
             if(response.ok) {
                 console.log(fileName, "successfully deleted")
+                await fetchFiles()
+                
             } 
         } catch (err) {
             console.log("Couldn't delete the file", err)
@@ -134,11 +164,21 @@ export function DropZone({detailsData, category, apiUrl}) {
         }
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('fileName', encodeURIComponent(selectedFile.name));
         console.log("selectedFile", selectedFile)
+        if(category === "photos") {
+            formData.append('fileName', encodeURIComponent(`${info.nom_client}.${selectedFile.name.split('.').pop()}`));
+        } else {
+        formData.append('fileName', encodeURIComponent(selectedFile.name));
+        }
+        console.log("selectedFile", selectedFile)
+        let encodedGroupName = ""
+        if(group && group.group_name){
+            encodedGroupName = encodeURIComponent(group.group_name)
+        }
+        const encodedClientName = encodeURIComponent(info.nom_client)
 
         try {
-            const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_leader}`, {
+            const response = await fetch(`${apiUrl}/${category}/upload/${encodedClientName}/${encodedGroupName}`, {
                 method: "POST",
                 credentials : "include",
                 body : formData
@@ -163,11 +203,12 @@ export function DropZone({detailsData, category, apiUrl}) {
         boxShadow: "0 4px 8px var(--primary-color)",
         borderRadius: "20px",
         padding: "1rem",
-        minHeight: '15rem',
-        maxHeight: '20rem',
-        overflow: 'scroll',
+        minHeight: '7rem',
+        maxHeight: '10rem',
+        overflow: 'auto',
         textAlign: "center",
         transition: "border-color 0.3s, background-color 0.3s",
+        marginBottom: "1rem",
         
         };
         
@@ -209,6 +250,8 @@ export function DropZone({detailsData, category, apiUrl}) {
             {isDragAccept && <p style={{ color: "#4caf50" }}>Relâchez pour déposer.</p>}
             
             <ul>
+
+                
                 {files.map((file, index) => (
                 <li className="files" key={index} style={{ display : file.length===0? 'none': 'flex'}}>
                     <p

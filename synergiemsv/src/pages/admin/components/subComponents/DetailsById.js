@@ -32,12 +32,16 @@ export function DetailsById({detailsData}) {
                 </div>
                 <GeneralInfos detailsData={detailsData} />
                 <Documents detailsData={detailsData}/>
+                {detailsData && detailsData.form.length>0 ?
                 <button onClick={handleClick}>Voir questionnaire</button>
+                : null}
                 
                 <Profile detailsData={detailsData}/>
+                {detailsData && detailsData.form.length>0 ?
                 <div ref={detailFormRef}>
                     <DetailForm form={detailsData.form}/>
                 </div>
+                : null}
              
             
         </div>

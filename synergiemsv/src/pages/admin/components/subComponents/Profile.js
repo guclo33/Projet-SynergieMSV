@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 
 
 export function Profile({detailsData}) {
-    const [view, setView] = useState(false)
+    //const [view, setView] = useState(false)
     const {info} = detailsData
     const sectionRef = useRef(null)
     const [newInfo, setNewInfo] = useState({})
@@ -46,14 +46,14 @@ export function Profile({detailsData}) {
             fetchAuthUrl();
         },[]);
 
-    const handleClick = () => {
+    /*const handleClick = () => {
         setView(!view)
         setTimeout(() => {
            
         if (sectionRef.current) {
         sectionRef.current.scrollIntoView({ behavior: "smooth" })
         }},100)
-    }
+    }*/
 
     const handleChange = (e) => {
         const {name, value} = e.target
@@ -148,10 +148,7 @@ export function Profile({detailsData}) {
         <div className="profile">
             {!authValue ? <button onClick={handleCanva}>Connecter Canva</button> : null}
             {authValue ? <button onClick={generateCanva}>Générer template Canva</button> : null}
-            <button ref={sectionRef} onClick={handleClick}>Voir profil</button>
-            {view ? (
-                
-            <>
+            
             <h2 >Profil Synergia :</h2>
             <h4>Couleurs:</h4>
             <div  className="couleur">
@@ -317,8 +314,8 @@ export function Profile({detailsData}) {
                 
                 
             </div>
-            </>
-            ) : null}
+            
+            
 
         </div>
     )

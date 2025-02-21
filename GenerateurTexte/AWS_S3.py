@@ -62,7 +62,7 @@ def upload_to_s3(buffer, s3_path):
 def synergia_upload_s3(full_text, nom_organisateur, nom_profile):        
     try:
         buffer = generate_simple_word_in_memory(full_text)
-        s3_path = f"Synergia/{nom_organisateur}/profils/{nom_profile}.docx"
+        s3_path = f"Synergia/{nom_organisateur}/{nom_profile}/profils/{nom_profile}.docx"
         upload_to_s3(buffer, s3_path)
     except Exception as e:
         print(f"Erreur lors de la génération et de l'upload du fichier Word : {e}")

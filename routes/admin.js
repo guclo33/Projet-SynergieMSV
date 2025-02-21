@@ -51,13 +51,13 @@ router.put("/settings", updateUserInfos),
 
 router.put("/settings/password", updateUserPassword)
 
-router.post("/details/:category/upload/:leaderName", upload.single("file"), uploadFile);
+router.post("/details/:category/upload/:clientName/:groupName?", upload.single("file"), uploadFile);
 
-router.get("/details/:category/list/:leaderName", listFile)
+router.get("/details/:category/list/:clientName/:groupName?", listFile)
 
-router.get("/details/:category/download/:leaderName/:fileName", downloadFile);
+router.get("/details/:category/download/:clientName/:fileName/:groupName?", downloadFile);
 
-router.delete("/details/:category/delete/:leaderName/:fileName", deleteFile)
+router.delete("/details/:category/delete/:clientName/:fileName/:groupName?", deleteFile)
 
 router.get("/profilePhoto/:nomLeader/:clientName", getProfilePhoto)
 

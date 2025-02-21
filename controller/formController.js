@@ -25,10 +25,11 @@ const createFormController = async (req, res) => {
 
 const uploadProfilPhotoController = async (req, res) => {
     const file = req.file
+    const {groupName, clientName} = req.params
     const decodedFileName = decodeURIComponent(file.originalname)
     const filePath = `Synergia/Photos/${decodedFileName}`
     
-    console.log("req.file =", file, "filePath", filePath, 'decodedFileName', decodedFileName)
+    console.log("req.file =", file, "filePath", filePath, 'decodedFileName', decodedFileName, 'groupName', groupName, 'clientName', clientName)
 
     try {
         const upload = new Upload({

@@ -160,12 +160,15 @@ const getDetailsData = async (clientid, id) => {
     //À améliorer pour s'ajuster à la nouvelle formule de Groupe
     const equipe = await pool.query("SELECT id, nom_client as nom, email, phone FROM client WHERE leader_id = (SELECT leader_id FROM client WHERE id = $1)", [clientid])
 
+    const group = await pool.query("SELECT * FROM groupes WHERE id IN (SELECT groupe_id FROM groupe_clients WHERE client_id = $1) ORDER BY id DESC LIMIT 1", [clientid])
+
     const form = await pool.query("SELECT form FROM questionnaire WHERE client_id = $1 ORDER BY id DESC", [clientid])
     
 
     const data = {
         info: info.rows[0],
         equipe : equipe.rows,
+        group : group.rows[0],
         form : form.rows
     }
     

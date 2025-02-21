@@ -425,12 +425,17 @@ const updateUserPassword = async (req, res) => {
 }
 
 const uploadFile = async (req, res) => {
-    const {leaderName, category} = req.params;
+    const {clientName, groupName, category} = req.params;
     const file = req.file
     const decodedFileName = decodeURIComponent(req.body.fileName)
-    const filePath = `Synergia/${leaderName}/${category}/${decodedFileName}`
+    console.log("decodedFileName", decodedFileName)
+    let filePath = `Synergia/${clientName}/${category}/${decodedFileName}`
 
-    console.log("req.file =", req.file, "leaderName", leaderName, "filePath", filePath, 'decodedFileName', decodedFileName)
+    if(groupName) {
+        filePath = `Synergia/${groupName}/${clientName}/${category}/${decodedFileName}`
+    }
+
+    console.log("req.file =", req.file,  "filePath", filePath, 'decodedFileName', decodedFileName)
 
   try {
     const upload = new Upload({
@@ -492,9 +497,38 @@ const uploadFile = async (req, res) => {
 
 
 const listFile = async (req, res) => {
-    const { category, leaderName } = req.params;
-    
-    const folderKey = `Synergia/${leaderName}/${category}`;
+    const { category, groupName, clientName } = req.params;
+
+    console.log("CLIENT NAME", clientName)
+    let folderKey = `Synergia/${clientName}/${category}`;
+    if(groupName) {
+        folderKey = `Synergia/${groupName}/${clientName}/${category}`;
+    }
+    console.log("folderKey", folderKey)
+
+    if(category === "photos") {
+        folderKey = `Synergia/Photos`;
+
+        try {
+            const command = new ListObjectsV2Command({
+              Bucket: process.env.AWS_BUCKET_NAME,
+              Prefix: folderKey, 
+            });
+        
+            const data = await s3Client.send(command);
+
+            console.log("data", data)
+            const files = data.Contents
+            ? data.Contents.filter((item) => item.Key.includes(clientName))
+            : [];
+            console.log("files", files)
+            
+            return res.status(200).json({ files });
+          } catch (error) {
+            console.error('Erreur lors du listing des fichiers :', error);
+            res.status(500).send('Erreur lors du listing des fichiers');
+          }
+    }
 
     try {
         const command = new ListObjectsV2Command({
@@ -534,13 +568,18 @@ const listFile = async (req, res) => {
 };
 
 const downloadFile = async (req, res) => {
-    const { leaderName, category, fileName } = req.params; 
-    console.log(`Téléchargement du fichier: ${fileName}, catégorie: ${category}, leader: ${leaderName}`);
+    const { groupName, clientName, category, fileName } = req.params; 
+    console.log(`Téléchargement du fichier: ${fileName}, catégorie: ${category}, client: ${clientName}`);
     
     
-    const folderKey = `Synergia/${leaderName}/${category}/${fileName}`
+    let folderKey = `Synergia/${clientName}/${category}/${fileName}`
+    if(groupName) {
+        folderKey = `Synergia/${groupName}/${clientName}/${category}/${fileName}`
+    }
     
-
+    if(category === "photos") {
+        folderKey = `Synergia/Photos/${clientName}.png`
+    }
     
     try {
         const command = new GetObjectCommand({
@@ -576,9 +615,12 @@ const downloadFile = async (req, res) => {
 };
 
 const deleteFile = async(req, res) => {
-    const {leaderName, category, fileName} = req.params;
+    const {clientName, groupName, category, fileName} = req.params;
 
-    const key = `Synergia/${leaderName}/${category}/${fileName}`; 
+    let key = `Synergia/${clientName}/${category}/${fileName}`; 
+    if(groupName) {
+        key = `Synergia/${groupName}/${clientName}/${category}/${fileName}`
+    }
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -598,11 +640,11 @@ const getProfilePhoto = async(req, res) => {
     const {nomLeader, clientName} = req.params;
     
     if (!nomLeader || !clientName) {
-        console.log("Paramètres manquants. Aucune action.");
+        
         return; 
       }
     
-    console.log("nomLeader et clientName", nomLeader, clientName)
+    
     const s3params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `Synergia/Photos/${clientName}.png`,
@@ -618,15 +660,15 @@ const getProfilePhoto = async(req, res) => {
 
         const command = new GetObjectCommand(s3params);
         const url = await getSignedUrl(s3Client, command);
-        console.log("URL = ", url)
+        
         return res.status(200).json({url})
     } catch (error) {
         if (error.name === 'NotFound' || error.$metadata?.httpStatusCode === 404) {
-            console.log("Objet introuvable :", s3params.Key);
+            
             return res.status(200).json({ url: null });
     }
 
-    console.error("Erreur lors de la génération de l'URL :", error);
+    
     return res.status(500).json({ error: 'Erreur interne du serveur.' });
    
 }}
@@ -674,6 +716,7 @@ const updateGroupController = async(req, res) => {
     try {
         await updateGroup(group_id, group_name, have_leader, nom_leader,leader_id, date_presentation,active,ids_to_add,ids_to_remove)
         res.status(200).send("successfully updated group")
+        
     } catch(error) {
         console.log("could'nt update group", error)
     }

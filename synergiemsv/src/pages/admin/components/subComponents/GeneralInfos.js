@@ -200,11 +200,11 @@ export function GeneralInfos({detailsData}) {
                         </div>
                         <h4>{teamMate.nom}</h4>
                         <div className="userInfo">
-                            <p>Courriel: </p>
+                            
                             <p>{teamMate.email}</p>
                         </div>
                         <div className="userInfo">
-                            <p>Téléphone: </p>
+                            
                             <p>{teamMate.phone}</p>
                         </div>
                     </Link>

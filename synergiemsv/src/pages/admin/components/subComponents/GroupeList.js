@@ -29,8 +29,11 @@ export function GroupeList() {
     const apiUrlLocal = process.env.REACT_APP_RENDER_API || 'http://localhost:3001'
     
     const navigate = useNavigate()
-
+    
     useEffect(() => {
+        if (!groupesData) {
+            return;
+        }
         const selectedGroup = groupesData.find(group => group.id === selectedId);
         const selectedGroupClients = groupesClients.filter(client => client.groupe_id === selectedId);
         const clientsArray = selectedGroupClients.map(client => client.client_id)

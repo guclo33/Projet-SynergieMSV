@@ -271,3 +271,69 @@ input[type="range"] {
     align-items: center;
   }
   
+  @media (max-width: 768px) {
+    /* On masque la pagination "setPage" */
+    .setPage {
+      display: none;
+    }
+  
+    /* Titre un peu plus petit */
+    .page h1 {
+      font-size: 1.2rem;
+    }
+  
+    /* Span plus petit */
+    .page span {
+      font-size: 0.9rem;
+    }
+  
+    /* Boutons plus petits */
+    .formButton button {
+      font-size: 0.9rem;
+    }
+  
+    /* La page prend presque tout l'écran */
+    .page {
+      max-width: 100vw;    /* Largeur max : 95% de l’écran */
+      margin: 0 auto;  /* Centrer sur la page, 1rem de marge en haut/bas */
+      padding: 0;
+      box-sizing: border-box; /* Assure que padding + border sont inclus dans la largeur */
+    }
+  
+    /* Encadrer le formulaire avec un style sympa */
+    .form {
+      max-width: 100vw;        /* Occupe toute la largeur permise par le parent `.page` */
+      margin: 0;         /* Centré */
+      padding: 0;          /* Espace intérieur autour du contenu */
+      border: 1px solid #ccc; /* Bordure grise légère */
+      border-radius: 8px;     /* Bords arrondis */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Ombre légère */
+      background-color: #fff; /* Fond blanc (contraste si la page est grise) */
+      box-sizing: border-box; /* Bonne gestion du dimensionnement */
+    }
+
+    .questionnaire {
+        max-width: 100vw;
+        margin: 0rem;
+        padding: 0
+    }
+  
+    /* Tes conteneurs d'éléments */
+    .questions,
+    .questionDISC {
+      width: 90%;
+      margin: 0 auto; /* On centre et on espace entre eux */
+      /* Optionnel : encadrer chaque question 
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 0.5rem;
+      */
+    }
+  
+    /* Ajuster plus finement la grille ou flex si besoin */
+    /* .questionnaire {
+       display: flex; (ou grid)
+       flex-direction: column;
+       ...
+     } */
+  }

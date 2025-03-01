@@ -28,6 +28,8 @@ import { UserObjectifs } from './pages/user/components/UserObjectifs';
 import { AdminProvider } from './pages/admin/AdminContext';
 import { LeaderProvider } from './pages/leader/LeaderContext';
 import { UserProvider } from './pages/user/UserContext';
+import { Questions } from './pages/admin/questions/Questions';
+import { Prompt } from './pages/admin/prompt/Prompt';
 import { Form } from './pages/form/Form';
 import { FormHome } from './pages/form/FormHome';
 import { Provider } from 'react-redux';
@@ -35,6 +37,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './pages/form/Redux/store'
 import { GestionGroupe } from './pages/admin/components/GestionGroupe';
 import { adminStore, adminPersistor } from './pages/admin/Redux/adminStore';
+
 
 
 const appRouter = createBrowserRouter(createRoutesFromElements(
@@ -66,6 +69,8 @@ const appRouter = createBrowserRouter(createRoutesFromElements(
       <Route path="details" element={<Details />} />
       <Route path="details/:clientid" element={<Details />} />
       <Route path="settings" element={<Settings />} />
+      <Route path="settings/questions" element={<Questions />} />
+      <Route path="settings/prompt" element={<Prompt />} />
     </Route>
 
     <Route path="/leader/:id" element={

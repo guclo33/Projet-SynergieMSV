@@ -163,7 +163,7 @@ changement_prompt = f"""Je souhaite que tu crées une section 'Perception du cha
 
 2. Niveau de Confiance : Indique si la personne est (1) plus confiante que la moyenne, (2) dans la moyenne, ou (3) moins confiante que la moyenne par rapport au changement, en analysant ses réponses.
 
-Je ne souhaite pas un texte explicatif, juste une évaluation claire sous la forme : "Plus rapide que la moyenne", "Dans la moyenne", ou "Plus lent que la moyenne" pour la vitesse d'adaptation et la confiance." """
+Je ne souhaite pas un texte explicatif, juste une évaluation claire sous la forme : "Plus rapide que la moyenne", "Dans la moyenne", ou "Plus lent que la moyenne" pour la vitesse d'adaptation et la confiance."""
 
 
 context_append(defis_text, changement_prompt)

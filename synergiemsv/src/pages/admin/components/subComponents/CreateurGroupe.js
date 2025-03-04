@@ -10,7 +10,7 @@ export function CreateurGroupe() {
     const [creatingGroup, setCreatingGroup] = useState(false)
     const newGroup = useSelector((state) => state.admin.newGroup)
     const newLeader = useSelector((state) => state.admin.newLeader)
-    const {leadersData, clientsData, apiUrl} = useContext(AdminContext)
+    const {leadersData, clientsData, apiUrl, getAdminHomeData} = useContext(AdminContext)
     const dispatch = useDispatch()
     const [newLeaderModal, setNewLeaderModal] = useState(false)
     const [singleClientId, setSingleClientId] = useState()
@@ -119,6 +119,7 @@ export function CreateurGroupe() {
                 console.log("groupe créé avec succès!")
                 setCreatingGroup(false)
                 dispatch(resetNewGroup())
+                getAdminHomeData()
             }
 
 

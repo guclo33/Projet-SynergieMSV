@@ -12,10 +12,12 @@
     "crypto-js": "^4.2.0",
     "crypto.js": "^3.3.4",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.477.0",
     "lz-string": "^1.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",
+    "react-lucid": "^0.0.1",
     "react-modal": "^3.16.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
@@ -28,7 +30,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tailwind:init": "tailwindcss init -p"
   },
   "eslintConfig": {
     "extends": [
@@ -47,5 +50,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.3.3"
   }
 }

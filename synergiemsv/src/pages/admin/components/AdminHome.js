@@ -3,6 +3,7 @@ import { AuthContext } from "../../AuthContext";
 import { ProfilGenerator } from "./subComponents/ProfilGenerator";
 import { LeadersHome } from "./subComponents/LeadersHome";
 import "../admin.css"
+import { ClientsList } from "./subComponents/NewHomeList";
 
 
 

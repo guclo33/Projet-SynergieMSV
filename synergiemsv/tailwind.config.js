@@ -4,8 +4,19 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#6F1E49",
+        secondary: "#D7A5BE",
+        background: "white",
+        textColor: "#07000e",
+
+      }
+    },
   },
   plugins: [],
-}
+  corePlugins: {
+    appearance: false, // Désactive `-webkit-appearance: button;`
+  },
+};
 

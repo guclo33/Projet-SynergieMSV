@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-modal"
 import { appendMembersIds, removeMembersIds, resetNewGroup, setNewGroup, setNewLeader } from "../../Redux/adminSlice";
@@ -10,23 +10,23 @@ export function CreateurGroupe() {
     const [creatingGroup, setCreatingGroup] = useState(false)
     const newGroup = useSelector((state) => state.admin.newGroup)
     const newLeader = useSelector((state) => state.admin.newLeader)
-    const {leadersData, clientsData, apiUrl, getAdminHomeData} = useContext(AdminContext)
+    const { leadersData, clientsData, apiUrl, getAdminHomeData } = useContext(AdminContext)
     const dispatch = useDispatch()
     const [newLeaderModal, setNewLeaderModal] = useState(false)
     const [singleClientId, setSingleClientId] = useState()
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
-        
-        if(leadersData && newGroup && newGroup.nom_leader){
-        const selectedLeader = leadersData.find(leader => leader.nom === newGroup.nom_leader);
-        dispatch(setNewGroup({key : "leader_id", value : selectedLeader.id}))
+
+        if (leadersData && newGroup && newGroup.nom_leader) {
+            const selectedLeader = leadersData.find(leader => leader.nom === newGroup.nom_leader);
+            dispatch(setNewGroup({ key: "leader_id", value: selectedLeader.id }))
         }
     }, [newGroup.nom_leader])
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        dispatch(setNewGroup({key: name, value : value}))
+        const { name, value } = e.target;
+        dispatch(setNewGroup({ key: name, value: value }))
     }
 
     const handleClick = (e) => {
@@ -35,24 +35,24 @@ export function CreateurGroupe() {
     }
 
     const handleLeaderChange = (e) => {
-        const {name, value} = e.target;
-        dispatch(setNewLeader({key : name, value : value}))
+        const { name, value } = e.target;
+        dispatch(setNewLeader({ key: name, value: value }))
 
     }
 
-    
+
     const handleMemberId = (e) => {
         const selectedId = Number(e.target.value)
         setSingleClientId(selectedId)
-        
-        if(!newGroup.members_ids.includes(selectedId)) {
-        dispatch(appendMembersIds(selectedId))
+
+        if (!newGroup.members_ids.includes(selectedId)) {
+            dispatch(appendMembersIds(selectedId))
         }
     }
 
-    const handleRemoveClient = (e, value) => {
+    const handleRemoveClient = (e, value) => {
         e.preventDefault();
-        
+
         dispatch(removeMembersIds(value))
     }
 
@@ -66,10 +66,10 @@ export function CreateurGroupe() {
         setCreatingGroup(false)
     }
 
-   
+
     let filteredClientsData = [];
     let groupClientsArray = [];
-    if(clientsData && newGroup && newGroup.members_ids) {
+    if (clientsData && newGroup && newGroup.members_ids) {
 
         groupClientsArray = clientsData.filter(client => Array.isArray(newGroup.members_ids) && newGroup.members_ids.map(id => Number(id)).includes(Number(client.id)));
 
@@ -78,27 +78,27 @@ export function CreateurGroupe() {
 
     const handleAddLeader = async (e) => {
         e.preventDefault()
-        try{
-            const response = await fetch (`${apiUrl}/api/admin/${user.id}/gestion/leader`, {
-                method : "POST",
-                credentials : "include",
-                headers : {
-                    "Content-Type" : "application/json"
+        try {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/gestion/leader`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(newLeader)
             })
-            if(response.ok){
+            if (response.ok) {
                 console.log("leader créé avec succès")
                 const addedLeader = {
-                    nom : newLeader.nom_leader,
-                    email : newLeader.email
+                    nom: newLeader.nom_leader,
+                    email: newLeader.email
                 }
                 leadersData.push(addedLeader)
                 setNewLeaderModal(false)
 
             }
 
-        } catch( error) {
+        } catch (error) {
             console.log("couldn't add leader", error)
         }
     }
@@ -107,15 +107,15 @@ export function CreateurGroupe() {
         e.preventDefault();
 
         try {
-            const response = await fetch (`${apiUrl}/api/admin/${user.id}/gestion/groupe`, {
-                method : "POST",
-                credentials : "include",
-                headers : {
-                    "Content-Type" : "application/json"
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/gestion/groupe`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(newGroup)
             });
-            if(response.ok) {
+            if (response.ok) {
                 console.log("groupe créé avec succès!")
                 setCreatingGroup(false)
                 dispatch(resetNewGroup())
@@ -123,98 +123,98 @@ export function CreateurGroupe() {
             }
 
 
-        } catch(error) {
-            console.log("Couldn't add group to server" , error)
+        } catch (error) {
+            console.log("Couldn't add group to server", error)
         }
     }
-    
-    
+
+
 
     return (
         <>
-            
+
             {creatingGroup ?
-            
-            <form onSubmit={handleSubmit}>
-                <div className="question">
-                    <label htmlFor="group_name">Nom du nouveau groupe:</label>
-                    <input type="text" name="group_name" value={newGroup.group_name} onChange={handleChange} required/>
-                </div>
-                <div className="question">
-                    <label htmlFor="date_presentation">Date présentation</label>
-                    <input type="datetime-local" name="date_presentation" value={newGroup.date_presentation} onChange={handleChange} />
-                </div>
-                <div className="question">
-                    <label htmlFor="have_leader">Est-ce que ce groupe a un leader?</label>
-                    <input type="checkbox" name="have_leader" checked={newGroup.have_leader} onChange={(e)=> dispatch(setNewGroup({key:e.target.name, value: e.target.checked}))}/>
-                </div>
-                {newGroup.have_leader ? 
-                <div className="question">
-                    <label htmlFor="nom_leader">Quel est le nom du leader?</label>
-                    <select  name="nom_leader" value={newGroup.nom_leader} onChange={handleChange}>
-                        <option>-- Sélectionnez un leader --</option>
-                        {leadersData.map(leader => (
-                            <option key={leader.id} value={leader.nom}>
-                                {leader.nom}, {leader.email}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={handleClick}>Ajouter un leader</button>
-                </div>
-            : null
-                
-                }
-                <div className="question">
-                        <label htmlFor="members_ids">Ajouter des clients déjà existants</label>
-                        <select  name="members_ids" value={singleClientId} onChange={handleMemberId}>
-                        {filteredClientsData.map(client => (
-                            <option key={client.id} value={client.id}>
-                                {client.nom}, {client.email}
-                            </option>
-                        ))}
-                        </select>
-                </div>
-                <h3>Liste des membres du groupe :</h3>
-                <div className="groupMembers">
-                    {groupClientsArray.length > 0 ? 
-                    groupClientsArray.map(client => (
-                        <div className="client">
-                            <p>{client.nom}</p>
-                            <p>{client.email}</p>
-                            <button onClick={(e) => handleRemoveClient(e, client.id)}>Retirer</button>
+
+                <form onSubmit={handleSubmit}>
+                    <div className="question">
+                        <label htmlFor="group_name">Nom du nouveau groupe:</label>
+                        <input type="text" name="group_name" value={newGroup.group_name} onChange={handleChange} required />
+                    </div>
+                    <div className="question">
+                        <label htmlFor="date_presentation">Date présentation</label>
+                        <input type="datetime-local" name="date_presentation" value={newGroup.date_presentation} onChange={handleChange} />
+                    </div>
+                    <div className="question">
+                        <label htmlFor="have_leader">Est-ce que ce groupe a un leader?</label>
+                        <input type="checkbox" name="have_leader" checked={newGroup.have_leader} onChange={(e) => dispatch(setNewGroup({ key: e.target.name, value: e.target.checked }))} />
+                    </div>
+                    {newGroup.have_leader ?
+                        <div className="question">
+                            <label htmlFor="nom_leader">Quel est le nom du leader?</label>
+                            <select name="nom_leader" value={newGroup.nom_leader} onChange={handleChange}>
+                                <option>-- Sélectionnez un leader --</option>
+                                {leadersData.map(leader => (
+                                    <option key={leader.id} value={leader.nom}>
+                                        {leader.nom}, {leader.email}
+                                    </option>
+                                ))}
+                            </select>
+                            <button onClick={handleClick}>Ajouter un leader</button>
                         </div>
-                    ))
-                    : null}
-                </div>
+                        : null
 
-            <button type="submit">Soumettre le nouveau groupe</button>
-            <button onClick={handleReset}>Reset</button>
-            <button onClick={handleExit}>Sortir</button>
-            <Modal className="modal" isOpen={newLeaderModal} onRequestClose={() => setNewLeaderModal(false)}>
-            <div className="modalContent">
-                <h2>Ajouter un nouveau leader</h2>
-                <div>
-                    <div className="inputModal">
-                        <label htmlfor="nom_leader">Nom complet</label>
-                        <input className="text" name="nom_leader" value={newLeader.nom_leader} type="text" onChange={handleLeaderChange}/>
+                    }
+                    <div className="question">
+                        <label htmlFor="members_ids">Ajouter des clients déjà existants</label>
+                        <select name="members_ids" value={singleClientId} onChange={handleMemberId}>
+                            {filteredClientsData.map(client => (
+                                <option key={client.id} value={client.id}>
+                                    {client.nom}, {client.email}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <div className="inputModal">
-                        <label htmlfor="email">Email</label>
-                        <input type="text" name="email" value={newGroup.email} onChange={handleLeaderChange} />
+                    <h3>Liste des membres du groupe :</h3>
+                    <div className="groupMembers">
+                        {groupClientsArray.length > 0 ?
+                            groupClientsArray.map(client => (
+                                <div className="client">
+                                    <p>{client.nom}</p>
+                                    <p>{client.email}</p>
+                                    <button onClick={(e) => handleRemoveClient(e, client.id)}>Retirer</button>
+                                </div>
+                            ))
+                            : null}
                     </div>
-                
-                    <button className="submitAddLeader" name="submitAddLeaders" onClick={handleAddLeader}>Soumettre</button>
-                </div>
-            
-                <button name="unShowModal" onClick={()=> setNewLeaderModal(false)}>Fermer</button>
-            </div>
-        </Modal>
 
-                
-                
-            </form>
-            
-            : <button onClick={()=> setCreatingGroup(true)}>Créer un nouveau groupe</button>}
+                    <button type="submit">Soumettre le nouveau groupe</button>
+                    <button onClick={handleReset}>Reset</button>
+                    <button onClick={handleExit}>Sortir</button>
+                    <Modal className="modal" isOpen={newLeaderModal} onRequestClose={() => setNewLeaderModal(false)}>
+                        <div className="modalContent">
+                            <h2>Ajouter un nouveau leader</h2>
+                            <div>
+                                <div className="inputModal">
+                                    <label htmlfor="nom_leader">Nom complet</label>
+                                    <input className="text" name="nom_leader" value={newLeader.nom_leader} type="text" onChange={handleLeaderChange} />
+                                </div>
+                                <div className="inputModal">
+                                    <label htmlfor="email">Email</label>
+                                    <input type="text" name="email" value={newGroup.email} onChange={handleLeaderChange} />
+                                </div>
+
+                                <button className="submitAddLeader" name="submitAddLeaders" onClick={handleAddLeader}>Soumettre</button>
+                            </div>
+
+                            <button name="unShowModal" onClick={() => setNewLeaderModal(false)}>Fermer</button>
+                        </div>
+                    </Modal>
+
+
+
+                </form>
+
+                : <button onClick={() => setCreatingGroup(true)}>Créer un nouveau groupe</button>}
         </>
     )
 }

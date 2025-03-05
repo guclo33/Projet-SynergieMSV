@@ -118,8 +118,8 @@ const deleteRoadmapTodosQuery = async (clientid, task, delete_default) => {
     return
 }
 
-const updateOverview = async (date_presentation, echeance,  priorite, id, active) => {
-    await pool.query("UPDATE client SET date_presentation = $1, echeance = $2, priorite = $3 WHERE id = $4", [date_presentation, echeance,  priorite, id ])
+const updateOverview = async ( id, active) => {
+    console.log("updating overview with", id, active)
     await pool.query("UPDATE client SET active = $1 WHERE id = $2", [active, id])
     return {success:true}
 }

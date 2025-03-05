@@ -58,7 +58,7 @@ export function AdminHome() {
         <div className="AdminHome">
             <h1>Bienvenue {user.username}</h1>
             <ProfilGenerator />
-            <LeadersHome />
+            <ClientsList />
             
         </div>
     )

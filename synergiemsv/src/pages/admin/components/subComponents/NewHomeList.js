@@ -124,6 +124,16 @@ export function ClientsList() {
     .filter((client) => client.active === active)
     .filter((client) => client.nom.toLowerCase().includes(search));
 
+    
+    if(isLoading){
+      return(
+          
+              <div className="loading-overlay">
+                <div className="spinner"></div>
+              </div>
+      )
+  }
+
   return (
     <div className="leadersHome">
       <h2 className="text-2xl font-bold text-center mb-6">Mes clients !</h2>
@@ -206,13 +216,14 @@ export function ClientsList() {
 
             {/* Icônes d'action */}
             <div className="flex gap-2 flex-1 justify-end">
+              
               <button 
               id={leader.id} 
                
               title="Générer le profil" 
-              disabled={!leader.form_ids || leader.form_ids.length === 0 || isLoading}
+              aria-disabled={!leader.form_ids[0] || isLoading}
               onClick={(e) => handleProfileClick(e, leader)}
-              className={`btn ${!leader.form_ids || leader.form_ids.length === 0 ? "btn-disabled" : "btn-action"}`}>
+              className={`${!leader.form_ids[0]  ? "!bg-gray-radial text-gray-700 font-bold px-4 py-2 rounded-md transition cursor-not-allowed" : "btn-action"}`}>
                 <FilePlus className="w-5 h-5" />
               </button>
               <button title="Diriger vers les objectifs"><Link to={`objectifs/${leader.id}`} className="btn-action text-white">

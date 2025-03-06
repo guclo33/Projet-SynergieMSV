@@ -4,11 +4,21 @@
 
 
 :root {
-    --primary-color: #6F1E49;
-    --text-color: #07000e;
-    --secondary-color: #D7A5BE;
-    --background: white;
-  }
+  --primary-color: #6F1E49;
+  --text-color: #07000e;
+  --secondary-color: #D7A5BE;
+  --background: white;
+}
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  appearance: none !important;
+  background-color: initial !important;
+  background-image: radial-gradient(100% 100% at 100% 0, var(--secondary-color) 0, var(--primary-color) 100%) !important;
+}
+
 
 /*@import "./App.css";
 @import "./index.css";
@@ -18,38 +28,61 @@
 @import "./admin.css";*/
 
 @layer base {
-    body {
-      font-family: 'Open Sans', sans-serif; /* Exemple de police */
-      color: #07000e; /* Couleur du texte */
-      background-color: #fff; /* Couleur du fond */
-      margin: 1; /* etc. si besoin */
-      /* Toute autre propriété "globale" que vous voulez imposer */
-    }
-  
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Open Sans', sans-serif;
-      color: #07000e;; /* un peu plus sombre pour les titres */
-      margin-bottom: 0.5rem; /* exemple */
-      margin-top: 0.5rem
-    }
-
-    h1 {
-      @apply text-3xl font-bold;
-    }
-    h2 {
-      @apply text-2xl font-bold;
-    }
-    h3{
-      @apply text-xl font-bold;
-    }
-    h4{
-      @apply text-lg font-bold;
-    }
-    h5{
-      @apply font-bold;
-    }
-    a{
-      @apply text-[#6F1E49] hover:text-[#6F1E49] underline;
-    }
+  body {
+    font-family: 'Open Sans', sans-serif;
+    /* Exemple de police */
+    color: #07000e;
+    /* Couleur du texte */
+    background-color: #fff;
+    /* Couleur du fond */
+    margin: 1;
+    /* etc. si besoin */
+    /* Toute autre propriété "globale" que vous voulez imposer */
   }
-  
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Open Sans', sans-serif;
+    color: #07000e;
+    ;
+    /* un peu plus sombre pour les titres */
+    margin-bottom: 0.5rem;
+    /* exemple */
+    margin-top: 0.5rem
+  }
+
+  h1 {
+    @apply text-3xl font-bold;
+  }
+
+  h2 {
+    @apply text-2xl font-bold;
+  }
+
+  h3 {
+    @apply text-xl font-bold;
+  }
+
+  h4 {
+    @apply text-lg font-bold;
+  }
+
+  h5 {
+    @apply font-bold;
+  }
+
+  a {
+    @apply text-[#6F1E49] hover:text-[#6F1E49] underline;
+  }
+}
+
+@layer components {
+  .btn-disabled {
+    @apply text-gray-700 font-bold px-4 py-2 rounded-md transition cursor-not-allowed;
+    background: radial-gradient(100% 100% at 100% 0, #b0b0b0 0%, #808080 100%);
+  }
+}

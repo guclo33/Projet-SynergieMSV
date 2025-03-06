@@ -113,11 +113,11 @@ const deleteRoadmapTodos = async(req,res) => {
 }*/
 
 const updateOverviewController = async (req, res) => {
-    const { id, date_presentation, echeance, priorite, active} = req.body;
+    const { id, active} = req.body;
     console.log("req.body=", req.body)
-    console.log("id", id,"date pres:", date_presentation,"echeance", echeance,"priorite", priorite)
+    
     try {
-        await updateOverview(date_presentation, echeance, priorite, id, active)
+        await updateOverview( id, active)
         res.status(200).send("completed update overview")
     } catch(error) {
         res.status(400).send(error)
@@ -378,11 +378,11 @@ const updateProfileController = async (req,res) => {
         console.log("updating infos")
         const query = `UPDATE profile SET ${name} = $1 WHERE id = $2`
         await updateProfile(query, value, profile_id);
-        res.status(200).send("Succesfully updated profile")
+        return res.status(200).send("Succesfully updated profile")
 
     } catch(error) {
         console.log("error updating profile", error)
-        res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
+        return res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
     }}
 
     try{

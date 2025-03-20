@@ -369,32 +369,54 @@ const updateDetailsGeneralInfos = async (req, res) => {
     }
 }
 
-const updateProfileController = async (req,res) => {
-    const {name, value, profile_id} = req.body
-    console.log("starting update profile controller")
-    console.log("BODY", req.body)
-    if(name){
-    try {
-        console.log("updating infos")
-        const query = `UPDATE profile SET ${name} = $1 WHERE id = $2`
-        await updateProfile(query, value, profile_id);
-        return res.status(200).send("Succesfully updated profile")
+const updateProfileController = async (req, res) => {
+    const { name, value, profile_id } = req.body;
+    console.log("starting update profile controller");
+    console.log("BODY", req.body);
 
-    } catch(error) {
-        console.log("error updating profile", error)
-        return res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
-    }}
-
-    try{
-        console.log("updating colors")
-        const query = `UPDATE profile SET bleu = $1, rouge = $2, jaune = $3, vert = $4 WHERE id = $5`
-        await updateProfile(query, value, profile_id);
-        res.status(200).send("Succesfully updated profile")
-
-    } catch(error) {
-        res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error })
+    if (name) {
+        try {
+            console.log("updating infos");
+            const query = `UPDATE profile SET ${name} = $1 WHERE id = $2`;
+            await updateProfile(query, [value], profile_id);  // Assurez-vous de passer value comme un tableau
+            return res.status(200).send("Succesfully updated profile");
+        } catch (error) {
+            console.log("error updating profile", error);
+            return res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error });
+        }
     }
-}
+
+    if (value && value.hero) {
+        try {
+            console.log("updating arch");
+            const query = `UPDATE profile SET 
+                hero=$1, sage=$2, rebelle=$3, souverain=$4, citoyen=$5, bouffon=$6, 
+                magicien=$7, explorateur=$8, protecteur=$9, amoureuse=$10, optimiste=$11, 
+                createur=$12 WHERE id = $13`;
+            const params = [
+                value.hero, value.sage, value.rebelle, value.souverain, value.citoyen, 
+                value.bouffon, value.magicien, value.explorateur, value.protecteur, 
+                value.amoureuse, value.optimiste, value.createur, profile_id
+            ];
+            await updateProfile(query, params, profile_id);  // Passez un tableau de paramètres
+            return res.status(200).send("Succesfully updated profile");
+        } catch (error) {
+            return res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error });
+        }
+    }
+
+    if (value && value.bleu) {
+        try {
+            console.log("updating colors");
+            const query = `UPDATE profile SET bleu = $1, rouge = $2, jaune = $3, vert = $4 WHERE id = $5`;
+            const params = [value.bleu, value.rouge, value.jaune, value.vert, profile_id];
+            await updateProfile(query, params, profile_id);  // Passez un tableau de paramètres
+            return res.status(200).send("Succesfully updated profile");
+        } catch (error) {
+            return res.status(500).json({ message: "Erreur lors de la mise à jour du profil", error });
+        }
+    }
+};
 
 const updateUserInfos = async (req, res) => {
     const {username, email} = req.body;

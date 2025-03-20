@@ -9,8 +9,9 @@ const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController} = require ("../controller/adminController");
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, savePromptController, updatePromptController} = require ("../controller/adminController");
 const { connectCanvaDetail, generateTemplate } = require("../server/canvaTemplate");
+
 
 
 router.get("/", getAdminHomeDataController)
@@ -66,6 +67,14 @@ router.post("/gestion/groupe", createGroupController);
 router.put("/gestion/groupe", updateGroupController)
 
 router.post("/gestion/leader", createLeaderController)
+
+router.get("/prompts", getPromptSetsController)
+
+router.get("/prompts/:promptSetName", getPromptsController)
+
+router.post("/prompts/:promptSetName", savePromptController)
+
+router.put("/prompts/:promptSetName", updatePromptController)
 
 
 

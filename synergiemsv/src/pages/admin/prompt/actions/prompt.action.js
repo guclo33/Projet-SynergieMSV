@@ -1,9 +1,27 @@
 const apiURL =  process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
 
-export const getPrompts = async (userid, selectedSetId) => {
+export const getPromptSets = async (userid) => {
+    try {
+        const response = await fetch(`${apiURL}/admin/${userid}/prompts`,{
+            method: "GET",
+            credentials: "include",
+        })
+        if(response.ok){
+            const data = await response.json()
+            console.log("getPromptSets data:", data)
+            return data
+        }
+        console.error("getPromptSets error:", response.statusText)
+        return
+    } catch (error) {
+        console.error("getPromptSets error:", error)
+    }
+}
+
+export const getPrompts = async (userid, selectedSetName) => {
     if(!selectedSetId) return
     try {
-        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetId}/`,{
+        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}/`,{
             method: "GET",
             credentials: "include",
 
@@ -19,10 +37,10 @@ export const getPrompts = async (userid, selectedSetId) => {
     }
 }
 
-export const savePrompts = async (userid, selectedSetId, prompts) => {
+export const savePrompts = async (userid, selectedSetName, prompts) => {
     if(!selectedSetId) return
     try {
-        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetId}/`,{
+        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}/`,{
             method: "POST",
             credentials: "include",
             headers: {
@@ -41,16 +59,16 @@ export const savePrompts = async (userid, selectedSetId, prompts) => {
     }
 }
 
-export const updatePrompt = async (userid, selectedSetId, promptName, promptValue) => {
+export const updatePrompt = async (userid, selectedSetName, promptDatas) => {
     if(!selectedSetId) return
     try {
-        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetId}/${promptName}`,{
+        const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}`,{
             method: "PUT",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({value: promptValue})
+            body: JSON.stringify(promptDatas)
         })
         if(response.ok){
             const data = await response.json()

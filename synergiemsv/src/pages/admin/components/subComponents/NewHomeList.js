@@ -219,21 +219,24 @@ export function ClientsList() {
               >
                 <FilePlus className="w-5 h-5" />
               </button>
-              <button title="Diriger vers les objectifs">
-                <Link to={`objectifs/${leader.id}`} className="btn-action text-white">
+              <Link to={`objectifs/${leader.id}`} className="btn-action text-white">
+                <button title="Diriger vers les objectifs">
                   <Target className="w-5 h-5" />
-                </Link>
-              </button>
-              <button title="Diriger vers la feuille de route">
-                <Link to={`roadmap/${leader.id}`} className="btn-action text-white">
+                </button>
+              </Link>
+
+              <Link to={`roadmap/${leader.id}`} className="btn-action text-white">
+                <button title="Diriger vers la feuille de route">
                   <Roadmap className="w-5 h-5" />
-                </Link>
-              </button>
-              <button title="Diriger vers les informations">
-                <Link to={`details/${leader.id}`} className="btn-action text-white">
+                </button>
+              </Link>
+
+              <Link to={`details/${leader.id}`} className="btn-action text-white">
+                <button title="Diriger vers les informations">
                   <Info className="w-5 h-5" />
-                </Link>
-              </button>
+                </button>
+              </Link>
+
             </div>
           </div>
         ))}
@@ -244,19 +247,19 @@ export function ClientsList() {
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <p className="text-lg font-bold mb-4 p">Choisissez un formulaire</p>
             {selectedClient ? (
-                <div className="max-h-60 overflow-y-auto">
-                  {selectedClient.form_ids.map((formId) => (
-                    <button
-                      key={formId}
-                      className="block w-full bg-primary text-white py-2 rounded-md mb-2"
-                      onClick={() => handleProfileGenerate(selectedClient.id, formId)}
-                      disabled={isLoading}
-                    >
-                      Formulaire ID: {formId}
-                    </button>
-                  ))}
-                </div>
-              
+              <div className="max-h-60 overflow-y-auto">
+                {selectedClient.form_ids.map((formId) => (
+                  <button
+                    key={formId}
+                    className="block w-full bg-primary text-white py-2 rounded-md mb-2"
+                    onClick={() => handleProfileGenerate(selectedClient.id, formId)}
+                    disabled={isLoading}
+                  >
+                    Formulaire ID: {formId}
+                  </button>
+                ))}
+              </div>
+
             ) : (
               <p>Aucun client sélectionné</p>
             )}

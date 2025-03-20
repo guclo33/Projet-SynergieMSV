@@ -17,6 +17,20 @@ export function Profile({ detailsData }) {
         jaune: info.jaune,
         rouge: info.rouge
     })
+    const [newArch, setNewArch] = useState({
+        hero: info.hero,
+        sage: info.sage,
+        magicien: info.magicien,
+        explorateur: info.explorateur,
+        protecteur: info.protecteur,
+        bouffon : info.bouffon,
+        souverain: info.souverain,
+        createur: info.createur,
+        citoyen: info.citoyen,
+        amoureuse: info.amoureuse,
+        rebelle: info.rebelle,
+        optimiste: info.optimiste,
+    })
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
     const { user } = useContext(AuthContext)
     const { clientid } = useParams()
@@ -73,6 +87,13 @@ export function Profile({ detailsData }) {
 
     }
 
+    const handleChangeArch = (e) => {
+        const { name, value } = e.target
+        setNewArch(prev => ({ ...prev, [name]: Number(value) }));
+
+
+    }
+
     if (!detailsData.info.profile_id) {
         return (
             <h3>Il n'y pas de profil présentement disponible!</h3>
@@ -95,6 +116,35 @@ export function Profile({ detailsData }) {
                 body: JSON.stringify({
 
                     value: newColor,
+                    profile_id: info.profileid
+                })
+            });
+            if (response.ok) {
+                console.log("succesfully updated profile")
+                setModify(false)
+            }
+
+        } catch (error) {
+            console.log("couldn't modify profile", error)
+        }
+    }
+
+    const handleModifyArch = async () => {
+        const accepted = window.confirm("Êtes-vous sûr de vouloir modifier ?")
+
+        if (!accepted) {
+            return
+        }
+        try {
+            const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/profileUpdate`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+
+                    value: newArch,
                     profile_id: info.profileid
                 })
             });
@@ -190,6 +240,68 @@ export function Profile({ detailsData }) {
 
 
             </div>
+            <h4>Archetypes:</h4>
+            <div className="archetypep">
+                {modify ?
+                    <>
+                        <h6 >Héro</h6>
+                        <h6 >Sage</h6>
+                        <h6 >Magicien</h6>
+                        <h6 >Explorateur</h6>
+                        <h6 >Protecteur</h6>
+                        <h6 >Bouffon</h6>
+                        <h6 >Souverain</h6>
+                        <h6 >Créateur</h6>
+                        <h6 >Citoyen</h6>
+                        <h6 >Amoureuse</h6>
+                        <h6 >Rebelle</h6>
+                        <h6 >Optimiste</h6>
+                        <input name="hero" value={newArch.hero} onChange={handleChangeArch} />
+                        <input name="sage" value={newArch.sage} onChange={handleChangeArch} />
+                        <input name="magicien" value={newArch.magicien} onChange={handleChangeArch} />
+                        <input name="explorateur" value={newArch.explorateur} onChange={handleChangeArch} />
+                        <input name="protecteur" value={newArch.protecteur} onChange={handleChangeArch} />
+                        <input name="bouffon" value={newArch.bouffon} onChange={handleChangeArch} />
+                        <input name="souverain" value={newArch.souverain} onChange={handleChangeArch} />
+                        <input name="createur" value={newArch.createur} onChange={handleChangeArch} />
+                        <input name="citoyen" value={newArch.citoyen} onChange={handleChangeArch} />
+                        <input name="amoureuse" value={newArch.amoureuse} onChange={handleChangeArch} />
+                        <input name="rebelle" value={newArch.rebelle} onChange={handleChangeArch} />
+                        <input name="optimiste" value={newArch.optimiste} onChange={handleChangeArch} />
+                        <button onClick={handleModifyArch} >Modifier</button>
+                        <button onClick={() => setModify(false)}>Annuler</button>
+                    </> :
+                    <>
+                        <h6 onClick={() => setModify(true)} >Hero</h6>
+                        <h6 onClick={() => setModify(true)} >Sage</h6>
+                        <h6 onClick={() => setModify(true)} >Magicien</h6>
+                        <h6 onClick={() => setModify(true)} >Explorateur</h6>
+                        <h6 onClick={() => setModify(true)} >Protecteur</h6>
+                        <h6 onClick={() => setModify(true)} >Bouffon</h6>
+                        <h6 onClick={() => setModify(true)} >Souverain</h6>
+                        <h6 onClick={() => setModify(true)} >Créateur</h6>
+                        <h6 onClick={() => setModify(true)} >Citoyen</h6>
+                        <h6 onClick={() => setModify(true)} >Amoureuse</h6>
+                        <h6 onClick={() => setModify(true)} >Rebelle</h6>
+                        <h6 onClick={() => setModify(true)} >Optimiste</h6>
+                        <p onClick={() => setModify(true)}>{newArch.hero}</p>
+                        <p onClick={() => setModify(true)}>{newArch.sage}</p>
+                        <p onClick={() => setModify(true)}>{newArch.magicien}</p>
+                        <p onClick={() => setModify(true)}>{newArch.explorateur}</p>
+                        <p onClick={() => setModify(true)}>{newArch.protecteur}</p>
+                        <p onClick={() => setModify(true)}>{newArch.bouffon}</p>
+                        <p onClick={() => setModify(true)}>{newArch.souverain}</p>
+                        <p onClick={() => setModify(true)}>{newArch.createur}</p>
+                        <p onClick={() => setModify(true)}>{newArch.citoyen}</p>
+                        <p onClick={() => setModify(true)}>{newArch.amoureuse}</p>
+                        <p onClick={() => setModify(true)}>{newArch.rebelle}</p>
+                        <p onClick={() => setModify(true)}>{newArch.optimiste}</p>
+                    </>}
+
+
+            </div>
+
+
             <h4>Vos deux principaux archétypes:</h4>
             <div className="archetype">
 

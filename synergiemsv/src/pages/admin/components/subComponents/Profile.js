@@ -131,6 +131,7 @@ export function Profile({ detailsData }) {
                 const info = data.info
                 console.log("here's Info", info)
                 try {
+                    console.log("trying to create canva")
                     const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/canva/${clientid}`, {
                         method: "POST",
                         credentials: "include",

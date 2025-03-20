@@ -1,29 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../../../AuthContext";
-import { AdminContext } from "../../AdminContext";
-import iconeProfile from "../../../../Images/iconeProfile.jpg";
-import { useNavigate } from "react-router-dom";
+"use client"
+
+import { useContext, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { AuthContext } from "../../../AuthContext"
+import { AdminContext } from "../../AdminContext"
+import iconeProfile from "../../../../Images/iconeProfile.jpg"
+import { useNavigate } from "react-router-dom"
 
 // Icônes Lucide
-import { FilePlus, Target, Map as Roadmap, Info } from "lucide-react";
-
+import { FilePlus, Target, MapIcon as Roadmap, Info } from "lucide-react"
 
 export function ClientsList() {
-  const { user } = useContext(AuthContext);
-  const { profilePhotos, clientsData, getAdminHomeData } = useContext(AdminContext);
-  const [initialData, setInitialData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFormId, setSelectedFormId] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentClientId, setCurrentClientId] = useState(null);
+  const { user } = useContext(AuthContext)
+  const { profilePhotos, clientsData, getAdminHomeData } = useContext(AdminContext)
+  const [initialData, setInitialData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedFormId, setSelectedFormId] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [currentClientId, setCurrentClientId] = useState(null)
+  const [selectedClient, setSelectedClient] = useState(null)
 
-  const [active, setActive] = useState(true);
-  const [search, setSearch] = useState("");
+  const [active, setActive] = useState(true)
+  const [search, setSearch] = useState("")
 
-  const apiUrl = process.env.REACT_APP_RENDER_API || "http://localhost:3000";
+  const apiUrl = process.env.REACT_APP_RENDER_API || "http://localhost:3000"
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (clientsData.length > 0) {
@@ -31,23 +33,21 @@ export function ClientsList() {
     }
   }, [clientsData])
 
+  useEffect(() => {
+    if (currentClientId) setSelectedClient(clientsData.find((c) => c.id === currentClientId))
+    console.log("selectedClient", selectedClient)
+  }, [currentClientId])
 
-  console.log("user.id", user.id);
-
-
-  console.log("initialData", initialData, "clientsData", clientsData);
-  const handleToggleActive = () => setActive((prev) => !prev);
-  const handleSearch = (e) => setSearch(e.target.value.toLowerCase());
+  console.log("initialData", initialData, "clientsData", clientsData)
+  const handleToggleActive = () => setActive((prev) => !prev)
+  const handleSearch = (e) => setSearch(e.target.value.toLowerCase())
 
   const handleClick = async (id, currentActive) => {
     try {
-
       // Met à jour localement le state pour un rendu immédiat
       setInitialData((prevClients) =>
-        prevClients.map((client) =>
-          client.id === id ? { ...client, active: !currentActive } : client
-        )
-      );
+        prevClients.map((client) => (client.id === id ? { ...client, active: !currentActive } : client)),
+      )
 
       // Envoie la mise à jour à l'API
       const response = await fetch(`${apiUrl}/api/admin/${user.id}/overview`, {
@@ -60,78 +60,77 @@ export function ClientsList() {
           id: id,
           active: !currentActive,
         }),
-      });
+      })
 
       // Si l'API répond mal, on restaure l'ancien état
       if (!response.ok) {
-        console.error("Erreur lors de la mise à jour côté serveur.");
+        console.error("Erreur lors de la mise à jour côté serveur.")
         setInitialData((prevClients) =>
-          prevClients.map((client) =>
-            client.id === id ? { ...client, active: currentActive } : client
-          )
-        );
+          prevClients.map((client) => (client.id === id ? { ...client, active: currentActive } : client)),
+        )
       } else {
-        getAdminHomeData(); // Recharge les données depuis l’API (optionnel)
+        getAdminHomeData() // Recharge les données depuis l’API (optionnel)
       }
     } catch (error) {
-      console.error("Erreur lors de la modification du client", error);
+      console.error("Erreur lors de la modification du client", error)
     }
-  };
+  }
 
-
+  // Modifiez la fonction handleProfileClick pour qu'elle fonctionne correctement
   const handleProfileClick = (e, leader) => {
-    const clientId = e.target.id;
+    // Utilisez directement l'ID du leader
+    const clientId = leader.id
 
-    console.log("leader", leader, "clientId", clientId);
+    console.log("leader", leader, "clientId", clientId)
 
     if (leader.form_ids.length === 1) {
-      // Si un seul form_id, on l’utilise directement
-      handleProfileGenerate(clientId, leader.form_ids[0]);
+      // Si un seul form_id, on l'utilise directement
+      handleProfileGenerate(clientId, leader.form_ids[0])
     } else if (leader.form_ids.length > 1) {
       // Si plusieurs form_ids, ouvrir le modal pour choisir
-      setCurrentClientId(clientId);
-      console.log("clientId", clientId);
-      setModalOpen(true);
+      setCurrentClientId(clientId)
+      // Définir explicitement le client sélectionné
+      setSelectedClient(leader)
+      // Ouvrir le modal
+      setModalOpen(true)
+      console.log("Modal should be open:", leader.nom, leader.form_ids)
     }
-  };
+  }
 
-
- const handleProfileGenerate = async (clientId, formId) => {
-    setIsLoading(true);
+  const handleProfileGenerate = async (clientId, formId) => {
+    setIsLoading(true)
     try {
       const response = await fetch(`${apiUrl}/api/form/generateProfile/${formId}`, {
         method: "GET",
         credentials: "include",
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Message from Python:", data.message);
-        console.log("Profil généré avec succès");
-        navigate(`/admin/${user.id}/details/${clientId}`);
+        const data = await response.json()
+        console.log("Message from Python:", data.message)
+        console.log("Profil généré avec succès")
+        navigate(`/admin/${user.id}/details/${clientId}`)
       } else {
-        console.error("Erreur lors de la génération du profil");
+        console.error("Erreur lors de la génération du profil")
       }
     } catch (error) {
-      console.error("Erreur réseau:", error);
+      console.error("Erreur réseau:", error)
     } finally {
-      setIsLoading(false);
-      setModalOpen(false); // Ferme le modal après action
+      setIsLoading(false)
+      setModalOpen(false) // Ferme le modal après action
     }
-  };
+  }
 
   const clientsAffiches = initialData
     .filter((client) => client.active === active)
-    .filter((client) => client.nom.toLowerCase().includes(search));
+    .filter((client) => client.nom.toLowerCase().includes(search))
 
-    
-    if(isLoading){
-      return(
-          
-              <div className="loading-overlay">
-                <div className="spinner"></div>
-              </div>
-      )
+  if (isLoading) {
+    return (
+      <div className="loading-overlay">
+        <div className="spinner"></div>
+      </div>
+    )
   }
 
   return (
@@ -181,10 +180,7 @@ export function ClientsList() {
                 className="w-14 h-14 object-cover rounded-full border-2 border-primary"
               />
               <div>
-                <Link
-                  to={`details/${leader.id}`}
-                  className="text-primary font-semibold hover:underline"
-                >
+                <Link to={`details/${leader.id}`} className="text-primary font-semibold hover:underline">
                   {leader.nom}
                 </Link>
                 <div className="mt-1 flex items-center gap-2 text-sm text-primary">
@@ -207,65 +203,70 @@ export function ClientsList() {
               <h4 className="font-semibold text-primary">Date Présentation</h4>
               <p className="text-textColor">
                 {leader.date_presentation
-                  ? new Date(leader.date_presentation).toLocaleDateString(
-                    "en-CA"
-                  )
+                  ? new Date(leader.date_presentation).toLocaleDateString("en-CA")
                   : "Date non définie"}
               </p>
             </div>
 
             {/* Icônes d'action */}
             <div className="flex gap-2 flex-1 justify-end">
-              
-              <button 
-              id={leader.id} 
-               
-              title="Générer le profil" 
-              aria-disabled={!leader.form_ids[0] || isLoading}
-              onClick={(e) => handleProfileClick(e, leader)}
-              className={`${!leader.form_ids[0]  ? "!bg-gray-radial text-gray-700 font-bold px-4 py-2 rounded-md transition cursor-not-allowed" : "btn-action"}`}>
+              <button
+                id={leader.id}
+                title="Générer le profil"
+                aria-disabled={!leader.form_ids[0] || isLoading}
+                onClick={(e) => handleProfileClick(e, leader)}
+                className={`${!leader.form_ids[0] ? "!bg-gray-radial text-gray-700 font-bold px-4 py-2 rounded-md transition cursor-not-allowed" : "btn-action"}`}
+              >
                 <FilePlus className="w-5 h-5" />
               </button>
-              <button title="Diriger vers les objectifs"><Link to={`objectifs/${leader.id}`} className="btn-action text-white">
-                <Target className="w-5 h-5" />
-              </Link></button>
-              <button title="Diriger vers la feuille de route"><Link to={`roadmap/${leader.id}`} className="btn-action text-white">
-                <Roadmap className="w-5 h-5" />
-              </Link></button>
-              <button title="Diriger vers les informations"><Link to={`details/${leader.id}`} className="btn-action text-white">
-                <Info className="w-5 h-5" />
-              </Link></button>
+              <button title="Diriger vers les objectifs">
+                <Link to={`objectifs/${leader.id}`} className="btn-action text-white">
+                  <Target className="w-5 h-5" />
+                </Link>
+              </button>
+              <button title="Diriger vers la feuille de route">
+                <Link to={`roadmap/${leader.id}`} className="btn-action text-white">
+                  <Roadmap className="w-5 h-5" />
+                </Link>
+              </button>
+              <button title="Diriger vers les informations">
+                <Link to={`details/${leader.id}`} className="btn-action text-white">
+                  <Info className="w-5 h-5" />
+                </Link>
+              </button>
             </div>
           </div>
-
-          
         ))}
       </div>
-            {/* Modal pour choisir un form_id si plusieurs options */}
-            {modalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+      {/* Modal pour choisir un form_id si plusieurs options */}
+      {modalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[9999]">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-lg font-bold mb-4">Choisissez un formulaire</h3>
-            {clientsData.find((c) => c.id === currentClientId)?.form_ids.map((formId) => (
-              <button
-                key={formId}
-                className="block w-full bg-primary text-white py-2 rounded-md mb-2"
-                onClick={() => handleProfileGenerate(currentClientId, formId)}
-              >
-                Formulaire ID: {formId}
-              </button>
-            ))}
-            <button
-              className="w-full bg-red-500 text-white py-2 rounded-md"
-              onClick={() => setModalOpen(false)}
-            >
+            <p className="text-lg font-bold mb-4 p">Choisissez un formulaire</p>
+            {selectedClient ? (
+                <div className="max-h-60 overflow-y-auto">
+                  {selectedClient.form_ids.map((formId) => (
+                    <button
+                      key={formId}
+                      className="block w-full bg-primary text-white py-2 rounded-md mb-2"
+                      onClick={() => handleProfileGenerate(selectedClient.id, formId)}
+                      disabled={isLoading}
+                    >
+                      Formulaire ID: {formId}
+                    </button>
+                  ))}
+                </div>
+              
+            ) : (
+              <p>Aucun client sélectionné</p>
+            )}
+            <button className="w-full bg-red-500 text-white py-2 rounded-md mt-4" onClick={() => setModalOpen(false)}>
               Annuler
             </button>
           </div>
         </div>
       )}
-
     </div>
-  );
+  )
 }
 

@@ -5,6 +5,8 @@ import webbrowser
 import psycopg2
 from dotenv import load_dotenv
 import os
+import subprocess
+import sys
 """
 with open('accessToken.json', 'r') as file:
     data = json.load(file)
@@ -172,9 +174,28 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
                 job_status = job_done["status"]
                 
                 if job_status == "success":
-                    edit_url = job_done["result"]["design"]["url"]
-                    webbrowser.open(edit_url)
+                    edit_url = job_done["result"]["design"]["urls"]["edit_url"]
+                    # webbrowser.open(edit_url)
                     print(job_done)
+                    print("edit_url", edit_url)
+                    
+                    try:
+                        # Pour Windows
+                        if sys.platform == "win32":
+                            subprocess.run(["start", "chrome", edit_url], shell=True, check=True)
+                        # Pour macOS
+                        elif sys.platform == "darwin":
+                            subprocess.run(["open", "-a", "Safari", edit_url], check=True)
+                        # Pour Linux
+                        elif sys.platform.startswith("linux"):
+                            subprocess.run(["xdg-open", edit_url], check=True)
+                        
+                        # Si aucune exception n'a été levée, on imprime le succès
+                        print(f"Successfully opened the URL: {edit_url}")
+                        
+                    except Exception as e:
+                        print(f"Error opening URL with subprocess: {e}")
+
                 else :
                     print("job n'est pas terminé")
             else:

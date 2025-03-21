@@ -274,28 +274,44 @@ const connectCanvaDetail = async (req,res, next) => {
 }*/
 
 
+
 const generateTemplate = async (req, res) => {
-    const jsonData = req.body
-    
-    const {clientid} = req.params 
-    console.log("clientid", clientid)
-    
-    
-    
+    const { clientid } = req.params;
+    console.log("clientid", clientid);
 
+    try {
+        exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error("Erreur d'exécution:", error);
+                return res.status(500).json({ message: "Erreur d'exécution du script Python" });
+            }
 
-        try {
-            exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
-                if (error) {
-                  console.error("Erreur d'exécution:", error);
-                } else {
-                  console.log("Résultat stdout :", stdout);
-                  console.error("Messages stderr :", stderr);
-                }})
-        } catch(error) {
-            console.log("pas réussi à générer template")
-        }
-}
+            
+
+            // Utiliser une expression régulière pour extraire l'URL du tuple
+            const match = stdout.match(/(https:\/\/www\.canva\.com\/api\/design\/[^\s]+)/);
+            
+
+            if (match) {
+                const editUrl = match[0]; // L'URL est capturée dans le premier groupe de l'expression régulière
+                console.log("URL générée:", editUrl);
+
+                if (stderr) {
+                    console.error("Messages stderr :", stderr);
+                }
+
+                // Renvoyer l'URL au client sous forme de JSON
+                return res.status(200).json({ message: "Template généré avec succès", editUrl: editUrl });
+            } else {
+                console.error("Impossible de trouver l'URL dans la sortie");
+                return res.status(500).json({ message: "Erreur de parsing des données" });
+            }
+        });
+    } catch (error) {
+        console.log("Erreur lors de la génération du template:", error);
+        return res.status(500).json({ message: "Erreur lors de la génération du template", error });
+    }
+};
 
 
 

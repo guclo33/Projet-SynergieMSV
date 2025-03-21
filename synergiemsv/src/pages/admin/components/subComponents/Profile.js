@@ -11,6 +11,7 @@ export function Profile({ detailsData }) {
     const [newInfo, setNewInfo] = useState({})
     const [modify, setModify] = useState(false)
     const [authUrl, setAuthUrl] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
     const [newColor, setNewColor] = useState({
         bleu: info.bleu,
         vert: info.vert,
@@ -171,15 +172,16 @@ export function Profile({ detailsData }) {
 
     const generateCanva = async () => {
         try {
+            setIsLoading(true)
             const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/${clientid}`, {
                 method: "GET",
                 credentials: "include",
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("here's Details", data)
+                
                 const info = data.info
-                console.log("here's Info", info)
+                
                 try {
                     console.log("trying to create canva")
                     const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/canva/${clientid}`, {
@@ -191,20 +193,37 @@ export function Profile({ detailsData }) {
                         body: JSON.stringify(info)
                     })
                     if (response.ok) {
+                        const data = await response.json();
+                        console.log("here's Canva", data)
                         console.log("successfully autofill Canva")
+                        if (data && data.editUrl) {
+                            window.open(data.editUrl, '_blank');
+                        }
+                        setIsLoading(false)
                     }
                 } catch (error) {
                     console.log("couldn't connect canva")
+                    setIsLoading(false)
                 }
 
             } else {
                 const errorText = await response.text();
                 console.error("Error response from server:", errorText)
+                setIsLoading(false)
             };
         } catch (error) {
             console.error("Could not connect to get details data", error)
+            setIsLoading(false)
         }
     }
+
+    if (isLoading) {
+        return (
+          <div className="loading-overlay">
+            <div className="spinner"></div>
+          </div>
+        )
+      }
 
     return (
         <div className="profile">

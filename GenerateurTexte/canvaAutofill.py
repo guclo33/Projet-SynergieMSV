@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 import os
 import subprocess
 import sys
+from flask import Flask, jsonify
+
+app = Flask(__name__)
 """
 with open('accessToken.json', 'r') as file:
     data = json.load(file)
@@ -165,29 +168,48 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
         
         while job_status != "success":
             time.sleep(5)
-            
+
+            # Effectuer la requête API pour vérifier l'état du job
             job_response = requests.get(f"https://api.canva.com/rest/v1/autofills/{job_id}",
-                                        headers = {"Authorization": f"Bearer {access_token}"})
+                                        headers={"Authorization": f"Bearer {access_token}"})
             print("En train d'attendre la fin de la production")
-            if job_response.status_code == 200:   
+
+            if job_response.status_code == 200:
                 job_done = job_response.json()["job"]
                 job_status = job_done["status"]
-                
+
                 if job_status == "success":
                     edit_url = job_done["result"]["design"]["urls"]["edit_url"]
-                    webbrowser.open(edit_url)
-                    print(job_done)
                     print("edit_url", edit_url)
-                    
-                    
 
-                else :
-                    print("job n'est pas terminé")
+                    try:
+                        # Si vous ne souhaitez pas ouvrir automatiquement l'URL, renvoyer l'URL au frontend
+                        # en utilisant jsonify pour renvoyer un objet JSON
+                        with app.app_context():
+                            return jsonify({
+                                "status": "success",
+                                "message": "Job completed successfully",
+                                "edit_url": edit_url
+                            }), 200
+
+                    except Exception as e:
+                        print(f"Error during job execution: {e}")
+                        with app.app_context():
+                            return jsonify({
+                                "status": "error",
+                                "message": "An error occurred while processing the job",
+                                "error": str(e)
+                            }), 500
+
+                else:
+                    print("Job is not yet completed")
+
             else:
-                print(f"Erreur lors de la vérification du statut du job: {job_response.status_code}")
-    
-    else:
-        print(f"Erreur lors de la création du job: {response.status_code}")
+                print(f"Error during job creation: {job_response.status_code}")
+                return jsonify({
+                    "status": "error",
+                    "message": f"Error during job creation. Status code: {job_response.status_code}"
+                }), 500
     
 conn.commit()
 cursor.close()

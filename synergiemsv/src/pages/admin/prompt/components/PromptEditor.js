@@ -88,6 +88,9 @@ export function PromptEditor({
                 {editedPrompts[prompt.prompt_name] && (
                   <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Modifié</span>
                 )}
+                <span className="ml-2 text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                  Position: {prompt.prompt_number || index + 1}
+                </span>
               </div>
               <div className="mb-2">
                 <div className="text-sm text-gray-600 mb-1">Contenu du prompt</div>

@@ -1,4 +1,3 @@
-const { get } = require("../routes/admin");
 const pool = require("./database");
 
 const createUserQuery = async (userName, password, email) => {
@@ -265,7 +264,7 @@ const updateToken = async (query, value) => {
 }
 
 const getPromptSets = async () => {
-    return await pool.query("SELECT prompt_set_name, MIN(id) as id FROM prompts GROUP BY prompt_set_name ORDER BY id");
+    return await pool.query("SELECT prompt_set_name, MIN(prompt_set_id) as id FROM prompts GROUP BY prompt_set_name ORDER BY id");
 };
 
 const getPrompts = async (selectedSetName) => {
@@ -275,14 +274,22 @@ const getPrompts = async (selectedSetName) => {
 
 const createPrompts = async (selectedSetName, prompts) => {
     if (!selectedSetName) return null;
-    console.log("Creating prompts:", prompts);
-    return await pool.query("INSERT INTO prompts (prompt_set_name, prompt_set_id, , prompt_number, prompt_name, value) VALUES ($1, $2, $3) RETURNING id", [selectedSetName, prompts.prompt_set_id, prompts.promt_number, prompts.prompt_name, prompts.value]);
+    console.log("selectedSetName:", selectedSetName);
+    console.log("Creating prompts:", prompts.prompt_set_id, prompts.prompt_number, prompts.prompt_name, prompts.value);
+    return await pool.query("INSERT INTO prompts (prompt_set_name, prompt_set_id, prompt_number, prompt_name, value) VALUES ($1, $2, $3, $4, $5) RETURNING id", [selectedSetName, prompts[0].prompt_set_id, prompts[0].prompt_number, prompts[0].prompt_name, prompts[0].value]);
 };
 
 const updatePrompt = async (selectedSetName, promptData) => {
     if (!selectedSetName) return null;
+    const existingPrompt = await pool.query("SELECT * FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [selectedSetName, promptData.prompt_name]);
+
+    if (existingPrompt.rows.length === 0) {
+        console.log("Creating prompt for update:", promptData);
+        return pool.query("INSERT INTO prompts (prompt_set_name, prompt_name, value, prompt_set_id, prompt_number) VALUES ($1, $2, $3, $4, $5)", [selectedSetName, promptData.prompt_name, promptData.value, promptData.prompt_set_id, promptData.prompt_number]);
+    };
+
     console.log("Updating prompt:", promptData);
-    return await pool.query("UPDATE prompts SET value = $1 WHERE prompt_set_name = $2 AND prompt_name = $3", [promptData.value, selectedSetName, promptData.prompt_name]);
+    return await pool.query("UPDATE prompts SET value = $1, prompt_name=$2 WHERE prompt_set_name = $3 AND prompt_number = $4", [promptData.value, promptData.prompt_name, selectedSetName, promptData.prompt_number]);
 };
 
 const deletePrompt = async (selectedSetName, promptName) => {

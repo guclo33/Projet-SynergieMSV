@@ -1,8 +1,8 @@
 const apiURL = process.env.REACT_APP_RENDER_API || "http://localhost:3000"
 
-export const getPromptSets = async (userid) => {
+export const getPromptSetsAPI = async (userid) => {
   try {
-    const response = await fetch(`${apiURL}/admin/${userid}/prompts`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts`, {
       method: "GET",
       credentials: "include",
     })
@@ -19,10 +19,10 @@ export const getPromptSets = async (userid) => {
   }
 }
 
-export const getPrompts = async (userid, selectedSetName) => {
+export const getPromptsAPI = async (userid, selectedSetName) => {
   if (!selectedSetName) return []
   try {
-    const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}/`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}/`, {
       method: "GET",
       credentials: "include",
     })
@@ -39,11 +39,11 @@ export const getPrompts = async (userid, selectedSetName) => {
   }
 }
 
-export const createPrompts = async (userid, selectedSetName, prompts) => {
+export const createPromptsAPI = async (userid, selectedSetName, prompts) => {
   if (!selectedSetName) return null
   console.log("Creating prompts:", prompts)
   try {
-    const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}/`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}/`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -64,11 +64,11 @@ export const createPrompts = async (userid, selectedSetName, prompts) => {
   }
 }
 
-export const updatePrompt = async (userid, selectedSetName, promptData) => {
+export const updatePromptAPI = async (userid, selectedSetName, promptData) => {
   if (!selectedSetName) return null
   console.log("Updating prompt:", promptData)
   try {
-    const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -89,11 +89,11 @@ export const updatePrompt = async (userid, selectedSetName, promptData) => {
   }
 }
 
-export const deletePrompt = async (userid, selectedSetName, promptName) => {
+export const deletePromptAPI = async (userid, selectedSetName, promptName) => {
   if (!selectedSetName) return null
   console.log("Deleting prompt:", promptName)
   try {
-    const response = await fetch(`${apiURL}/admin/${userid}/prompts/${selectedSetName}/${promptName}`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}/${promptName}`, {
       method: "DELETE",
       credentials: "include",
     })

@@ -55,7 +55,10 @@ export function PromptSetSelector({ promptSets, selectedSetId, onSelectSet, onAd
             <>
               <select
                 value={selectedSetId}
-                onChange={(e) => onSelectSet(e.target.value)}
+                onChange={(e) => {
+                  console.log("Select changed to:", e.target.value)
+                  onSelectSet(e.target.value)
+                }}
                 disabled={loading || promptSets.length === 0}
                 className="border border-gray-300 rounded-md px-3 py-2 w-[200px] focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
               >
@@ -64,11 +67,14 @@ export function PromptSetSelector({ promptSets, selectedSetId, onSelectSet, onAd
                 ) : (
                   <>
                     <option value="">Sélectionner un ensemble</option>
-                    {promptSets.map((set) => (
-                      <option key={set.id} value={set.id}>
-                        {set.name}
-                      </option>
-                    ))}
+                    {promptSets.map((set) => {
+                      console.log("Rendering option for set:", set)
+                      return (
+                        <option key={set.id} value={set.id}>
+                          {set.prompt_set_name || set.name || `Ensemble ${set.id}`}
+                        </option>
+                      )
+                    })}
                   </>
                 )}
               </select>
@@ -96,7 +102,11 @@ export function PromptSetSelector({ promptSets, selectedSetId, onSelectSet, onAd
           )}
         </div>
       </div>
-      {selectedSetId && <p className="text-sm text-gray-600">Ensemble sélectionné: {selectedSet?.name}</p>}
+      {selectedSetId && (
+        <p className="text-sm text-gray-600">
+          Ensemble sélectionné: {selectedSet?.prompt_set_name || selectedSet?.name || `Ensemble ${selectedSetId}`}
+        </p>
+      )}
       {loading && <p className="text-sm text-blue-600 mt-2">Chargement en cours...</p>}
     </div>
   )

@@ -5,7 +5,7 @@ import { PromptSetSelector } from "./components/PromptSetManager"
 import { PromptEditor } from "./components/PromptEditor"
 import { ResponseViewer } from "./components/ResponseViewer"
 import { AuthContext } from "../../AuthContext"
-import { getPromptSets, getPrompts, createPrompts, updatePrompt } from "./actions/prompt.action"
+import { getPromptSetsAPI, getPromptsAPI, createPromptsAPI, updatePromptAPI } from "./actions/prompt.action"
 
 export function Prompt() {
   // Default prompt names
@@ -39,17 +39,25 @@ export function Prompt() {
   const [inputText, setInputText] = useState("")
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(false)
-  const {userId} = useContext(AuthContext)// Replace with actual user ID from auth
+  const { user } = useContext(AuthContext)
+  // Add a new state for the selected prompt
+  const [selectedPrompt, setSelectedPrompt] = useState(null)
 
   // Load prompt sets on component mount
   useEffect(() => {
     const loadPromptSets = async () => {
       setLoading(true)
       try {
-        const sets = await getPromptSets(userId)
+        const sets = await getPromptSetsAPI(user.id)
+        console.log("Loaded prompt sets:", sets)
         if (sets && sets.length > 0) {
-          setPromptSets(sets)
-          // Don't auto-select the first set anymore
+          // Assurez-vous que chaque ensemble a un id en string
+          const formattedSets = sets.map((set) => ({
+            ...set,
+            id: set.id,
+          }))
+          setPromptSets(formattedSets)
+          console.log("Formatted prompt sets:", formattedSets)
         }
       } catch (error) {
         console.error("Error loading prompt sets:", error)
@@ -59,7 +67,7 @@ export function Prompt() {
     }
 
     loadPromptSets()
-  }, [userId])
+  }, [user.id])
 
   // Load prompts when a set is selected
   useEffect(() => {
@@ -71,7 +79,7 @@ export function Prompt() {
 
       setLoading(true)
       try {
-        const promptsData = await getPrompts(userId, selectedSetName)
+        const promptsData = await getPromptsAPI(user.id, selectedSetName)
         if (promptsData && promptsData.length > 0) {
           setPrompts(
             promptsData.map((p) => ({
@@ -82,6 +90,7 @@ export function Prompt() {
               value: p.value,
             })),
           )
+          console.log("Loaded prompts:", prompts)
         } else {
           // If no prompts are returned, create a default system prompt
           if (selectedSetId) {
@@ -116,12 +125,12 @@ export function Prompt() {
     }
 
     loadPrompts()
-  }, [userId, selectedSetId, selectedSetName])
+  }, [user.id, selectedSetId, selectedSetName])
 
   const getNextSetId = () => {
     // If no prompt sets exist, start with 1
     if (promptSets.length === 0) {
-      return "1"
+      return 1
     }
 
     // Find the highest numeric ID
@@ -131,7 +140,7 @@ export function Prompt() {
     }, 0)
 
     // Return the next ID as a string
-    return String(highestId + 1)
+    return highestId + 1
   }
 
   const handleAddPromptSet = async (name) => {
@@ -150,12 +159,12 @@ export function Prompt() {
             prompt_number: 1,
             prompt_set_name: name,
             prompt_name: "system",
-            value: "",
+            value: "Définissez un contexte pour la conversation...",
           },
         ]
 
         // Save to server first
-        const result = await createPrompts(userId, name, initialPrompts)
+        const result = await createPromptsAPI(user.id, name, initialPrompts)
 
         if (result) {
           // Add to local state after successful server save
@@ -173,7 +182,11 @@ export function Prompt() {
     }
   }
 
+  // Modifiez la fonction handleSelectSet pour ajouter des logs et assurer la conversion de type
   const handleSelectSet = (id) => {
+    console.log("Selecting set with ID:", id, typeof id)
+    console.log("Available sets:", promptSets)
+
     if (id === "") {
       // Clear selection
       setSelectedSetId("")
@@ -182,10 +195,18 @@ export function Prompt() {
       return
     }
 
-    const set = promptSets.find((s) => s.id === id)
+    // Convert id to string to ensure consistent comparison
+    const stringId = String(id)
+    const set = promptSets.find((s) => String(s.id) === stringId)
+
+    console.log("Found set:", set)
+
     if (set) {
-      setSelectedSetId(id)
-      setSelectedSetName(set.name)
+      setSelectedSetId(stringId)
+      // Use set.prompt_set_name if it exists, otherwise fallback to set.name
+      setSelectedSetName(set.prompt_set_name || set.name || "")
+    } else {
+      console.error("Set not found with ID:", id)
     }
   }
 
@@ -193,6 +214,7 @@ export function Prompt() {
     setPrompts(prompts.map((prompt) => (prompt.prompt_name === name ? { ...prompt, value } : prompt)))
   }
 
+  // Modify the handleSavePrompt function to ensure prompt_set_id matches selectedSetId
   const handleSavePrompt = async (promptName) => {
     if (!selectedSetName) return
 
@@ -201,8 +223,23 @@ export function Prompt() {
 
     setLoading(true)
     try {
-      await updatePrompt(userId, selectedSetName, promptToSave)
-      // Show success message or notification
+      // Get the current index of this prompt
+      const promptIndex = prompts.findIndex((p) => p.prompt_name === promptName)
+
+      // Update only this specific prompt with its position number
+      // Ensure prompt_set_id matches the selectedSetId (as a number)
+      const updatedPrompt = {
+        ...promptToSave,
+        prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
+        prompt_number: promptIndex + 1,
+      }
+
+      // Save to server (individual prompt update)
+      await updatePromptAPI(user.id, selectedSetName, updatedPrompt)
+
+      // Update just this prompt in the local state
+      setPrompts(prompts.map((p) => (p.prompt_name === promptName ? updatedPrompt : p)))
+
       alert(`Prompt "${promptName}" sauvegardé avec succès!`)
     } catch (error) {
       console.error("Error saving prompt:", error)
@@ -212,10 +249,39 @@ export function Prompt() {
     }
   }
 
+  // Also update handleSaveAllPrompts to ensure all prompts have the correct prompt_set_id
+  const handleSaveAllPrompts = async () => {
+    if (!selectedSetName) return
+
+    setLoading(true)
+    try {
+      // Update all prompt_number values based on array index
+      // Also ensure all prompts have the correct prompt_set_id
+      const updatedPrompts = prompts.map((prompt, index) => ({
+        ...prompt,
+        prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
+        prompt_number: index + 1,
+      }))
+
+      // Update local state with all new prompt_number values
+      setPrompts(updatedPrompts)
+
+      // Save all prompts to server with updated prompt_number values
+      await createPromptsAPI(user.id, selectedSetName, updatedPrompts)
+      alert("Tous les prompts ont été sauvegardés avec succès!")
+    } catch (error) {
+      console.error("Error saving all prompts:", error)
+      alert("Erreur lors de la sauvegarde des prompts.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Update handleAddPrompt to ensure new prompts have the correct prompt_set_id
   const handleAddPrompt = async (name) => {
     if (name && !prompts.some((p) => p.prompt_name === name)) {
       const newPrompt = {
-        prompt_set_id: selectedSetId,
+        prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
         prompt_number: prompts.length + 1,
         prompt_set_name: selectedSetName,
         prompt_name: name,
@@ -228,7 +294,7 @@ export function Prompt() {
       // Then save to server
       try {
         setLoading(true)
-        await createPrompts(userId, selectedSetName, [...prompts, newPrompt])
+        await createPromptsAPI(user.id, selectedSetName, [...prompts, newPrompt])
       } catch (error) {
         console.error("Error adding prompt:", error)
         // Revert on error
@@ -255,27 +321,12 @@ export function Prompt() {
     // Then save to server
     try {
       setLoading(true)
-      await createPrompts(userId, selectedSetName, updatedPrompts)
+      await createPromptsAPI(user.id, selectedSetName, updatedPrompts)
     } catch (error) {
       console.error("Error deleting prompt:", error)
       // Revert on error
       setPrompts(prompts)
       alert("Erreur lors de la suppression du prompt.")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSaveAllPrompts = async () => {
-    if (!selectedSetName) return
-
-    setLoading(true)
-    try {
-      await createPrompts(userId, selectedSetName, prompts)
-      alert("Tous les prompts ont été sauvegardés avec succès!")
-    } catch (error) {
-      console.error("Error saving all prompts:", error)
-      alert("Erreur lors de la sauvegarde des prompts.")
     } finally {
       setLoading(false)
     }
@@ -293,6 +344,7 @@ export function Prompt() {
 
     setResponses(newResponses)
   }
+  console.log("userId", user.id)
 
   return (
     <div className="container mx-auto p-4">

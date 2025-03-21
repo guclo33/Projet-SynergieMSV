@@ -7,10 +7,9 @@ const multer = require('multer');
 const fs = require('fs');
 const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
+const { generateTemplate } = require("../server/canvaTemplate");
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController} = require ("../controller/adminController");
 
-
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, savePromptController, updatePromptController} = require ("../controller/adminController");
-const { connectCanvaDetail, generateTemplate } = require("../server/canvaTemplate");
 
 
 
@@ -72,9 +71,11 @@ router.get("/prompts", getPromptSetsController)
 
 router.get("/prompts/:promptSetName", getPromptsController)
 
-router.post("/prompts/:promptSetName", savePromptController)
+router.post("/prompts/:promptSetName", createPromptController)
 
 router.put("/prompts/:promptSetName", updatePromptController)
+
+router.delete("/prompts/:promptSetName/:promptName", deletePromptController)
 
 
 

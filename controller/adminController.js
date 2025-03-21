@@ -5,7 +5,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 
@@ -723,14 +723,28 @@ const updateGroupController = async(req, res) => {
 }
 
 const getPromptSetsController = async (req, res) => {
-
+    
+    try {
+        const data = getPromptSets()
+        return res.status(200).json(data)
+    } catch (error) {
+        res.send(500).send("internal server error")
+    }
 }
 
 const getPromptsController = async (req, res) => {
+    const { promptSetName } = req.params;
+    if (!promptSetName) return [];
+    try {
+        const data = getPrompts(promptSetName)
+        return res.status(200).json(data)
+    } catch (error) {
+        res.send(500).send("internal server error")
+    }
 
 }
 
-const savePromptController = async (req, res) => {
+const createPromptController = async (req, res) => {
 
 }
 
@@ -738,6 +752,9 @@ const updatePromptController = async (req, res) => {
     
 }
 
+const deletePromptController = async (req, res) => {
+        
+    }
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, savePromptController, updatePromptController};
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController};

@@ -1,3 +1,4 @@
+const { get } = require("../routes/admin");
 const pool = require("./database");
 
 const createUserQuery = async (userName, password, email) => {
@@ -263,6 +264,29 @@ const updateToken = async (query, value) => {
     return
 }
 
+const getPromptSets = async () => {
+    return await pool.query("SELECT prompt_set_name, MIN(id) as id FROM prompts GROUP BY prompt_set_name ORDER BY id");
+};
 
+const getPrompts = async (selectedSetName) => {
+    if (!selectedSetName) return [];   
+    return await pool.query("SELECT * FROM prompts WHERE prompt_set_name = $1 ORDER BY prompt_number", [selectedSetName]);
+};
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken}
+const createPrompts = async (selectedSetName, prompts) => {
+    if (!selectedSetName) return null;
+    console.log("Creating prompts:", prompts);
+    return await pool.query("INSERT INTO prompts (prompt_set_name, prompt_set_id, , prompt_number, prompt_name, value) VALUES ($1, $2, $3) RETURNING id", [selectedSetName, prompts.prompt_set_id, prompts.promt_number, prompts.prompt_name, prompts.value]);
+};
+
+const updatePrompt = async (selectedSetName, promptData) => {
+    if (!selectedSetName) return null;
+    console.log("Updating prompt:", promptData);
+    return await pool.query("UPDATE prompts SET value = $1 WHERE prompt_set_name = $2 AND prompt_name = $3", [promptData.value, selectedSetName, promptData.prompt_name]);
+};
+
+const deletePrompt = async (selectedSetName, promptName) => {
+    return await pool.query("DELETE FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [selectedSetName, promptName]);
+};
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt};

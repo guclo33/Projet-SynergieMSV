@@ -274,39 +274,36 @@ const connectCanvaDetail = async (req,res, next) => {
 }*/
 
 
-const generateTemplate = async (req, res) => {
-    const jsonData = req.body
-    
-    const {clientid} = req.params 
-    console.log("clientid", clientid)
-    
-    
-    
+const generateTemplate =  (req, res) => {
+    const jsonData = req.body;
+    const { clientid } = req.params;
+    console.log("clientid", clientid);
 
+    
+        exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
+            if (error) {
+                // Si une erreur d'exécution se produit, on renvoie un message d'erreur
+                console.error("Erreur d'exécution:", error);
+                return res.status(500).send("Erreur lors de la génération du template");
+            }
+            
+            console.log("Résultat stdout :", stdout); // Affichage de la sortie du script Python
+            console.error("Messages stderr :", stderr); // Affichage des erreurs, si présentes
 
-        try {
-            exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
-                if (error) {
-                  console.error("Erreur d'exécution:", error);
-                } else {
-                  console.log("Résultat stdout :", stdout);
-                  console.error("Messages stderr :", stderr);
-                }})
-        } catch(error) {
-            console.log("pas réussi à générer template")
-        }
-}
-
+            // Si tout s'est bien passé, renvoyer un message de succès
+            res.status(200).send("Template généré");
+        });
+    
+};
 
 
 
 module.exports = {
+    generateTemplate,
     connectCanva,
-    //connectCanvaDetail,
     getAuthUrl,
     getUser,
     getAuthUrlProfile,
-    generateTemplate
-    /*setAuthStatus*/
+    
 }
 

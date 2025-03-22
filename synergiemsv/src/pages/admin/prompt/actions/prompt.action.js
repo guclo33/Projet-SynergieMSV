@@ -109,3 +109,56 @@ export const deletePromptAPI = async (userid, selectedSetName, promptName) => {
     return null
   }
 }
+
+export const updateAllPromptsAPI = async (userid, selectedSetName, prompts) => {
+  if (!selectedSetName) return null
+  console.log("Updating all prompts:", prompts)
+  try {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(prompts),
+    })
+    if (response.ok) {
+      const data = await response.json()
+      console.log("updateAllPrompts success:", data)
+      return data
+    }
+    console.error("updateAllPrompts error:", response.statusText)
+    return null
+  } catch (error) {
+    console.error("updateAllPrompts error:", error)
+    return null
+  }
+}
+
+export const openAiExecuteAPI = async (userid, formId, promptName, selectedSetId) => {
+  try {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompt/openai`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        formId,
+        promptName,
+        selectedSetId
+      }),
+    })
+    if (response.ok) {
+      const data = await response.json()
+      console.log("openAiExecuteAPI data:", data)
+      return data
+    }
+    console.error("openAiExecuteAPI error:", response.statusText)
+    return null
+  } catch (error) {
+    console.error("openAiExecuteAPI error:", error)
+    return null
+  }
+
+}

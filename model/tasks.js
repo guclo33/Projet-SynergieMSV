@@ -292,8 +292,32 @@ const updatePrompt = async (selectedSetName, promptData) => {
     return await pool.query("UPDATE prompts SET value = $1, prompt_name=$2 WHERE prompt_set_name = $3 AND prompt_number = $4", [promptData.value, promptData.prompt_name, selectedSetName, promptData.prompt_number]);
 };
 
-const deletePrompt = async (selectedSetName, promptName) => {
-    return await pool.query("DELETE FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [selectedSetName, promptName]);
+const deletePrompt = async (promptSetName, promptName) => {
+    console.log("Deleting prompt:", promptSetName, promptName);
+    return await pool.query("DELETE FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [promptSetName, promptName]);
 };
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt};
+const saveAllPrompts = async (selectedSetName, prompts) => {
+    if (!selectedSetName) return null;
+    console.log("SAVING ALL prompts:", prompts);
+
+    try {
+        const promises = prompts.map(async (prompt) => {
+            return pool.query(`
+                INSERT INTO prompts (prompt_set_name, prompt_name, value, prompt_set_id, prompt_number)
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (prompt_set_id, prompt_name) 
+                DO UPDATE SET value = EXCLUDED.value, prompt_number = EXCLUDED.prompt_number
+            `, [selectedSetName, prompt.prompt_name, prompt.value, prompt.prompt_set_id, prompt.prompt_number]);
+        });
+
+        await Promise.all(promises);
+
+    } catch (error) {
+        console.error("savePrompts error:", error);
+    }
+};
+
+
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt, saveAllPrompts};

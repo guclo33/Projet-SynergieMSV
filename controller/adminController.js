@@ -4,7 +4,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts, deletePrompt, saveAllPrompts} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 
@@ -768,6 +768,17 @@ const updatePromptController = async (req, res) => {
 
     if (!promptSetName) return null;
 
+    if (Array.isArray(prompts)) {
+        try {
+            // Appel de la fonction pour traiter le cas où 'prompts' est un tableau
+            console.log("SAVING ALL PROMPTS")
+            const data = await saveAllPrompts(promptSetName, prompts); // Fonction personnalisée pour gérer le tableau
+            return res.status(200).json({message : "Success!"} );
+        } catch (error) {
+            return res.status(500).send("Internal server error while handling array");
+        }
+    }
+
     try {
         const data = await updatePrompt(promptSetName, prompts)
         return res.status(200).json(data)
@@ -778,7 +789,15 @@ const updatePromptController = async (req, res) => {
 }
 
 const deletePromptController = async (req, res) => {
-        
+    const { promptSetName, promptName } = req.params;
+    if (!promptSetName || !promptName) return null;
+    console.log("promptSetName:", promptSetName, "promptName:", promptName)
+    try {
+        const data = await deletePrompt(promptSetName, promptName)
+        return res.status(200).json(data)
+    } catch (error) {
+        res.status(500).send("internal server error")
+    }
 }
 
 const generateTemplate = async (req, res) => {

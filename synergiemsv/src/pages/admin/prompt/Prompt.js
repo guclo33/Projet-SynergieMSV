@@ -5,7 +5,15 @@ import { PromptSetSelector } from "./components/PromptSetManager"
 import { PromptEditor } from "./components/PromptEditor"
 import { ResponseViewer } from "./components/ResponseViewer"
 import { AuthContext } from "../../AuthContext"
-import { getPromptSetsAPI, getPromptsAPI, createPromptsAPI, updatePromptAPI } from "./actions/prompt.action"
+import { AdminContext} from "../AdminContext"
+import {
+  getPromptSetsAPI,
+  getPromptsAPI,
+  createPromptsAPI,
+  updatePromptAPI,
+  deletePromptAPI,
+  updateAllPromptsAPI,
+} from "./actions/prompt.action"
 
 export function Prompt() {
   // Default prompt names
@@ -40,8 +48,11 @@ export function Prompt() {
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(false)
   const { user } = useContext(AuthContext)
+  const { clientsData} = useContext(AdminContext)
   // Add a new state for the selected prompt
   const [selectedPrompt, setSelectedPrompt] = useState(null)
+  // Add a new state to track original prompt values from the database
+  const [originalPromptValues, setOriginalPromptValues] = useState({})
 
   // Load prompt sets on component mount
   useEffect(() => {
@@ -81,16 +92,24 @@ export function Prompt() {
       try {
         const promptsData = await getPromptsAPI(user.id, selectedSetName)
         if (promptsData && promptsData.length > 0) {
-          setPrompts(
-            promptsData.map((p) => ({
-              prompt_set_id: p.prompt_set_id,
-              prompt_number: p.prompt_number,
-              prompt_set_name: p.prompt_set_name,
-              prompt_name: p.prompt_name,
-              value: p.value,
-            })),
-          )
-          console.log("Loaded prompts:", prompts)
+          const loadedPrompts = promptsData.map((p) => ({
+            prompt_set_id: p.prompt_set_id,
+            prompt_number: p.prompt_number,
+            prompt_set_name: p.prompt_set_name,
+            prompt_name: p.prompt_name,
+            value: p.value,
+          }))
+
+          setPrompts(loadedPrompts)
+
+          // Store original values in a separate state for comparison
+          const originalValues = {}
+          loadedPrompts.forEach((prompt) => {
+            originalValues[prompt.prompt_name] = prompt.value
+          })
+          setOriginalPromptValues(originalValues)
+
+          console.log("Loaded prompts:", loadedPrompts)
         } else {
           // If no prompts are returned, create a default system prompt
           if (selectedSetId) {
@@ -102,8 +121,10 @@ export function Prompt() {
               value: "",
             }
             setPrompts([defaultSystemPrompt])
+            setOriginalPromptValues({ system: "" })
           } else {
             setPrompts([])
+            setOriginalPromptValues({})
           }
         }
       } catch (error) {
@@ -118,6 +139,7 @@ export function Prompt() {
             value: "",
           }
           setPrompts([defaultSystemPrompt])
+          setOriginalPromptValues({ system: "" })
         }
       } finally {
         setLoading(false)
@@ -210,11 +232,21 @@ export function Prompt() {
     }
   }
 
+  // Modify handleUpdatePrompt to compare with original values
   const handleUpdatePrompt = (name, value) => {
+    // Check if the current value is different from the original value
+    const isModified = value !== originalPromptValues[name]
+
+    // Update the prompts array with the new value
     setPrompts(prompts.map((prompt) => (prompt.prompt_name === name ? { ...prompt, value } : prompt)))
+
+    // Only mark as edited if the value is different from the original
+    if (isModified) {
+      setPrompts(prompts.map((prompt) => (prompt.prompt_name === name ? { ...prompt, value } : prompt)))
+    }
   }
 
-  // Modify the handleSavePrompt function to ensure prompt_set_id matches selectedSetId
+  // Update handleSavePrompt to update the original values after saving
   const handleSavePrompt = async (promptName) => {
     if (!selectedSetName) return
 
@@ -233,14 +265,37 @@ export function Prompt() {
         prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
         prompt_number: promptIndex + 1,
       }
-
+      console.log("Saving prompt:", updatedPrompt)
       // Save to server (individual prompt update)
-      await updatePromptAPI(user.id, selectedSetName, updatedPrompt)
+      const response = await updatePromptAPI(user.id, selectedSetName, updatedPrompt)
 
-      // Update just this prompt in the local state
-      setPrompts(prompts.map((p) => (p.prompt_name === promptName ? updatedPrompt : p)))
+        if (response) {
+      // Update all prompts to ensure prompt_number is consistent
+            const updatedPrompts = prompts.map((p, idx) => {
+                if (p.prompt_name === promptName) {
+                return updatedPrompt
+                }
+                return {
+                ...p,
+                prompt_number: idx + 1,
+                }
+            })
 
-      alert(`Prompt "${promptName}" sauvegardé avec succès!`)
+            // Update state with all updated prompts
+            setPrompts(updatedPrompts)
+
+            // Update the original value after successful save
+            setOriginalPromptValues((prev) => ({
+                ...prev,
+                [promptName]: promptToSave.value,
+            }))
+
+            alert(`Prompt "${promptName}" sauvegardé avec succès!`)
+
+        } else {
+      alert("Erreur lors de la sauvegarde du prompt.")
+    }
+
     } catch (error) {
       console.error("Error saving prompt:", error)
       alert("Erreur lors de la sauvegarde du prompt.")
@@ -249,35 +304,45 @@ export function Prompt() {
     }
   }
 
-  // Also update handleSaveAllPrompts to ensure all prompts have the correct prompt_set_id
+  // Update handleSaveAllPrompts to update all original values after saving
   const handleSaveAllPrompts = async () => {
     if (!selectedSetName) return
 
     setLoading(true)
     try {
-      // Update all prompt_number values based on array index
-      // Also ensure all prompts have the correct prompt_set_id
+      // Mettre à jour tous les prompt_number en fonction de l'index du tableau
+      // S'assurer également que tous les prompts ont le bon prompt_set_id
       const updatedPrompts = prompts.map((prompt, index) => ({
         ...prompt,
-        prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
+        prompt_set_id: Number(selectedSetId), // Convertir en nombre pour assurer la cohérence
         prompt_number: index + 1,
       }))
 
-      // Update local state with all new prompt_number values
-      setPrompts(updatedPrompts)
+      console.log("Sauvegarde de tous les prompts:", updatedPrompts)
 
-      // Save all prompts to server with updated prompt_number values
-      await createPromptsAPI(user.id, selectedSetName, updatedPrompts)
-      alert("Tous les prompts ont été sauvegardés avec succès!")
+      // Sauvegarder tous les prompts sur le serveur avec les valeurs prompt_number mises à jour
+      const response = await updateAllPromptsAPI(user.id, selectedSetName, updatedPrompts)
+
+      if (response.message === "Success!") {
+        alert("Tous les prompts ont été sauvegardés avec succès")
+        setPrompts(updatedPrompts)
+
+        // Update all original values after successful save
+        const newOriginalValues = {}
+        updatedPrompts.forEach((prompt) => {
+          newOriginalValues[prompt.prompt_name] = prompt.value
+        })
+        setOriginalPromptValues(newOriginalValues)
+      }
     } catch (error) {
-      console.error("Error saving all prompts:", error)
+      console.error("Erreur lors de la sauvegarde des prompts:", error)
       alert("Erreur lors de la sauvegarde des prompts.")
     } finally {
       setLoading(false)
     }
   }
 
-  // Update handleAddPrompt to ensure new prompts have the correct prompt_set_id
+  // Update handleAddPrompt to add the new prompt to originalPromptValues
   const handleAddPrompt = async (name) => {
     if (name && !prompts.some((p) => p.prompt_name === name)) {
       const newPrompt = {
@@ -291,6 +356,12 @@ export function Prompt() {
       // Add to local state first for immediate feedback
       setPrompts((prev) => [...prev, newPrompt])
 
+      // Add to original values
+      setOriginalPromptValues((prev) => ({
+        ...prev,
+        [name]: "",
+      }))
+
       // Then save to server
       try {
         setLoading(true)
@@ -299,6 +370,14 @@ export function Prompt() {
         console.error("Error adding prompt:", error)
         // Revert on error
         setPrompts(prompts)
+
+        // Remove from original values
+        setOriginalPromptValues((prev) => {
+          const newValues = { ...prev }
+          delete newValues[name]
+          return newValues
+        })
+
         alert("Erreur lors de l'ajout du prompt.")
       } finally {
         setLoading(false)
@@ -306,6 +385,7 @@ export function Prompt() {
     }
   }
 
+  // Update handleDeletePrompt to remove the prompt from originalPromptValues
   const handleDeletePrompt = async (name) => {
     // Don't allow deleting the system prompt if it's the only one
     if (name === "system" && prompts.length === 1) {
@@ -315,21 +395,115 @@ export function Prompt() {
 
     const updatedPrompts = prompts.filter((prompt) => prompt.prompt_name !== name)
 
+    const promptToDelete = prompts.find((p) => p.prompt_name === name)
+
     // Update local state first for immediate feedback
     setPrompts(updatedPrompts)
+
+    // Remove from original values
+    setOriginalPromptValues((prev) => {
+      const newValues = { ...prev }
+      delete newValues[name]
+      return newValues
+    })
 
     // Then save to server
     try {
       setLoading(true)
-      await createPromptsAPI(user.id, selectedSetName, updatedPrompts)
+      console.log("deleting prompt", promptToDelete)
+      const response = await deletePromptAPI(user.id, selectedSetName, promptToDelete.prompt_name)
+      if (response.ok) {
+        // Update local state first for immediate feedback
+        setPrompts(updatedPrompts)
+        alert(`Prompt "${promptToDelete.prompt_name}" supprimé avec succès!`)
+      } else {
+        alert("Erreur lors de la suppression du prompt.")
+      }
     } catch (error) {
       console.error("Error deleting prompt:", error)
       // Revert on error
       setPrompts(prompts)
+
+      // Restore original value
+      setOriginalPromptValues((prev) => ({
+        ...prev,
+        [name]: promptToDelete.value,
+      }))
+
       alert("Erreur lors de la suppression du prompt.")
     } finally {
       setLoading(false)
     }
+  }
+
+  // Update handleUpdatePromptName to update the key in originalPromptValues
+  const handleUpdatePromptName = async (oldName, newName) => {
+    if (!selectedSetName || !newName.trim() || oldName === newName) return
+
+    // Don't allow renaming the system prompt
+    if (oldName === "system") {
+      alert("Vous ne pouvez pas renommer le prompt système.")
+      return
+    }
+
+    setLoading(true)
+    try {
+      // Find the prompt to update
+      const promptToUpdate = prompts.find((p) => p.prompt_name === oldName)
+      if (!promptToUpdate) return
+
+      // Create updated prompt with new name
+      const updatedPrompt = {
+        ...promptToUpdate,
+        prompt_name: newName,
+      }
+
+      // Update on server
+      // Note: You may need to adjust your API to handle renaming
+      await updatePromptAPI(user.id, selectedSetName, updatedPrompt)
+
+      // Update in local state
+      setPrompts(prompts.map((p) => (p.prompt_name === oldName ? { ...p, prompt_name: newName } : p)))
+
+      // Update key in original values
+      setOriginalPromptValues((prev) => {
+        const newValues = { ...prev }
+        newValues[newName] = newValues[oldName]
+        delete newValues[oldName]
+        return newValues
+      })
+
+      alert(`Prompt "${oldName}" renommé en "${newName}" avec succès!`)
+    } catch (error) {
+      console.error("Error updating prompt name:", error)
+      alert("Erreur lors du renommage du prompt.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // New function to reorder prompts
+  const handleReorderPrompt = (oldIndex, newIndex) => {
+    // Créer une copie du tableau des prompts
+    const reorderedPrompts = [...prompts]
+
+    // Retirer le prompt de son ancienne position
+    const [movedPrompt] = reorderedPrompts.splice(oldIndex, 1)
+
+    // Insérer le prompt à sa nouvelle position
+    reorderedPrompts.splice(newIndex, 0, movedPrompt)
+
+    // Mettre à jour le prompt_number pour tous les prompts
+    const updatedPrompts = reorderedPrompts.map((prompt, index) => ({
+      ...prompt,
+      prompt_number: index + 1,
+    }))
+
+    // Mettre à jour l'état avec les prompts réordonnés
+    setPrompts(updatedPrompts)
+
+    // Ne pas sauvegarder automatiquement - l'utilisateur devra cliquer sur "Sauvegarder tous les prompts"
+    console.log("Prompts réordonnés, utilisez 'Sauvegarder tous les prompts' pour enregistrer les modifications")
   }
 
   const handleProcessInput = () => {
@@ -377,6 +551,8 @@ export function Prompt() {
                 onDeletePrompt={handleDeletePrompt}
                 onSaveAll={handleSaveAllPrompts}
                 onSavePrompt={handleSavePrompt}
+                onUpdatePromptName={handleUpdatePromptName}
+                onReorderPrompt={handleReorderPrompt}
                 loading={loading}
               />
             </div>
@@ -386,6 +562,10 @@ export function Prompt() {
                 setInputText={setInputText}
                 responses={responses}
                 onProcessInput={handleProcessInput}
+                selectedSetId={selectedSetId}
+                prompts={prompts}
+                clientsData={clientsData}
+                user={user}
               />
             </div>
           </div>

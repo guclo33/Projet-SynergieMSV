@@ -105,7 +105,9 @@ export function ResponseViewer({
     try {
       const result = await openAiExecuteAPI(user.id, selectedFormId, selectedPromptName, selectedSetId)
 
-      // Add the new response to the existing responses
+      if(result) {
+        // Add the new response to the existing responses
+        console.log("API response:", result)
       const newResponse = {
         promptName: selectedPromptName,
         timestamp: new Date().toLocaleTimeString(),
@@ -114,7 +116,9 @@ export function ResponseViewer({
       }
 
       // Update responses
-      onProcessInput([newResponse, ...responses])
+       onProcessInput([newResponse, ...responses])
+      }
+      
     } catch (error) {
       console.error("Erreur lors de l'exécution de l'API:", error)
       alert("Une erreur s'est produite lors du traitement de votre demande.")

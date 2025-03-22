@@ -8,7 +8,7 @@ const fs = require('fs');
 const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate} = require ("../controller/adminController");
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate,generateAnswer} = require ("../controller/adminController");
 
 
 
@@ -77,6 +77,8 @@ router.post("/prompts/:promptSetName", createPromptController)
 router.put("/prompts/:promptSetName", updatePromptController)
 
 router.delete("/prompts/:promptSetName/:promptName", deletePromptController)
+
+router.post("/prompts/openai", generateAnswer)
 
 
 

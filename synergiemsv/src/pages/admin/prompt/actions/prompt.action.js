@@ -137,7 +137,7 @@ export const updateAllPromptsAPI = async (userid, selectedSetName, prompts) => {
 
 export const openAiExecuteAPI = async (userid, formId, promptName, selectedSetId) => {
   try {
-    const response = await fetch(`${apiURL}/api/admin/${userid}/prompt/openai`, {
+    const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/openai`, {
       method: "POST",
       credentials: "include",
       headers: {

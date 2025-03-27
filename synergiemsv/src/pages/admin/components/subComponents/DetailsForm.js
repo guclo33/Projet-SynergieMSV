@@ -72,7 +72,7 @@ export function DetailForm({form}) {
             <p>Je fais preuve de tact: {filteredForm['7. [ Je fais preuve de tact ]'] || filteredForm["Je fais preuve de tact"]}</p>
 
             <h3>Question 8:</h3>
-            <p>Je vise l'excellence dans tout ce que je fais :</p><p>{filteredForm["8. [ J'aime les standards élevés ]"] || filteredForm["Je vise l'excellence dans tout ce que je fais"]}</p>
+            <p>Je vise l'excellence dans tout ce que je fais :</p><p>{filteredForm["8. [ J'aime les standards élevés ]"] || filteredForm["J'aime les standards élevés"]}</p>
             <p>Je suis déterminé à atteindre mes objectifs :</p><p>{filteredForm['8. [ Je suis déterminé à atteindre mes objectifs ]'] || filteredForm["Je suis déterminé à atteindre mes objectifs"]}</p>
             <p>Lorsque j'aime vraiment quelque chose, je ne peux pas m'empêcher de le partager avec les autres :</p><p>{filteredForm["8. [ Lorsque j'aime vraiment quelque chose, je ne peux pas m'empêcher de le partager avec les autres ]"] || filteredForm["Lorsque j'aime vraiment quelque chose, je ne peux pas m'empêcher de le partager avec les autres"]}</p>
             <p>Je montre de la compassion pour les autres:</p><p>{filteredForm['8. [ Je montre de la compassion pour les autres ]'] || filteredForm["Je montre de la compassion pour les autres"]}</p>

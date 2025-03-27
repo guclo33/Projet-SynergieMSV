@@ -516,7 +516,16 @@ textarea {
     border-radius: 20px;*/
 }
 
-.couleur h6, .couleur p, .couleur input {
+.archetypep {
+    display: grid;
+    grid-template-columns: repeat(12, calc(100% / 12));
+    justify-content: center;
+    /*border: 1px solid var(--secondary-color);
+    box-shadow: 0 4px 8px var(--primary-color);
+    border-radius: 20px;*/
+}
+
+.couleur h6, .couleur p, .couleur input, .archetypep p, .archetypep input, .archetypep h6 {
     border: 1px solid var(--secondary-color);
     height: 100%;
     width : 100%;

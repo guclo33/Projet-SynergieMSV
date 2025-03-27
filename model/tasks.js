@@ -182,14 +182,15 @@ const updateDetailsGeneralInfosQuery = async (email, phone, price_sold, active, 
     
 }
 
-const updateProfile = async (query, value, profile_id) => {
-    if(value&& value.bleu){
-        console.log("updating DB for colours")
-        return await pool.query(query, [value.bleu, value.rouge, value.jaune, value.vert, profile_id])
+const updateProfile = async (query, params) => {
+    try {
+        console.log("Updating DB...");
+        await pool.query(query, params);
+    } catch (error) {
+        console.log("Database update error", error);
+        throw new Error("Database update failed");
     }
-    
-    await pool.query(query, [value, profile_id])
-}
+};
 
 const updateUserInfosQuery =  async (username, email, id) => {
     return await pool.query("UPDATE users SET username = $1, email = $2 WHERE id = $3", [username, email, id])

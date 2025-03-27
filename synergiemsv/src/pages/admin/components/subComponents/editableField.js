@@ -45,6 +45,12 @@ export function EditableField({ label, name,  value, profileId }) {
                     profile_id : profileId
                 })
             });
+            console.log("body", JSON.stringify( {
+              name: name,
+              value : draft,
+              profile_id : profileId
+          })
+          )
             if(response.ok){
                 console.log("succesfully updated profile")
                 setIsEditing(false)

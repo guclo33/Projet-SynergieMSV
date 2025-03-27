@@ -19,6 +19,7 @@ export function PromptEditor({
   const [editingName, setEditingName] = useState(null)
   const [editedName, setEditedName] = useState("")
   const nameInputRef = useRef(null)
+  const textareaRefs = useRef({})
 
   // Add a reference to the original prompt values from the parent component
   const originalPromptValues = useRef({})
@@ -33,6 +34,23 @@ export function PromptEditor({
       }
     })
     originalPromptValues.current = originalValues
+  }, [prompts])
+
+  // Function to adjust textarea height
+  const adjustTextareaHeight = (element) => {
+    if (element) {
+      element.style.height = "auto"
+      element.style.height = `${element.scrollHeight}px`
+    }
+  }
+
+  // Adjust all textareas when prompts change
+  useEffect(() => {
+    prompts.forEach((prompt) => {
+      if (textareaRefs.current[prompt.prompt_name]) {
+        adjustTextareaHeight(textareaRefs.current[prompt.prompt_name])
+      }
+    })
   }, [prompts])
 
   const handleAddPrompt = () => {
@@ -67,6 +85,11 @@ export function PromptEditor({
 
     // Update the prompt value
     onUpdatePrompt(name, value)
+
+    // Adjust textarea height
+    if (textareaRefs.current[name]) {
+      adjustTextareaHeight(textareaRefs.current[name])
+    }
   }
 
   const handleSavePrompt = (name) => {
@@ -219,10 +242,14 @@ export function PromptEditor({
               <div className="mb-2">
                 <div className="text-sm text-gray-600 mb-1">Contenu du prompt</div>
                 <textarea
+                  ref={(el) => {
+                    textareaRefs.current[prompt.prompt_name] = el
+                    if (el) adjustTextareaHeight(el)
+                  }}
                   value={prompt.value}
                   onChange={(e) => handlePromptChange(prompt.prompt_name, e.target.value)}
-                  rows={4}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[100px] overflow-hidden"
+                  style={{ resize: "none" }}
                 />
               </div>
               <div className="flex justify-end gap-2">

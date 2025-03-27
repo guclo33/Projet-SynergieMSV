@@ -70,6 +70,8 @@ router.post("/gestion/leader", createLeaderController)
 
 router.get("/prompts", getPromptSetsController)
 
+router.post("/prompts/openai", generateAnswer)
+
 router.get("/prompts/:promptSetName", getPromptsController)
 
 router.post("/prompts/:promptSetName", createPromptController)
@@ -78,7 +80,6 @@ router.put("/prompts/:promptSetName", updatePromptController)
 
 router.delete("/prompts/:promptSetName/:promptName", deletePromptController)
 
-router.post("/prompts/openai", generateAnswer)
 
 
 

@@ -21,6 +21,7 @@ export function ResponseViewer({
   const [promptSearchTerm, setPromptSearchTerm] = useState("")
   const [isClientSelectOpen, setIsClientSelectOpen] = useState(false)
   const [isPromptSelectOpen, setIsPromptSelectOpen] = useState(false)
+  const [result, setResult] = useState(null)
   const clientSelectRef = useRef(null)
   const promptSelectRef = useRef(null)
 
@@ -103,22 +104,26 @@ export function ResponseViewer({
 
     setIsLoading(true)
     try {
-      const result = await openAiExecuteAPI(user.id, selectedFormId, selectedPromptName, selectedSetId)
+      console.log("Processing input with API...", selectedFormId, selectedPromptName, selectedSetId)
+      const apiResult = await openAiExecuteAPI(user.id, selectedFormId, selectedPromptName, selectedSetId)
 
-      if(result) {
+      // Store the result
+      setResult(apiResult)
+
+      if (apiResult) {
         // Add the new response to the existing responses
-        console.log("API response:", result)
-      const newResponse = {
-        promptName: selectedPromptName,
-        timestamp: new Date().toLocaleTimeString(),
-        content: result.content || result.text || "Aucune réponse reçue",
-        formId: selectedFormId,
-      }
+        console.log("API response:", apiResult)
+        const newResponse = {
+          promptName: selectedPromptName,
+          timestamp: new Date().toLocaleTimeString(),
+          content: apiResult.content || apiResult.text || "Aucune réponse reçue",
+          message: apiResult.message, // Store the message property
+          formId: selectedFormId,
+        }
 
-      // Update responses
-       onProcessInput([newResponse, ...responses])
+        // Update responses
+        onProcessInput([newResponse, ...responses])
       }
-      
     } catch (error) {
       console.error("Erreur lors de l'exécution de l'API:", error)
       alert("Une erreur s'est produite lors du traitement de votre demande.")
@@ -279,15 +284,16 @@ export function ResponseViewer({
                 </div>
                 <span className="text-xs text-gray-500">{response.timestamp}</span>
               </div>
-              <div className="text-sm text-gray-800 whitespace-pre-wrap">{response.content}</div>
+              <div className="text-sm text-gray-800 whitespace-pre-wrap">{response.message || response.content}</div>
             </div>
           ))}
         </div>
       ) : (
         <div className="text-center p-8 bg-gray-50 rounded-lg text-gray-500">
           <p>
-            Aucune réponse générée. Sélectionnez un client, un formulaire et un prompt, puis cliquez sur "Traiter le
-            texte" pour voir les résultats.
+            {result && result.message
+              ? result.message
+              : 'Aucune réponse générée. Sélectionnez un client, un formulaire et un prompt, puis cliquez sur "Traiter le texte" pour voir les résultats.'}
           </p>
         </div>
       )}

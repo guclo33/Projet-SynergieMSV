@@ -3,8 +3,6 @@ import sys
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 from openai import OpenAI
-from docx import Document
-from AWS_S3 import synergia_upload_s3
 from dotenv import load_dotenv
 import profil_generator_data
 import prompt_data
@@ -16,6 +14,7 @@ import json
 form_id = sys.argv[1]
 promptName = sys.argv[2]
 selectedSetId = sys.argv[3]
+
 
 if form_id == "error":
     raise ValueError("Une erreur s'est produite")
@@ -34,11 +33,11 @@ client_id = form["client_id"]
 
 group_name = form["group_name"]
 
-form_1_15 = json.dumps(form["form_1_15"], indent = 2, ensure_ascii=False)
+form_1_15 = json.dumps(form["form_1_15"], ensure_ascii=False)
 
-form_16_24 = json.dumps(form["form_16_24"], indent = 2, ensure_ascii=False)
+form_16_24 = json.dumps(form["form_16_24"], ensure_ascii=False)
 
-form_dev = json.dumps(form["form_dev"], indent =2, ensure_ascii=False )
+form_dev = json.dumps(form["form_dev"], ensure_ascii=False )
 
 
 #Pour le model 1
@@ -108,10 +107,13 @@ text_pourcentage_archetype= f"ARCHÉTYPE\nexploreur : {explorateur}%, protecteur
 #SECTION "EN BREF":
 
 system_append = f"""Voici les informations spécifiques au client :
-prénom du client : {first_name}. Voici aussi les réponses à son questionnaire, tu vas trouver trois sections différentes, si tu ne te fais pas demander une utilisation spécifique de l'un d'entre eux, utilise les tous.
-Questionnaire en lien avec les couleurs de personnalité : {form_1_15}
-Questionnaire en lien avec les archétypes : {form_16_24}
-Questionnaire en lien avec les valeurs ou questions à développement : {form_dev}
+- Prénom : {first_name}
+- Groupe : {group_name}
+- Résultats DISC : {form_1_15}
+- Résultats Archétypes : {form_16_24}
+- Réponses développement : {form_dev}
+
+Ces données doivent être utilisées pour construire un portrait psychologique complet de la personne. Même si certaines réponses semblent générales ou brèves, utilise leur contenu au maximum pour faire ressortir la personnalité du client.
 """
 system_value = system_value + system_append
 
@@ -124,9 +126,9 @@ message_data= [{"role": "system",
 
 text = generateur_texte(message_data, 2000)
 
-globals()[promptName] = text.choices[0].message.content
 
-print(promptName)
+
+print(text.choices[0].message.content)
 
 
 

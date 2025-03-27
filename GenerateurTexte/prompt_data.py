@@ -16,17 +16,15 @@ def get_prompt_data (selectedSetId, promptName) :
     
     
     cursor.execute("SELECT value FROM prompts WHERE prompt_set_id = %s AND prompt_name = %s", [selectedSetId, promptName])
-    value = cursor.fetchone()[0] 
+    value = cursor.fetchone() 
      
-    
-    print ("value fetched", value)
     
     cursor.close()
     conn.close()
     
     if value:
          
-        return value 
+        return value[0] 
     else:
         print("Aucune valeur trouvé pour cet ID et nom de prompt.")
         return None

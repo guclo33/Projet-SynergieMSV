@@ -1,12 +1,12 @@
-const {} = require("../model/tasks")
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts, deletePrompt, saveAllPrompts} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
+const { exec } = require('child_process');
 require("dotenv").config();
 
 
@@ -18,7 +18,7 @@ const getAdminHomeDataController = async (req,res) => {
     try {
         const data = await getAdminHomeData()
 
-        console.log("Backend data:", data)
+        
         if(data){
             
             return  res.status(200).json(data)
@@ -745,6 +745,148 @@ const updateGroupController = async(req, res) => {
     }
 }
 
+const getPromptSetsController = async (req, res) => {
+    
+    try {
+        const data = await getPromptSets()
+        console.log("getPromptssets data:", data.rows)
+        return res.status(200).json(data.rows)
+    } catch (error) {
+        res.send(500).send("internal server error")
+    }
+}
+
+const getPromptsController = async (req, res) => {
+    const { promptSetName } = req.params;
+    if (!promptSetName) return [];
+    try {
+        const data = await getPrompts(promptSetName)
+        console.log("getPrompts data:", data.rows)
+        return res.status(200).json(data.rows)
+    } catch (error) {
+        res.send(500).send("internal server error")
+    }
+
+}
+
+const createPromptController = async (req, res) => {
+    const { promptSetName } = req.params;
+    const prompts = req.body;
+    console.log("Creating prompts:", prompts)
+    if (!promptSetName) {
+        return null
+    }
+    
+    try {
+        const data = await createPrompts(promptSetName, prompts)
+        return res.status(200).json(data)
+    } catch (error) {
+        res.status(500).send("internal server error")
+    }
+}
+
+const updatePromptController = async (req, res) => {
+    const { promptSetName } = req.params;
+    const prompts = req.body;
+    console.log("prompts controller:", prompts)
+
+    if (!promptSetName) return res.status(400).send("Prompt set name is required");
+
+    if (Array.isArray(prompts)) {
+        try {
+            // Appel de la fonction pour traiter le cas où 'prompts' est un tableau
+            console.log("SAVING ALL PROMPTS")
+            const data = await saveAllPrompts(promptSetName, prompts); // Fonction personnalisée pour gérer le tableau
+            return res.status(200).json({ message: "Success!" });
+        } catch (error) {
+            console.error("Error while handling array:", error);
+            return res.status(500).json({ message: "Internal server error while handling array", error: error.message });
+        }
+    }
+
+    try {
+        const data = await updatePrompt(promptSetName, prompts);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error("Error updating prompt:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
 
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController};
+const deletePromptController = async (req, res) => {
+    const { promptSetName, promptName } = req.params;
+    if (!promptSetName || !promptName) return null;
+    console.log("promptSetName:", promptSetName, "promptName:", promptName)
+    try {
+        const data = await deletePrompt(promptSetName, promptName)
+        return res.status(200).json(data)
+    } catch (error) {
+        res.status(500).send("internal server error")
+    }
+}
+
+const generateAnswer = async (req, res) => {
+    const {formId, promptName, selectedSetId} = req.body;
+    console.log("formId", formId, "promptName", promptName, "selectedSetId", selectedSetId)
+
+    try {
+        exec(`python ./GenerateurTexte/prompt_testing.py ${formId} ${promptName} ${selectedSetId}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Erreur d'exécution: ${error}`);
+                return res.status(500).json({ message: "Erreur d'exécution du script Python" });
+            }
+
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return res.status(500).json({ message: "Erreur lors de l'exécution du script Python" });
+            }
+
+            console.log("stdout:", stdout);
+            return res.json({ message: stdout });
+        })} catch (error) {   
+        console.log("Erreur lors de la génération de la réponse:", error);
+        return res.status(500).json({ message: "Erreur lors de la génération de la réponse", error });
+    }
+}
+
+const generateTemplate = async (req, res) => {
+    const { clientid } = req.params;
+    console.log("clientid", clientid);
+
+    try {
+        exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error("Erreur d'exécution:", error);
+                return res.status(500).json({ message: "Erreur d'exécution du script Python" });
+            }
+
+            
+
+            // Utiliser une expression régulière pour extraire l'URL du tuple
+            const match = stdout.match(/(https:\/\/www\.canva\.com\/api\/design\/[^\s]+)/);
+            
+
+            if (match) {
+                const editUrl = match[0]; // L'URL est capturée dans le premier groupe de l'expression régulière
+                console.log("URL générée:", editUrl);
+
+                if (stderr) {
+                    console.error("Messages stderr :", stderr);
+                }
+
+                // Renvoyer l'URL au client sous forme de JSON
+                return res.status(200).json({ message: "Template généré avec succès", editUrl: editUrl });
+            } else {
+                console.error("Impossible de trouver l'URL dans la sortie");
+                return res.status(500).json({ message: "Erreur de parsing des données" });
+            }
+        });
+    } catch (error) {
+        console.log("Erreur lors de la génération du template:", error);
+        return res.status(500).json({ message: "Erreur lors de la génération du template", error });
+    }
+};
+
+
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate, generateAnswer};

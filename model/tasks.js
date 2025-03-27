@@ -182,7 +182,7 @@ const updateDetailsGeneralInfosQuery = async (email, phone, price_sold, active, 
     
 }
 
-const updateProfile = async (query, params, profile_id) => {
+const updateProfile = async (query, params) => {
     try {
         console.log("Updating DB...");
         await pool.query(query, params);

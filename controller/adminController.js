@@ -378,7 +378,8 @@ const updateProfileController = async (req, res) => {
         try {
             console.log("updating infos");
             const query = `UPDATE profile SET ${name} = $1 WHERE id = $2`;
-            await updateProfile(query, [value], profile_id);  // Assurez-vous de passer value comme un tableau
+            const params = [value, profile_id];
+            await updateProfile(query, params);  // Assurez-vous de passer value comme un tableau
             return res.status(200).send("Succesfully updated profile");
         } catch (error) {
             console.log("error updating profile", error);

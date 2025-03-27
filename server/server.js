@@ -26,8 +26,14 @@ const sessionSecret = process.env.COOKIE_SECRET_KEY
 const RedisStore = connectRedis(session);
 const redisClient = new Redis(process.env.REDIS_RENDER_URL, {
   tls: {
-  rejectUnauthorized: false, 
-},})
+    rejectUnauthorized: false
+  }
+});
+
+const store = new RedisStore({
+  client: redisClient,
+  prefix: "synergia:",
+});
 
 const allowedOrigins = ['http://10.0.0.6:3001', 'http://localhost:3000', "http://localhost:3001", "https://app-aagr4xe5mic.canva-apps.com", "http://127.0.0.1:3001", "http://localhost:3001/admin", "https://projet-synergiemsv.onrender.com", "projet-synergiemsv:3000" ]; // 
 
@@ -48,15 +54,16 @@ app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(express.json());
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: sessionSecret,  
+  store: store,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production', 
-    httpOnly: true, 
-    maxAge: 1000 * 60 * 60 * 24, 
-    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', }  
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24,
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+  }
 }));
 app.use(cors(corsOptions));
 app.use(passport.initialize());

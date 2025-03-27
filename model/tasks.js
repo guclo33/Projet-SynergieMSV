@@ -264,6 +264,61 @@ const updateToken = async (query, value) => {
     return
 }
 
+const getPromptSets = async () => {
+    return await pool.query("SELECT prompt_set_name, MIN(prompt_set_id) as id FROM prompts GROUP BY prompt_set_name ORDER BY id");
+};
+
+const getPrompts = async (selectedSetName) => {
+    if (!selectedSetName) return [];   
+    return await pool.query("SELECT * FROM prompts WHERE prompt_set_name = $1 ORDER BY prompt_number", [selectedSetName]);
+};
+
+const createPrompts = async (selectedSetName, prompts) => {
+    if (!selectedSetName) return null;
+    console.log("selectedSetName:", selectedSetName);
+    console.log("Creating prompts:", prompts.prompt_set_id, prompts.prompt_number, prompts.prompt_name, prompts.value);
+    return await pool.query("INSERT INTO prompts (prompt_set_name, prompt_set_id, prompt_number, prompt_name, value) VALUES ($1, $2, $3, $4, $5) RETURNING id", [selectedSetName, prompts[0].prompt_set_id, prompts[0].prompt_number, prompts[0].prompt_name, prompts[0].value]);
+};
+
+const updatePrompt = async (selectedSetName, promptData) => {
+    if (!selectedSetName) return null;
+    const existingPrompt = await pool.query("SELECT * FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [selectedSetName, promptData.prompt_name]);
+
+    if (existingPrompt.rows.length === 0) {
+        console.log("Creating prompt for update:", promptData);
+        return pool.query("INSERT INTO prompts (prompt_set_name, prompt_name, value, prompt_set_id, prompt_number) VALUES ($1, $2, $3, $4, $5)", [selectedSetName, promptData.prompt_name, promptData.value, promptData.prompt_set_id, promptData.prompt_number]);
+    };
+
+    console.log("Updating prompt:", promptData);
+    return await pool.query("UPDATE prompts SET value = $1, prompt_name=$2 WHERE prompt_set_name = $3 AND prompt_number = $4", [promptData.value, promptData.prompt_name, selectedSetName, promptData.prompt_number]);
+};
+
+const deletePrompt = async (promptSetName, promptName) => {
+    console.log("Deleting prompt:", promptSetName, promptName);
+    return await pool.query("DELETE FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [promptSetName, promptName]);
+};
+
+const saveAllPrompts = async (selectedSetName, prompts) => {
+    if (!selectedSetName) return null;
+    console.log("SAVING ALL prompts:", prompts);
+
+    try {
+        const promises = prompts.map(async (prompt) => {
+            return pool.query(`
+                INSERT INTO prompts (prompt_set_name, prompt_name, value, prompt_set_id, prompt_number)
+                VALUES ($1, $2, $3, $4, $5)
+                ON CONFLICT (prompt_set_id, prompt_name) 
+                DO UPDATE SET value = EXCLUDED.value, prompt_number = EXCLUDED.prompt_number
+            `, [selectedSetName, prompt.prompt_name, prompt.value, prompt.prompt_set_id, prompt.prompt_number]);
+        });
+
+        await Promise.all(promises);
+
+    } catch (error) {
+        console.error("savePrompts error:", error);
+    }
+};
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken}
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt, saveAllPrompts};

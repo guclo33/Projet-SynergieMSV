@@ -316,13 +316,13 @@ const generateTemplate = async (req, res) => {
 
 
 
+
 module.exports = {
+    
     connectCanva,
-    //connectCanvaDetail,
     getAuthUrl,
     getUser,
     getAuthUrlProfile,
-    generateTemplate
-    /*setAuthStatus*/
+    
 }
 

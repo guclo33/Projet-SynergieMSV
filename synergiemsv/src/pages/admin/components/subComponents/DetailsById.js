@@ -7,6 +7,7 @@ import iconeProfile from "../../../../Images/iconeProfile.jpg"
 import { useContext } from "react";
 import { AdminContext } from "../../AdminContext";
 import { DetailForm } from "./DetailsForm";
+import { ProfileWithJSON } from "./ProfileWithJSON";
 
 export function DetailsById({detailsData}) {
     const {profilePhotos} = useContext(AdminContext)
@@ -35,8 +36,10 @@ export function DetailsById({detailsData}) {
                 {detailsData && detailsData.form.length>0 ?
                 <button onClick={handleClick}>Voir questionnaire</button>
                 : null}
-                
-                <Profile detailsData={detailsData}/>
+                {detailsData.info.profilejson ? 
+                <ProfileWithJSON detailsData={detailsData}/>
+                :
+                <Profile detailsData={detailsData}/>}
                 {detailsData && detailsData.form.length>0 ?
                 <div ref={detailFormRef}>
                     <DetailForm form={detailsData.form}/>

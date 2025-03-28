@@ -21,10 +21,9 @@ if not os.environ.get("OPENAI_API_KEY"):
     sys.exit(1)
 
 # Uncomment these lines when running with command line arguments
-# form_id = sys.argv[1]
-# selectedSetId = sys.argv[2]
-form_id = 61
-selectedSetId = "1"
+form_id = sys.argv[1]
+selectedSetId = sys.argv[2]
+
 
 if form_id == "error":
     raise ValueError("Une erreur s'est produite")
@@ -122,7 +121,7 @@ result_json = {}
 for prompt_tuple in prompts:
     # Unpack the tuple - adjust this if your tuple structure is different
     if len(prompt_tuple) == 3:
-        prompt_name,prompt_number, prompt_value  = prompt_tuple
+        prompt_name, prompt_number, prompt_value = prompt_tuple
     else:
         # Fallback if tuple structure is different
         print(f"Warning: Unexpected tuple structure: {prompt_tuple}")
@@ -167,8 +166,6 @@ for prompt_tuple in prompts:
             
             print(f"Successfully generated text for prompt: {prompt_name}")
             
-            
-            
             # Success, break the retry loop
             break
             
@@ -187,6 +184,27 @@ for prompt_tuple in prompts:
                 }
                 print(f"All retries failed for prompt: {prompt_name}")
 
-# Output the final JSON
-print("\nFinal JSON result:")
-print(json.dumps(result_json, ensure_ascii=False, indent=2))
+# Transform the dictionary to a sorted array of objects
+result_array = []
+for prompt_name, details in result_json.items():
+    result_array.append({
+        "title": prompt_name,
+        "order": int(details["prompt_number"]),
+        "text": details["text"]
+    })
+
+# Sort the array by the order field
+result_array.sort(key=lambda x: x["order"])
+
+result_json_string = json.dumps(result_array, ensure_ascii=False)
+
+# Send the generated profile to the database
+prompt_data.create_profile(client_id, result_json_string, bleu, rouge, jaune, vert, hero, souverain, explorateur, protecteur, bouffon, createur, magicien, sage, citoyen, amoureuse, rebelle, optimiste)
+
+print("Profile generated and sent to the database successfully.")
+
+if __name__ == "__main__":
+    # Code qui ne doit s'exécuter que lorsque ce script est appelé directement
+    # Placez ici le code qui génère le profil, crée le document Word, etc.
+    pass
+

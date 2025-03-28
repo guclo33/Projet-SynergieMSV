@@ -450,3 +450,8 @@ except Exception as e:
 
 # Upload sur S3
 synergia_upload_s3(full_text, group_name, nom_profile)
+
+if __name__ == "__main__":
+    # Code qui ne doit s'exécuter que lorsque ce script est appelé directement
+    # Placez ici le code qui génère le profil, crée le document Word, etc.
+    pass

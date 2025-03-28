@@ -57,3 +57,31 @@ def get_prompts (selectedSetId) :
         return None
     
 
+def create_profile (client_id, profileJSON, bleu, rouge, jaune, vert, hero, souverain, explorateur, protecteur, bouffon, createur, magicien, sage, citoyen, amoureuse, rebelle, optimiste) :
+    conn = psycopg2.connect(
+    dbname= os.getenv("DB_RENDER_DATABASE"),
+    user= os.getenv("DB_RENDER_USER"),
+    password= os.getenv("DB_RENDER_PASSWORD"),
+    host= os.getenv("DB_RENDER_HOST")
+)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT nom_client, email FROM client WHERE id = %s", [client_id])
+    client_info = cursor.fetchone()
+    
+    nom_client = client_info[0]
+    email = client_info[1]
+    
+    # Convertir le JSON en chaîne de caractères
+    
+    
+    # Insérer les données dans la table profiles
+    cursor.execute(
+        "INSERT INTO profile (client_id, nomclient, email, profilejson, bleu, rouge, jaune, vert, hero, souverain, explorateur, protecteur, bouffon, createur, magicien, sage, citoyen, amoureuse, rebelle, optimiste) VALUES (%s, %s, %s, %s,%s, %s, %s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s,%s, %s)", [client_id, nom_client, email, profileJSON, bleu, rouge, jaune, vert, hero, souverain, explorateur, protecteur, bouffon, createur, magicien, sage, citoyen, amoureuse, rebelle, optimiste])
+    
+    # Valider les changements
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+ 

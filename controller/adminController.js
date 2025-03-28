@@ -4,7 +4,7 @@ const fs = require('fs')
 const s3Client = require('../server/config/s3-config');
 const  { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const {PutObjectCommand,HeadObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts, deletePrompt, saveAllPrompts} = require("../model/tasks")
+const {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, getPromptSets, getPrompts, updatePrompt, createPrompts, deletePrompt, saveAllPrompts, updateJsonProfile} = require("../model/tasks")
 const { Upload } = require('@aws-sdk/lib-storage');
 const { exec } = require('child_process');
 require("dotenv").config();
@@ -888,5 +888,38 @@ const generateTemplate = async (req, res) => {
     }
 };
 
+const updateJsonProfileController = async (req, res) => {
+    const { profile_id, profilejson } = req.body;
+    console.log("profile_id", profile_id, "profilejson", profilejson)
+    try {
+        updateJsonProfile(profile_id, profilejson)
+        res.status(200).send("successfully updated profile json")
+    } catch (error) {
+        res.status(400).send("couldn't update profile json")
+    }
+}
 
-module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate, generateAnswer};
+
+const newGenerateProfileController = async (req, res) => {
+    const {formId, clientId, selectedSetId} = req.body;
+
+    console.log("formId", formId, "clientId", clientId, "selectedSetId", selectedSetId)
+
+    try {
+        exec(`python ./GenerateurTexte/new_profil_generator.py ${formId} ${selectedSetId}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Erreur d'exécution: ${error}`);
+                return res.status(500).json({ message: "Erreur d'exécution du script Python" });
+            }
+            res.status(200).json({ message: stdout });
+    })
+
+
+    } catch (error) {
+        console.log("Erreur lors de la génération du profil:", error);
+        return res.status(500).json({ message: "Erreur lors de la génération du profil", error });
+    }
+}
+
+
+module.exports = { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, updateObjectifsDataController, createObjectifsDataController, deleteObjectifsDataController, updateObjectifsUserController, createObjectifsUserController, getProfilePhoto, createGroupController, createLeaderController , updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate, generateAnswer, updateJsonProfileController, newGenerateProfileController};

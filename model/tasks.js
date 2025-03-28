@@ -152,7 +152,7 @@ const getDetailsData = async (clientid, id) => {
 
     //Pour Admin
 
-    const info = await pool.query("SELECT *, profile.id AS profileId FROM client left JOIN client_profile on client.id = client_profile.client_id left join profile ON client_profile.profile_id = profile.id left JOIN leader ON client.leader_id = leader.id where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
+    const info = await pool.query("SELECT *, profile.id AS profileId FROM client left JOIN client_profile on client.id = client_profile.client_id left join profile ON client_profile.client_id = profile.client_id left JOIN leader ON client.leader_id = leader.id where client.id = $1 ORDER BY profile.id DESC LIMIT 1", [clientid])
 
     
 
@@ -319,6 +319,11 @@ const saveAllPrompts = async (selectedSetName, prompts) => {
     }
 };
 
+const updateJsonProfile = async (clientid, profilejson) => {
+    const jsonClean = JSON.stringify(profilejson)
+    return await pool.query("UPDATE profile SET profilejson = $1 WHERE id = $2", [jsonClean, clientid])
+}
 
 
-module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt, saveAllPrompts};
+
+module.exports = {createUserQuery, loginQuery, findUserById, getAdminHomeData, getOverviewData, getRoadmapData, updateRoadmapTodos, updateOverview, getDetailsData, updateDetailsGeneralInfosQuery, updateUserInfosQuery, updateUserPasswordQuery, addTodosQuery, deleteRoadmapTodosQuery, getObjectifsData, createObjectifsData, updateObjectifsData, deleteObjectifsData, createGroup, createLeader, updateGroup, updateProfile, fetchToken, updateToken, getPromptSets, getPrompts, createPrompts, updatePrompt, deletePrompt, saveAllPrompts, updateJsonProfile};

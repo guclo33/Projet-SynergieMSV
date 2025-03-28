@@ -8,7 +8,7 @@ const fs = require('fs');
 const memoryStorage = multer.memoryStorage();
 const upload = multer({ storage: memoryStorage });
 
-const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate,generateAnswer} = require ("../controller/adminController");
+const { getAdminHomeDataController, getOverviewDataController, getRoadmapDataController, updateRoadmapTodosController, updateOverviewController, getDetailsById, updateDetailsGeneralInfos, updateUserInfos, updateUserPassword, uploadFile, listFile, downloadFile, addRoadmapTodos, deleteRoadmapTodos, deleteFile, getObjectifsDataController, createObjectifsDataController, updateObjectifsDataController, deleteObjectifsDataController, getProfilePhoto, createGroupController, createLeaderController, updateGroupController, updateProfileController, getPromptSetsController, getPromptsController, createPromptController, updatePromptController, deletePromptController, generateTemplate,generateAnswer, updateJsonProfileController, newGenerateProfileController} = require ("../controller/adminController");
 
 
 
@@ -40,6 +40,8 @@ router.get("/details", getAdminHomeDataController)
 
 router.put("/details/profileUpdate", updateProfileController)
 
+router.put("/details/profileJsonUpdate", updateJsonProfileController)
+
 router.post("/details/canva/:clientid", generateTemplate)
 
 router.get("/details/:clientid", getDetailsById )
@@ -47,10 +49,11 @@ router.get("/details/:clientid", getDetailsById )
 router.put("/details/:clientid", updateDetailsGeneralInfos)
 
 
-
 router.put("/settings", updateUserInfos),
 
 router.put("/settings/password", updateUserPassword)
+
+router.post("/newGenerateProfile" , newGenerateProfileController)
 
 router.post("/details/:category/upload/:clientName/:groupName?", upload.single("file"), uploadFile);
 

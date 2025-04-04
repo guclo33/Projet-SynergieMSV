@@ -233,8 +233,8 @@ const createGroup = async (group_name, have_leader, nom_leader, leader_id, membe
     
 
 
-const createLeader = async (nom_leader, email) => {
-    return await pool.query("INSERT INTO leader (nom_leader, email) VALUES ($1, $2)", [nom_leader, email])
+const createLeader = async (nom_leader) => {
+    return await pool.query("INSERT INTO leader (nom_leader) VALUES ($1)", [nom_leader])
 }
 
 const updateGroup = async (group_id, group_name, have_leader, nom_leader,leader_id, date_presentation, active,ids_to_add,ids_to_remove) => {

@@ -13,7 +13,7 @@ import { FilePlus, Target, MapIcon as Roadmap, Info, Loader2 } from "lucide-reac
 
 export function ClientsList() {
   const { user } = useContext(AuthContext)
-  const { profilePhotos, clientsData, getAdminHomeData } = useContext(AdminContext)
+  const { profilePhotos, clientsData, getAdminHomeData, groupesData } = useContext(AdminContext)
   const [initialData, setInitialData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedFormId, setSelectedFormId] = useState(null)
@@ -34,9 +34,26 @@ export function ClientsList() {
 
   useEffect(() => {
     if (clientsData.length > 0) {
-      setInitialData(clientsData)
+      // Enrichir les données des clients avec les informations de groupe
+      const enrichedData = clientsData.map((client) => {
+        // Trouver le groupe du client s'il existe
+        const clientGroup = groupesData?.groupesClients?.rows?.find((gc) => gc.client_id === client.id)
+
+        let groupName = null
+        if (clientGroup) {
+          const group = groupesData?.groupesData?.rows?.find((g) => g.id === clientGroup.groupe_id)
+          groupName = group?.group_name || null
+        }
+
+        return {
+          ...client,
+          groupName,
+        }
+      })
+
+      setInitialData(enrichedData)
     }
-  }, [clientsData])
+  }, [clientsData, groupesData])
 
   useEffect(() => {
     if (currentClientId) setSelectedClient(clientsData.find((c) => c.id === currentClientId))
@@ -70,7 +87,10 @@ export function ClientsList() {
   }, [user])
 
   const handleToggleActive = () => setActive((prev) => !prev)
-  const handleSearch = (e) => setSearch(e.target.value.toLowerCase())
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value.toLowerCase())
+  }
 
   const handleClick = async (id, currentActive) => {
     try {
@@ -199,9 +219,14 @@ export function ClientsList() {
     }
   }
 
+  // Filtrer les clients en fonction de la recherche (nom ou nom de groupe)
   const clientsAffiches = initialData
     .filter((client) => client.active === active)
-    .filter((client) => client.nom.toLowerCase().includes(search))
+    .filter(
+      (client) =>
+        client.nom.toLowerCase().includes(search) ||
+        (client.groupName && client.groupName.toLowerCase().includes(search)),
+    )
 
   if (isLoading) {
     return (
@@ -235,7 +260,7 @@ export function ClientsList() {
             id="searchInput"
             name="search"
             type="search"
-            placeholder="Rechercher un client..."
+            placeholder="Rechercher un client ou un groupe..."
             onChange={handleSearch}
             value={search}
             className="w-full px-3 py-2 border rounded-full border-primary focus:ring-2 focus:ring-secondary"
@@ -276,7 +301,7 @@ export function ClientsList() {
               </div>
             </div>
 
-            {/* Date Présentation */}
+            {/* Date Présentation et Groupe */}
             <div className="flex-1 text-center">
               <h4 className="font-semibold text-primary">Date Présentation</h4>
               <p className="text-textColor">
@@ -284,6 +309,7 @@ export function ClientsList() {
                   ? new Date(leader.date_presentation).toLocaleDateString("en-CA")
                   : "Date non définie"}
               </p>
+              {leader.groupName && <p className="text-primary text-sm mt-1 font-medium">Groupe: {leader.groupName}</p>}
             </div>
 
             {/* Icônes d'action */}

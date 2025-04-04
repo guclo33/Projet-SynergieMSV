@@ -711,13 +711,14 @@ const createGroupController = async (req, res) => {
 
 const createLeaderController = async (req, res) => {
     const {nom_leader, email} = req.body
+    console.log("nom_leader", nom_leader, "email", email)
 
     try {
         await createLeader(nom_leader, email);
-        res.status(200).send("succesfully created leader")
+        return res.status(200).send("succesfully created leader")
 
     } catch (error) {
-        res.status(400).send("couldnt create leader", error)
+        return res.status(400).json({ message: "couldnt create leader", error: error.message });
     }
 };
 

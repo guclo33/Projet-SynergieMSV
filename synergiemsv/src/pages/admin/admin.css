@@ -1,1195 +1,1098 @@
-.AdminHome, .leaderHome {
-    position:relative;
-    display: grid ;
+/* Variables globales */
+:root {
+    --primary-color: #6f1e49; /* Burgundy/wine color */
+    --secondary-color: #d7a5be; /* Light pink/rose color */
+    --text-color: #07000e; /* Almost black */
+  }
+  
+  /* Styles de base pour l'administration */
+  .AdminHome,
+  .leaderHome {
+    position: relative;
+    display: grid;
     grid-template-columns: 70% 1fr;
     grid-template-rows: 10rem;
     top: 6rem;
-    margin : 0 5%;
+    margin: 0 5%;
     gap: 10px;
-}
-
-.AdminHome h1 {
-    grid-column: 1/3;
+  }
+  
+  .AdminHome h1 {
+    grid-column: 1 / 3;
     grid-row: 1;
     text-align: center;
-    align-self:center;
-}
-
-.profilGenerator {
+    align-self: center;
+  }
+  
+  /* Styles pour le générateur de profil */
+  .profilGenerator {
     grid-column: 2;
     grid-row: 1;
     align-content: center;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
     padding: 0 1rem;
     justify-items: center;
     min-height: 10rem;
-}
-
-.profilGenerator h2 {
+  }
+  
+  .profilGenerator h2 {
     margin: 0 1rem;
-
-}
-
-.profilGenerator form {
+  }
+  
+  .profilGenerator form {
     margin: 0.5rem 0;
     display: flex;
     flex-direction: column;
-    flex:1;
+    flex: 1;
     flex-shrink: 1;
     text-align: center;
     flex-wrap: wrap;
-    max-height:20rem;
-    overflow:fit-content
-
-}
-
-.profilGenerator button {
+    max-height: 20rem;
+    overflow: fit-content;
+  }
+  
+  .profilGenerator button {
     margin: 0.5rem 0;
-}
-
-
-.leadersHome {
-    grid-column: 1/3;
-    display:flex;
+  }
+  
+  /* Styles pour les leaders */
+  .leadersHome {
+    grid-column: 1 / 3;
+    display: flex;
     flex-direction: column;
     padding: 0 1rem;
-}
-
-.leadersHome h2, .leadersHome .input {
+  }
+  
+  .leadersHome h2,
+  .leadersHome .input {
     text-align: center;
     width: 100%;
     display: flex;
     gap: 1rem;
     justify-content: center;
-}
-
-.AdminHome h3{
+  }
+  
+  .AdminHome h3 {
     grid-column: 2;
-    grid-row: 5 /-1;
+    grid-row: 5 / -1;
     padding: 1rem 1rem;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-}
-
-.leaderHome, .leadersList {
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
+  }
+  
+  .leaderHome,
+  .leadersList {
     display: flex;
-    
-    
     flex-wrap: wrap;
-}
-
-.leaderHome .info, .leadersList .info {
+  }
+  
+  .leaderHome .info,
+  .leadersList .info {
     flex: 1;
     display: inline-block;
     margin: 1rem;
     min-width: 12rem;
-    
-
-
-}
-
-.leadersList {
+  }
+  
+  .leadersList {
     margin: 1rem 0 0 0;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-}
-
-.Overview {
-    position:relative;
-    top:5rem;
-    margin :  0 5%
-}
-
-.Overview h2 {
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
+  }
+  
+  /* Styles pour la vue d'ensemble */
+  .Overview {
+    position: relative;
+    top: 5rem;
+    margin: 0 5%;
+  }
+  
+  .Overview h2 {
     justify-self: center;
-    font-size:2.25rem;
-}
-
-.Overview .label, .Overview .overviewLeader, .Overview .modifyForm {
+    font-size: 2.25rem;
+  }
+  
+  .Overview .label,
+  .Overview .overviewLeader,
+  .Overview .modifyForm {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     align-items: center;
     margin: 1.5rem 0;
     font-size: 1.5rem;
-    
-    
-}
-
-.Overview .overviewLeader, .Overview .modifyForm {
+  }
+  
+  .Overview .overviewLeader,
+  .Overview .modifyForm {
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
     font-size: 1.25rem;
-}
-
-
-
-
-.Overview .overviewLeader h4, .Overview .modifyForm h4 {
+  }
+  
+  .Overview .overviewLeader h4,
+  .Overview .modifyForm h4 {
     grid-column: 1;
-    justify-self: center; 
-}
-
-.a {
+    justify-self: center;
+  }
+  
+  .a {
     grid-column: 2;
     justify-self: center;
-}
-.b {
+  }
+  .b {
     grid-column: 3;
     justify-self: center;
-}
-.c {
+  }
+  .c {
     grid-column: 4;
     justify-self: center;
-}
-.d {
+  }
+  .d {
     grid-column: 5;
     justify-self: center;
-}
-
-.e {
+  }
+  
+  .e {
     grid-column: 6;
-    display:flex;
+    display: flex;
     justify-self: center;
     align-self: center;
     flex-direction: column;
     margin-right: 1rem;
-}
-
-.Overview .overviewLeader button {
+  }
+  
+  .Overview .overviewLeader button {
     height: 40%;
     font-weight: 300;
-} 
-
-.Overview .modifyForm button {
-    height:60%;
+  }
+  
+  .Overview .modifyForm button {
+    height: 60%;
     font-weight: 300;
-    size-adjust: 75%;
-}
-
-
-.roadmap {
-    position:relative;
+    size_adjust: 75%;
+  }
+  
+  /* Styles pour la feuille de route */
+  .roadmap {
+    position: relative;
     top: 5rem;
-    margin:0 5%
-}
-
-.roadmap h2 {
+    margin: 0 5%;
+  }
+  
+  .roadmap h2 {
     justify-self: center;
     font-size: 2.25rem;
-}
-
-.roadmap .leadersMap {
+  }
+  
+  .roadmap .leadersMap {
     display: flex;
     justify-content: space-around;
-    width:100%;
+    width: 100%;
     flex-wrap: wrap;
-}
-.roadmap .leadersMap .leader {
+  }
+  .roadmap .leadersMap .leader {
     flex: 1;
     min-width: 20rem;
     box-sizing: content-box;
     width: 20%;
     justify-items: center;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
     margin: 1rem;
-}
-
-.roadmap .todoList h3 {
-    font-size:1.5rem;
-    display:flex;
+  }
+  
+  .roadmap .todoList h3 {
+    font-size: 1.5rem;
+    display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--secondary-color);
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
     width: 100%;
     height: 3rem;
-}
-
-.roadmap .todoList .tacheComplete {
+  }
+  
+  .roadmap .todoList .tacheComplete {
     font-size: 1rem;
-    height:1.75rem;
+    height: 1.75rem;
     background-color: white;
-
-}
-
-.roadmapButton {
+  }
+  
+  .roadmapButton {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding:0;
+    padding: 0;
     flex-wrap: wrap;
     margin: 2rem 0;
-    gap:2rem;
-}
-
-.roadmapButton .showDone, .roadmapButton .showModal, .roadmapButton .deleteModal{
-    flex:1;
-    width:50%;
-    min-width:20rem;
-    gap:2rem;
-
-}
-
-.preparation, .doneChecklist, .execContainer, .execDoneChecklist {
-    display : flex;
+    gap: 2rem;
+  }
+  
+  .roadmapButton .showDone,
+  .roadmapButton .showModal,
+  .roadmapButton .deleteModal {
+    flex: 1;
+    width: 50%;
+    min-width: 20rem;
+    gap: 2rem;
+  }
+  
+  .preparation,
+  .doneChecklist,
+  .execContainer,
+  .execDoneChecklist {
+    display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
     justify-content: space-between;
-}
-
-.todo {
-    display:flex;
+  }
+  
+  .todo {
+    display: flex;
     border-bottom: 2px solid var(--secondary-color);
     width: 48%;
     min-width: 20rem;
     height: 2rem;
-    
-}
-
-.todo label {
+  }
+  
+  .todo label {
     font-size: 1.15rem;
     margin-right: auto;
-}
-
-.todo input {
-    margin-left: auto ;
-}
-
-
-
-.detail {
+  }
+  
+  .todo input {
+    margin-left: auto;
+  }
+  
+  /* Styles pour les détails */
+  .detail {
     position: relative;
-    top:5rem;
+    top: 5rem;
     margin: 0 5%;
-    
-}
-
-.detailsLeader {
-    
-    display:flex;
+  }
+  
+  .detailsLeader {
+    display: flex;
     width: 100%;
     justify-content: space-around;
     flex-wrap: wrap;
-}
-
-.detailsLeader a {
-    display:flex;
+  }
+  
+  .detailsLeader a {
+    display: flex;
     flex: 1;
     justify-content: space-around;
     flex-wrap: wrap;
-}
-
-.detail h3 {
+  }
+  
+  .detail h3 {
     font-size: 2.25rem;
     justify-self: center;
-    
-}
-
-.detailsLeaders {
+  }
+  
+  .detailsLeaders {
     flex: 1;
     min-width: 20rem;
     box-sizing: content-box;
     width: 20%;
     justify-items: center;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
     margin: 1rem;
-    
-}
-
-.search {
-    
+  }
+  
+  .search {
     height: 2rem;
     min-width: 20rem;
     box-sizing: content-box;
     width: 20%;
     justify-items: center;
-    
-    margin: 0 ;
+    margin: 0;
     align-content: center;
     justify-self: right;
-    
-}
-
-.detailsById {
+  }
+  
+  .detailsById {
     position: relative;
     top: 5rem;
     margin: 0 5%;
-}
-
-.detailsById h3{
+  }
+  
+  .detailsById h3 {
     justify-self: center;
-    font-size:2.25rem
-}
-
-.generalInfos .infos, .generalInfos .modify {
+    font-size: 2.25rem;
+  }
+  
+  .generalInfos .infos,
+  .generalInfos .modify {
     display: flex;
     flex-wrap: wrap;
-    gap:1rem;
-
-}
-
-.generalInfos .info {
-    display:grid;
+    gap: 1rem;
+  }
+  
+  .generalInfos .info {
+    display: grid;
     grid-template-rows: 3rem 1fr;
     flex: 1;
     min-width: 16rem;
     justify-items: center;
     border: 1px solid var(--secondary-color);
-    word-wrap: break-word; 
-    overflow-wrap: break-word; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     white-space: normal;
-    
-}
-
-.infoSup {
-    display:grid;
+  }
+  
+  .infoSup {
+    display: grid;
     grid-template-rows: 3rem 1fr;
-    flex:2;
+    flex: 2;
     min-width: 20rem;
     justify-items: center;
     border: 1px solid var(--secondary-color);
-    
-}
-
-.info h5, .infoSup h5 {
+  }
+  
+  .info h5,
+  .infoSup h5 {
     grid-row: 1;
-    position:relative;
+    position: relative;
     background-color: var(--secondary-color);
     width: 100%;
     text-align: center;
     height: 3rem;
     margin-top: 0;
     align-content: center;
-}
-
-.info p, .infoSup p, .info input, .info select{
+  }
+  
+  .info p,
+  .infoSup p,
+  .info input,
+  .info select {
     grid-row: 2;
-    position:relative;
-    
+    position: relative;
     margin: 1rem auto;
     align-self: center;
-}
-
-textarea {
+  }
+  
+  textarea {
     grid-row: 2;
-    width: 100%; 
+    width: 100%;
     padding: 10px;
     line-height: 1.5;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     align-self: center;
     margin: 1rem auto;
-}
-.buttonDetails {
+  }
+  
+  .buttonDetails {
     justify-self: center;
-    margin-top: 1rem
-}
-.buttonDetails button {
-    height:1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .buttonDetails button {
+    height: 1.5rem;
     margin: 0 1rem;
-    
-}
-
-.team {
+  }
+  
+  .team {
     display: flex;
     flex-wrap: wrap;
-
-}
-
-/*.team .user {
-    flex:1;
-    min-width: 20rem;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-    margin: 1rem;
-    padding: 0 1rem;
-}*/
-
-.userInfo {
+  }
+  
+  .userInfo {
     display: flex;
-    flex:1;
+    flex: 1;
     justify-content: space-between;
     padding-left: 1rem;
-}
-.team h4 {
+  }
+  
+  .team h4 {
     justify-self: center;
-}
-
-.userInfo1 {
+  }
+  
+  .userInfo1 {
     grid-column: 1;
-    grid-row: 1/4;
-    display:flex;
+    grid-row: 1 / 4;
+    display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.userInfo {
-    grid-column: 2/6;
-}
-
-.team a {
+  }
+  
+  .userInfo {
+    grid-column: 2 / 6;
+  }
+  
+  .team a {
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr 1fr 1fr;
-    flex:1;
-    text-decoration: none; 
-    color: inherit; 
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
     min-width: 20rem;
     border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+    border-radius: 8px;
     margin: 1rem;
     padding: 0 1rem;
-}
-
-.documents {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.documents .dropSection {
-    display: grid;
-    flex-direction: column;
-    min-height: 25rem;
-    flex:1;
-    margin: 0 1rem;
-    min-width: 20rem;
-    align-items: stretch;
-    flex-wrap: wrap;
-
-}
-
-.dropZone {
-    flex: 1; 
-    display: flex;
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: stretch; 
-    border: 2px dashed var(--primary-color);
-    padding: 1rem;
-    min-height: 30rem; 
-    box-sizing: border-box;
-}
-
-.dropzone ul {
-    list-style: none;
-    margin-block-start: 0;
-    margin-block-end: 0;
-    margin: 0;
-    padding:0;
-    overflow-y: auto
-
-}
-
-.dropZone ul li {
-    margin: .5 0;
-}
-
-.profile button {
-    margin-top: 1rem;
-}
-
-.profile h2 {
-    justify-self : center;
-    margin-top:2.5rem;
-    font-size: 2.5rem;
-
-}
-
-.couleur {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    justify-content: center;
-    /*border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;*/
-}
-
-.archetypep {
-    display: grid;
-    grid-template-columns: repeat(12, calc(100% / 12));
-    justify-content: center;
-    /*border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;*/
-}
-
-.couleur h6, .couleur p, .couleur input, .archetypep p, .archetypep input, .archetypep h6 {
-    border: 1px solid var(--secondary-color);
-    height: 100%;
-    width : 100%;
-    padding:0;
-    margin:0;
-    min-height: 3rem;
-    align-content: center;
-    justify-self: center;
-    text-align: center;
-
-}
-
-.profile h4{
-    font-size: 1.5rem;
-}
-
-.couleur p {
-    font-weight: 600;
-}
-
-.bleu {
-    background-color: rgb(119, 188, 240);
-    color:white;
-    font-size:1.25rem;
-}
-
-.vert {
-    background-color: rgb(119, 240, 208);
-    color:white;
-    font-size:1.25rem;
-}
-.jaune {
-    background-color: rgb(240, 238, 119);
-    color:white;
-    font-size:1.25rem;
-}
-.rouge {
-    background-color: rgb(240, 119, 119);
-    color:white;
-    font-size:1.25rem;
-}
-
-.archetype {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
-    align-items: center;
-}
-
-.archetype p {
-    text-align :center;
-    font-size: 1.25rem;
-
-}
-
-
-
-.settings {
-    margin: 0 5%;
-    position:relative;
-    top:5rem;
-    
-
-}
-
-.settings h5 {
-    grid-column: 1;
-    font-size: 1.25rem;
-    border:1px solid var(--primary-color);
-    background-color: var(--secondary-color);
-    width: 100%;
-    height: 100%;
-    margin: 1rem 0;
-    padding: 0;
-    align-content: center;
-
-}
-
-.settingsContainer{
-    display: grid;
-    grid-template-columns: 20rem 1fr;
-    margin: 1rem;
-    padding: 0;
-    align-items: center;
-    justify-items: left;
-}
-
-.settings .z{
-    grid-column: 2;
-    margin: 1rem;
-    align-self:center;
-
-}
-
-.settingsContainer button {
-    
-    display: flex;
-    margin: 2rem;
-}
-
-.modifyPassword {
-    display: block;
-    width: 40rem;
-    margin-top: 10rem;
-
-}
-
-.modifyPassword input {
-    width: 100%;
-    padding: 0
-}
-
-.modifyPassword button {
-    margin: 1rem;
-}
-
-.modal {
-    animation-duration: 0.5;
-    animation: forwards;
-    height: 100%;
-    
-    width:100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index:1000
-}
-
-.modalContent{
-    width:70%;
-    height: auto;
-    max-height: 60vh;
-    background-color: white;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-    padding:2rem;
-    display:flex;
-    justify-content: center;
-    
-    flex-direction: column;
-    align-items: stretch;
-    padding:2rem;
-    z-index: 1000;
-}
-
-
-
-.modalContent form, .modalContent form {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding:0;
-    margin: 0;
-
-    
-}
-
-
-
-.modalContent h2, .modalContent h2 {
-    align-self: center;
-}
-
-.modalContent form button {
-    width: 40%;
-    margin-top: 1rem;
-    align-self: center;
-    height:2rem;
-}
-
-.inputModal, .inputDeleteModal {
-    width:100%;
-    margin: 1rem 0;
-    justify-content: space-between;
-    display: flex;
-    gap: 3rem;
-    
-}
-
-.modalContent form .inputModal .textArea {
-    min-width: 50%;
-}
-
-.modalContent button {
-    width: 40%;
-    margin-top: 1rem;
-    align-self: center;
-    height:2rem;
-    min-height:2rem;
-}
-
-.files {
-    display: flex;
-}
-
-.files p  {
-    flex: 12;
-}
-
-.files button {
-    flex: 1;
-    align-self: center;
-    
-    height: 90%;
-}
-
-.dropSection button {
-    margin-bottom: 1rem;
-}
-
-.Objectifs {
-    position:relative;
-    top:5rem;
-    margin : 0 5%;
-    padding-bottom: 5%
-}
-
-.Objectifs h2 {
-    justify-self: center;
-}
-
-.Objectifs .titre {
-    justify-self: left;
-    margin-top: 1rem;
-    
-
-}
-
-.ObjectifsById h1, .ObjectifsById h5  {
-    justify-self: center;
-}
-
-.ObjectifsById {
-    margin: 0 1rem;
-}
-
-.Objectifs p, .Objectifs textarea, .progresArea  {
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 2px 4px var(--primary-color);
-    border-radius: 20px;
-    min-height: 10rem;
-    padding: 1rem;
-    margin:1rem 0;
-    
-    width: 100%;
-    
-}
-
-.progresInput input {
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 2px 4px var(--primary-color);
-    border-radius: 20px;
-    padding: 1rem;
-    margin:0;
-    margin-bottom: 1rem;
-    width: 100%;
-}
-
-.titre {
-    padding: 1rem;
-    display: block;
-}
-
-.clientObjectifs {
-    margin: 3rem 0;
-}
-
-.clientObjectifs input, .clientObjectifs h2, .clientObjectifs button {
-    display: inline;
-}
-.clientObjectifs button {
-    justify-self: right;
-    align-self: center;
-}
-
-.sectionTitre {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0;
-}
-
-.modifyButton {
-    align-content: center;
-}
-
-.modifyButton button{
-    height: 2rem;
-}
-
-.singleProgres {
-    display:flex;
-    align-content:center;
-}
-
-.singleProgres p {
-    
-    margin-bottom:0;
-    background-color: rgb(245, 232, 248);
-}
-
-
-.progressArea , .progressArea .singleProgres, .Objectifs .clientObjectifs p, .sectionTitre input, .singleProgres input {
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 2px 4px var(--primary-color);
-    border-radius: 20px;
-    min-height:1.25rem;
-    
-    
-    padding: 1rem;
-    margin:0.5rem 0;
-    
-    width: 100%;
-}
-.sectionTitre input {
-    width:50%;
-}
-
-
-.imgSmall {
-    justify-content: center;
-    width: 100px;   
-    height: 100px; 
-    border-radius: 50%; 
-    object-fit: cover;  
-    border: 2px solid #ccc;  
-    padding: 2px;
-}
-
-.gestionGroupe {
-    position: relative;
-    top :5rem;
-    margin: 1rem 5%;
-    justify-items: center;
-    width:90%;
-    height: 100%;
-    padding: 0 0 3rem 0
-}
-
-.gestionGroupe form{
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 4px 8px var(--primary-color);
-    border-radius: 20px;
-    display : flex;
-    padding: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-
-
-.gestionGroupe form .question {
-    flex : 1;
-    min-width: 50%;
-    margin:1rem;
-}
-
-.gestionGroupe form .client {
-    margin: 0.5rem 0.5rem 0 0;
-    width: 90%;
-    
-}
-
-
-
-
-.gestionGroupe form h2 {
-    width: 100%;
-    text-align: center;
-}
-
-.gestionGroupe form h3 {
-    width: 100%;
-    text-align: center;
-}
-
-.gestionGroupe form .groupMembers {
-    min-width: 100%;
-    padding:2rem;
-    display: flex;
-    flex-direction: column;
-    
-}
-
-.gestionGroupe form .groupMembers .client {
-    flex:1;
-    min-width: 90%;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: 20px;
-    display :flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 1rem;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    
-}
-
-.client button {
-    align-self: center;
-}
-
-.question input, select, .group input {
-    height: 2rem;
-    padding: 0 1rem;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: .75rem;
-    align-content: center;
-    margin: 0 2rem;
-}
-
-.gestionGroupe form button {
-    margin: 0.5rem 2rem;
-    width: 20rem;
-}
-
-.groupList {
-    width:100%;
-    display:flex ;
-    flex-direction: column;
-    justify-content: center;
-    
-    align-items: stretch;
-    margin: 1rem;
-    
-}
-
-.groupList .group{
-    flex:1;
-    display: grid;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-columns: 1fr 1fr 1fr;
-    margin: 0.5rem 0;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: 20px;
-    padding: 0 0 1rem 0;
-
-}
-
-.clientModify {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--secondary-color);
-    margin:1rem;
-    align-items: center;
-    font-size: 1.25rem;
-    color: var(--primary-color)
-}
-
-.groupList .group input , .groupList .groupModify select, .groupList .groupModify input{
-    grid-row: 2;
-    justify-self: center;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: 20px;
-    padding:0.5rem;
-    flex: 1
-    
-}
-.groupList .groupModify p, .groupList .group p {
-    grid-row: 2;
-    flex: 1;
-    justify-self: center;
-    padding:0.5rem;
-    font-size: 1.5rem;
-    color: var(--primary-color)
-}
-
-.groupList .group h3, .groupList .groupModify h3 {
-    grid-row: 1;
-    
-    justify-self: center;
-    
-}
-
-.groupList .group h4, .groupList .groupModify h4 {
-    grid-row: 3;
-    grid-column: 1/-1;
-    justify-self: center;
-    margin-top: 2rem 0 0 0;  
-    
-    
-}
-
-.groupList .groupModify{
-    flex:1;
-    display: grid;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    margin: 2rem 0;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: 20px;
-
-}
-
-
-.groupMembers{
-    grid-row: 4;
-    grid-column: 1/-1;
-    width:96%;
-    display:flex;
-    flex-direction: column;
-    flex: 1; 
-    justify-self: center; 
-    margin: 1rem 2rem;
-    
-}
-
-.groupModify .modifyGroupButtons {
-    grid-row : 6;
-    grid-column: 1/-1;
-    justify-self: center;
-    
-}
-
-.modifyGroupButtons button {
-    margin: 2rem 2rem;
-}
-
-
-.group .groupMembers .client  {
-    border-bottom: 1px solid var(--secondary-color);
-    
-    flex:1;
-    width: 100%;
-    margin: 0.5rem 0;
-    display:flex;
-    justify-content: space-between;
-    width: 100%; 
-    align-items: center;
-    font-size: 1.25rem;
-    color: var(--primary-color);
-    flex-wrap: wrap;
-    
-}
-
-.group .groupMembers .client p, .group .groupMembers .client a {
-    text-align: center;
-    flex:1;
-}
-
-.showProfileInput {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.group .groupMembers .client .showProfileInput button {
-    align-self: flex-end;
-}
-
-.group .groupMembers .client .showProfileInput input {
-    border: none;
-    box-shadow: none;
-}
-
-.group .groupMembers h4 {
-    text-align: center;
-}
-
-.groupButton {
-    display: flex;
-    grid-row: 5;
-    grid-column: 1/-1;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.groupButton button {
-    flex: 1;
-    max-width: 20rem;
-    min-width: 20rem;
-    margin: 0 2rem;
-}
-
-.groupA {
-    font-size: 1rem;
-    padding: 0.5rem;
-    text-align: center;
-    grid-column: 1/-1;
-    margin: 2rem 1rem;
-    border: 1px solid var(--secondary-color);
-    box-shadow: 0 1px 2px var(--primary-color);
-    border-radius: 20px;
-    grid-row: 6;
-    grid-column: 1/-1;
-    width: 50%;
-    justify-self: center;
-    
-}
-
-.groupA button {
-    height:2rem;
-    margin: 0 2rem;
-}
-
-.addingMember{
-    grid-row: 5;
-    grid-column: 1/-1;
-    justify-self: center;
-}
-
-.activeSearch {
-    width: 100%;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.editableField{
-    display: flex;
-}
-
-.editableField textarea {
-    min-height: 15rem;
-    overflow: auto;
-    flex:6;
-    
-}
-
-.my-component {
-    position: relative; /* nécessaire pour bien superposer l'overlay */
   }
   
-  /* Contenu qui sera flouté lorsque isLoading = true */
-  .page-content.blur {
-    filter: blur(4px);
-    pointer-events: none; 
-    user-select: none;
-    opacity: 0.7; /* facultatif pour un léger effet grisé */
+  .documents {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .documents .dropSection {
+    display: grid;
+    flex-direction: column;
+    min-height: auto;
+    flex: 1;
+    margin: 0 0 1rem 0;
+    min-width: 20rem;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  
+  /* Nouveaux styles pour les dropzones */
+  .dropzone-container {
+    border: 2px dashed var(--secondary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fcf8fa;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .dropzone-container.active {
+    border-color: var(--primary-color);
+    background-color: #f9f0f5;
+  }
+  
+  .dropzone-container.accept {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+  }
+  
+  .dropzone-container.reject {
+    border-color: #f44336;
+    background-color: #ffebee;
+  }
+  
+  .dropzone-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #f0e0e8;
+  }
+  
+  .file-name {
+    color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+  }
+  
+  /* Styles globaux pour tous les boutons */
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(111, 30, 73, 0.1);
+    background-image: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%) !important;
+    color: white;
+    padding: 0.5rem 1rem;
+    height: auto;
+    letter-spacing: 0.01em;
+  }
+  
+  button:hover {
+    box-shadow: 0 3px 6px rgba(111, 30, 73, 0.15);
+    transform: translateY(-1px);
+    opacity: 0.95;
+  }
+  
+  button:active {
+    box-shadow: 0 1px 2px rgba(111, 30, 73, 0.2);
+    transform: translateY(0);
+  }
+  
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(111, 30, 73, 0.2);
+  }
+  
+  /* Styles spécifiques pour différents types de boutons */
+  .btn-primary,
+  .btn-edit,
+  .btn-upload {
+    background-image: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%) !important;
+  }
+  
+  .btn-edit {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+  
+  .btn-upload {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    min-width: 80px;
+    border-radius: 6px;
+  }
+  
+  /* Style pour le bouton de suppression de fichier */
+  .file-delete {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #f44336 !important;
+    font-size: 1.2rem !important;
+    padding: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s !important;
+  }
+  
+  .file-delete:hover {
+    background-color: #ffebee !important;
+    transform: none !important;
+  }
+  
+  /* Styles pour les images de profil */
+  .imgSmall {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--secondary-color);
+    padding: 2px;
+  }
+  
+  /* Styles pour le spinner de chargement */
+  .spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   
   /* Overlay de chargement */
   .loading-overlay {
-    position: fixed; /* ou absolute, si vous voulez seulement couvrir un conteneur précis */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.3); /* voile semi-transparent */
+    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999; /* pour passer au-dessus de tout */
+    z-index: 9999;
   }
   
-  /* Style pour le spinner */
-  .spinner {
-    border: 8px solid #f3f3f3; /* Couleur de fond */
-    border-top: 8px solid #3498db; /* Couleur de la “barre” qui tourne */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
+  /* Contenu flouté */
+  .page-content.blur {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.7;
   }
   
-  /* Animation pour le spinner */
-  @keyframes spin {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  /* Modal */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
   }
+  
+  .modalContent {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Styles pour les couleurs dans le profil */
+  .couleur {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+  }
+  
+  .bleu {
+    background-color: rgb(119, 188, 240);
+    color: white;
+    font-weight: bold;
+  }
+  
+  .vert {
+    background-color: rgb(119, 240, 208);
+    color: white;
+    font-weight: bold;
+  }
+  
+  .jaune {
+    background-color: rgb(240, 238, 119);
+    color: white;
+    font-weight: bold;
+  }
+  
+  .rouge {
+    background-color: rgb(240, 119, 119);
+    color: white;
+    font-weight: bold;
+  }
+  
+  /* Styles pour les archétypes */
+  .archetypep {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    text-align: center;
+  }
+  
+  .archetype {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    align-items: center;
+    justify-items: center;
+    margin: 1.5rem 0;
+  }
+  
+  .archetype p {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-color);
+  }
+  
+  .archetype img {
+    border: 3px solid var(--secondary-color);
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.2);
+  }
+  
+  /* Styles pour les champs éditables */
+  .texteProfile {
+    margin-top: 2rem;
+  }
+  
+  .editableField {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+  }
+  
+  .editableField h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+  }
+  
+  .editableField textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  .editableField button {
+    margin-top: 0.75rem;
+  }
+  
+  /* Styles pour la gestion des groupes */
+  .gestionGroupe {
+    position: relative;
+    margin: 0 5%;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(111, 30, 73, 0.1);
+    padding: 2rem;
+  }
+  
+  .gestionGroupe h2 {
+    color: var(--primary-color);
+    font-size: 1.75rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+  
+  /* Styles pour le créateur de groupe */
+  .gestionGroupe > button {
+    display: block;
+    margin: 0 auto 2rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  /* Styles pour la liste des groupes */
+  .groupList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .activeSearch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    background-color: #f9f0f5;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .activeSearch label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+  
+  .activeSearch input[type="search"] {
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
+    min-width: 200px;
+  }
+  
+  .activeSearch input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+  }
+  
+  /* Styles pour les cartes de groupe */
+  .group {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.1);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .group:hover {
+    box-shadow: 0 6px 12px rgba(111, 30, 73, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .group h3 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+  
+  .group p {
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Styles pour les groupes étendus */
+  .group.expanded {
+    grid-column: 1 / -1;
+    cursor: default;
+  }
+  
+  .groupMembers {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  
+  .client {
+    background-color: #fcf8fa;
+    border: 1px solid #f0e0e8;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .client img {
+    margin-bottom: 0.75rem;
+  }
+  
+  .client p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .client a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .client a:hover {
+    text-decoration: underline;
+  }
+  
+  .showProfileInput {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .showProfileInput label {
+    font-size: 0.8rem;
+  }
+  
+  .showProfileInput input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+  }
+  
+  .groupButton {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .groupA {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f9f0f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .groupA a {
+    color: var(--primary-color);
+    word-break: break-all;
+    flex: 1;
+  }
+  
+  /* Styles pour le formulaire de modification */
+  .groupModify {
+    grid-column: 1 / -1;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(111, 30, 73, 0.15);
+    padding: 2rem;
+  }
+  
+  .groupModify h3 {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+  }
+  
+  .groupModify input[type="text"],
+  .groupModify input[type="datetime-local"],
+  .groupModify select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  
+  .groupModify input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+  }
+  
+  .clientModify {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fcf8fa;
+    border: 1px solid #f0e0e8;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .clientModify img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .clientModify p {
+    flex: 1;
+  }
+  
+  .clientModify button {
+    background: none !important;
+    color: #f44336 !important;
+    font-size: 1.2rem !important;
+    padding: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  .addingMember {
+    margin: 1.5rem 0;
+  }
+  
+  .addingMember label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+  
+  .modifyGroupButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  /* Styles pour le formulaire de création de groupe */
+  form {
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--secondary-color);
+    box-shadow: 0 4px 8px rgba(111, 30, 73, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .question {
+    margin-bottom: 1.5rem;
+  }
+  
+  .question label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+  
+  .question input[type="text"],
+  .question input[type="datetime-local"],
+  .question select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+  }
+  
+  .question input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    margin-right: 0.5rem;
+  }
+  
+  /* Styles pour les boutons Canva */
+  .canva {
+    background-color: #00c4cc !important;
+    background-image: none !important;
+  }
+  
+  .canva:hover {
+    background-color: #00a5aa !important;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .groupList {
+      grid-template-columns: 1fr;
+    }
+  
+    .activeSearch {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .groupButton {
+      flex-direction: column;
+    }
+  
+    .groupButton button {
+      width: 100%;
+    }
+  }
+  
+  

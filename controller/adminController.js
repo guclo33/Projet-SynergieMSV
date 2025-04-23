@@ -14,7 +14,6 @@ require("dotenv").config();
 
 const getAdminHomeDataController = async (req,res) => {
     
-    console.log("TESTEE!!!1111")
     try {
         const data = await getAdminHomeData()
 

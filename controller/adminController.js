@@ -861,7 +861,7 @@ const generateTemplate = async (req, res) => {
                 return res.status(500).json({ message: "Erreur d'exécution du script Python" });
             }
 
-            
+            console.log("stdout:", stdout);
 
             // Utiliser une expression régulière pour extraire l'URL du tuple
             const match = stdout.match(/(https:\/\/www\.canva\.com\/api\/design\/[^\s]+)/);

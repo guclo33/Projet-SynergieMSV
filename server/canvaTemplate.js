@@ -57,7 +57,6 @@ const getUser = (req, res) => {
     
     
 
-    console.log(`here is the user :`, user)
     return res.json(user)
 }
 
@@ -82,7 +81,7 @@ const templateDataset = async (templateId, accessToken, refreshToken, authCode) 
 
 
         const info = await templateInfos.json();
-        console.log (info)
+        
 
         const query = "UPDATE canva_token SET accesstoken = $1, refreshtoken = $2, authcode = $3, templateid = $4"
         const value = [accessToken, refreshToken, authCode, templateId ]
@@ -114,17 +113,16 @@ const template = async (accessToken, refreshToken, authCode) => {
         );
         const templateIdInfos = await getTemplateId.json()
         templateId = await templateIdInfos.items[0].id;
-        console.log(templateIdInfos);
         
         try {
             await templateDataset(templateId, accessToken, refreshToken, authCode);
         } catch (err) {
-            console.log("Could not get template dataset", err)
+            console.error("Could not get template dataset", err)
         }
         
 
     } catch(err) {
-        console.log("Could not get template id", err)
+        console.error("Could not get template id", err)
     }
      
 }
@@ -158,7 +156,6 @@ const connectCanva = async (req,res, next) => {
             })
         });
         const data = await response.json();
-        console.log("data: ", data)
         accessToken = await data.access_token;
         refreshToken = await data.refresh_token;
 
@@ -179,15 +176,9 @@ const connectCanva = async (req,res, next) => {
 
         await template(accessToken, refreshToken, authCode);
 
-        
-
-        console.log(`accessToken = ${accessToken}. refreshToken = ${refreshToken}` )
         //await res.send(data);
         
         res.redirect(`${state}?auth=true`)
-        
-        
-    
         
         
       } catch (err) {
@@ -294,7 +285,6 @@ const generateTemplate = async (req, res) => {
 
             if (match) {
                 const editUrl = match[0]; // L'URL est capturée dans le premier groupe de l'expression régulière
-                console.log("URL générée:", editUrl);
 
                 if (stderr) {
                     console.error("Messages stderr :", stderr);
@@ -308,7 +298,7 @@ const generateTemplate = async (req, res) => {
             }
         });
     } catch (error) {
-        console.log("Erreur lors de la génération du template:", error);
+        console.error("Erreur lors de la génération du template:", error);
         return res.status(500).json({ message: "Erreur lors de la génération du template", error });
     }
 };

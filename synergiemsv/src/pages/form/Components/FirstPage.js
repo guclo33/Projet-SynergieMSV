@@ -69,7 +69,7 @@ export function FirstPage () {
          
           setErrors(newErrors)
         
-        if(info["firstName"] && info["lastName"] && valid && fileURL) {
+        if(info["firstName"] && info["lastName"] && valid && fileURL && fileObj) {
             setValidated(true)
         } else {
             setValidated(false)

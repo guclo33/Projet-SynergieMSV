@@ -27,35 +27,35 @@ template_id = canva_token[4]
 # 🎨 Création du design avec données + image
 
 def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, photo_url):
-    if photo_url :
-        # ---- Upload image dans Canva ----
-        name_base64 = base64.b64encode(nom_profile.encode("utf-8")).decode("utf-8")
-        image_response = requests.get(photo_url)
-        if image_response.status_code != 200:
-            print("Erreur en téléchargeant l’image :", image_response.status_code)
+    
+    # ---- Upload image dans Canva ----
+    name_base64 = base64.b64encode(nom_profile.encode("utf-8")).decode("utf-8")
+    image_response = requests.get(photo_url)
+    if image_response.status_code != 200:
+        print("Erreur en téléchargeant l’image :", image_response.status_code)
             
 
-        headers_upload = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/octet-stream",
-            "Asset-Upload-Metadata": json.dumps({"name_base64": name_base64})
-        }
+    headers_upload = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/octet-stream",
+        "Asset-Upload-Metadata": json.dumps({"name_base64": name_base64})
+    }
 
-        upload_response = requests.post(
-            "https://api.canva.com/rest/v1/asset-uploads",
-            headers=headers_upload,
-            data=image_response.content
-        )
+    upload_response = requests.post(
+        "https://api.canva.com/rest/v1/asset-uploads",
+        headers=headers_upload,
+        data=image_response.content
+    )
 
-        upload_json = upload_response.json()
-        print("Upload response:", json.dumps(upload_json, indent=2))
+    upload_json = upload_response.json()
+    print("Upload response:", json.dumps(upload_json, indent=2))
 
-        if upload_response.status_code != 200 or "job" not in upload_json:
-            print("❌ Upload initial échoué.")
+    if upload_response.status_code != 200 or "job" not in upload_json:
+        print("❌ Upload initial échoué.")
             
 
-        job_id = upload_json["job"]["id"]
-        job_status = upload_json["job"]["status"]
+    job_id = upload_json["job"]["id"]
+    job_status = upload_json["job"]["status"]
 
     if job_status != "success":
         for _ in range(10):

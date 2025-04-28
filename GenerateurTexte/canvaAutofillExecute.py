@@ -7,8 +7,7 @@ import os
 import boto3
 
 
-#clientid = sys.argv[1]
-clientid=119
+clientid = sys.argv[1]
 
 conn = psycopg2.connect(
     dbname= os.getenv("DB_RENDER_DATABASE"),

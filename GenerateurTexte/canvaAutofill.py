@@ -54,8 +54,8 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
             print("❌ Upload initial échoué.")
             
 
-        job_id = upload_json["job"]["id"]
-        job_status = upload_json["job"]["status"]
+    job_id = upload_json["job"]["id"]
+    job_status = upload_json["job"]["status"]
 
     if job_status != "success":
         for _ in range(10):

@@ -1,3 +1,4 @@
+
 import requests
 import json
 import time
@@ -164,3 +165,4 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
 conn.commit()
 cursor.close()
 conn.close()
+

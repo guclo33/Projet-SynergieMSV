@@ -32,8 +32,8 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
         name_base64 = base64.b64encode(nom_profile.encode("utf-8")).decode("utf-8")
         image_response = requests.get(photo_url)
         if image_response.status_code != 200:
-            print("Erreur en téléchargeant l’image :", image_response.status_code)
-            
+            print("Erreur en téléchargeant l'image :", image_response.status_code)
+            return  # Stop if image download fails
 
         headers_upload = {
             "Authorization": f"Bearer {access_token}",
@@ -51,8 +51,8 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
         print("Upload response:", json.dumps(upload_json, indent=2))
 
         if upload_response.status_code != 200 or "job" not in upload_json:
-            print("❌ Upload initial échoué.")
-            
+            print("❌ Upload initial échoué. Réponse reçue:", json.dumps(upload_json, indent=2))
+            return  # Stop if upload failed or 'job' key is missing
 
     job_id = upload_json["job"]["id"]
     job_status = upload_json["job"]["status"]

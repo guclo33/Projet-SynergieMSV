@@ -60,8 +60,6 @@ photo_url = s3_client.generate_presigned_url(
         ExpiresIn=180
     )
 
-print("upload_json:", upload_json)
-
 autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, photo_url)
 
 conn.commit()

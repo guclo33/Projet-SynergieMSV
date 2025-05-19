@@ -51,14 +51,12 @@ const getRoadmapDataController = async (req, res) =>{
        
         
         if(data){
-            console.log("leader =", data.rows)
-            console.log("Data from SQL query:", JSON.stringify(data.rows, null, 2))
+            JSON.stringify(data.rows, null, 2)
             return  res.status(200).send({ rows: data.rows })
         }
         res.status(404).send("no data found")
         return
     } catch (error){
-        console.log("erreur getRoadmap")
         return res.status(500).send("internal server error")
     }
 }
@@ -83,7 +81,7 @@ const updateRoadmapTodosController = async (req, res) => {
 const addRoadmapTodos = async(req, res) => {
     const {clientid} = req.params;
     const {task, category, is_default} = req.body;
-    console.log("task:", task, "category:", category, "is_default", is_default)
+
     try {
         await addTodosQuery(clientid, category, task, is_default)
         res.status(200).send("succesfully added à new task!")
@@ -112,8 +110,7 @@ const deleteRoadmapTodos = async(req,res) => {
 }*/
 
 const updateOverviewController = async (req, res) => {
-    const { id, active} = req.body;
-    console.log("req.body=", req.body)
+    const { id, active} = req.body; 
     
     try {
         await updateOverview( id, active)
@@ -139,7 +136,7 @@ const createObjectifsDataController = async (req,res) => {
     const {clientid} = req.params
     
     const {value, category, titre} = req.body
-    console.log("body", req.body, "clientid", clientid)
+
     let query = ""
     let queryArray = []
 
@@ -187,7 +184,6 @@ const createObjectifsUserController = async (req,res) => {
     const {id} = req.params
     
     const {value, category, titre} = req.body
-    console.log("body", req.body, "id", id)
     let query = ""
     let queryArray = []
 
@@ -238,12 +234,11 @@ const createObjectifsUserController = async (req,res) => {
 const updateObjectifsDataController = async (req,res) => {
     const {clientid} = req.params
     const {value, category, titre, prog_id} = req.body
-    console.log("body", req.body, "clientid", clientid)
     let query = ""
     let queryArray = []
 
     if(titre) {
-        console.log("tentative d'update avec Titre")
+        
         const categoryTitre = `${category}_titre`;
         query = `UPDATE objectifs SET ${category} = $1, ${categoryTitre} = $2 WHERE client_id = $3`
         queryArray = [value, titre, clientid]
@@ -260,7 +255,7 @@ const updateObjectifsDataController = async (req,res) => {
     if(category){
         query = `UPDATE objectifs SET ${category} = $1 WHERE client_id = $2`
         queryArray = [value, clientid]
-        console.log("tentative d'update sans Titre")
+        
         try {
             await updateObjectifsData(query, queryArray)
             res.status(200).send("objectifs mis à jour avec succès!")

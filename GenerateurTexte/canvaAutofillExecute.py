@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 import boto3
 
+load_dotenv()
 
 clientid = sys.argv[1]
 
@@ -53,12 +54,19 @@ s3_client = boto3.client(
     region_name=os.getenv("AWS_REGION")
 )
 
+# Debug logging for AWS credentials
+print(f"AWS Access Key ID present: {'Yes' if os.getenv('AWS_ACCESS_KEY_ID') else 'No'}")
+print(f"AWS Secret Access Key present: {'Yes' if os.getenv('AWS_SECRET_ACCESS_KEY') else 'No'}")
+print(f"AWS Region: {os.getenv('AWS_REGION')}")
+print(f"AWS Bucket Name: {os.getenv('AWS_BUCKET_NAME')}")
 
 photo_url = s3_client.generate_presigned_url(
         ClientMethod='get_object',
         Params={'Bucket': os.getenv("AWS_BUCKET_NAME"), 'Key': f"Synergia/Photos/{nom_profile}.png"},
-        ExpiresIn=180
+        ExpiresIn=3600  # Increased to 1 hour
     )
+
+print(f"Generated presigned URL for photo: {photo_url}")
 
 autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, photo_url)
 

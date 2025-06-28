@@ -65,17 +65,11 @@ export function QuestionsDev () {
       };
 
     const sendFileData = async () => {
-        if (!fileUrl) return; 
+        if (!fileObj) return; 
 
-        const filename = `${info.firstName} ${info.lastName}.png`;
-        console.log('[FRONTEND] [UPLOAD] Nom du fichier utilisé pour base64ToFile =', filename);
-        const fileObj = await base64ToFile(fileUrl, filename); 
-        console.log('[FRONTEND] [UPLOAD] File créé par base64ToFile :', fileObj);
         const formData = new FormData();
         formData.append("file", fileObj);
-        for (let [key, value] of formData.entries()) {
-            console.log(`[FRONTEND] [UPLOAD] FormData entry : ${key} =`, value, "(Type:", typeof value, ")");
-        }
+        
         try {
             console.log('[FRONTEND] [UPLOAD] Envoi du FormData au backend...');
             const response = await fetch (`${apiUrl}/api/form/photo`, {

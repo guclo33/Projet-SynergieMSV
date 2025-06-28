@@ -113,8 +113,9 @@ export function FirstPage () {
         const selectedFile = e.target.files[0]
         
         if(selectedFile){
-            const base64File = await convertFileToBase64(selectedFile)
-            dispatch(setFile(base64File))
+            // Créer une URL temporaire pour l'affichage
+            const objectUrl = URL.createObjectURL(selectedFile)
+            dispatch(setFile(objectUrl))
             setFileObj(selectedFile)
             setModify(false)
         }

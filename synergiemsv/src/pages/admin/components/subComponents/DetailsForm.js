@@ -3,10 +3,10 @@ import React, {useState} from "react";
 export function DetailForm({form}) {
     const [selectedForm, setSelectedForm] = useState(0);
 
-    console.log(form)
+
     const filteredForm = form[selectedForm].form
 
-    console.log("FilteredForm", filteredForm)
+
     const indexArray = [];
     for (let i = 0; i < form.length; i++) {
     indexArray.push(i);

@@ -22,15 +22,15 @@ export function Form() {
     const dispatch = useDispatch();
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
 
-    console.log("page",pageNum)
+
     window.addEventListener("storage", (event) => {
-        console.log("Événement storage :", event);
+
       });
 
     useEffect(()=> {
         const urlParams = new URLSearchParams(window.location.search)
         const id = urlParams.get("id")
-        console.log("URL ID", id)
+
         const getURLData = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/form/url/${id}`, {
@@ -42,7 +42,7 @@ export function Form() {
                 if(response.ok) {
                     const data = await response.json();
                     const formData = data[0].data
-                    console.log("formData =", formData);
+
 
                     dispatch(addValueInfo({key : "have_leader", value : formData.have_leader }))
                     dispatch(addValueInfo({key : "nom_leader", value : formData.nom_leader }))
@@ -50,11 +50,11 @@ export function Form() {
                     dispatch(addValueInfo({key : "group_name", value : formData.group_name }))
                     dispatch(addValueInfo({key : "leader_id", value : formData.leader_id }))
                     dispatch(addValueInfo({key : "date_presentation", value : formData.date_presentation }))
-                    console.log("INFO =", info)
+
                     
                 }
             } catch( error) {
-                console.log("couldnt get data", error)
+                console.error("couldnt get data", error)
             }
         }
 
@@ -63,12 +63,12 @@ export function Form() {
 
     
    /* const encryptedData = urlParams.get("data");
-    console.log("🟢 URL Search Params:", window.location.search);
-    console.log("🟢 Encrypted Data from URL:", encryptedData);
+
+
 
     if (encryptedData) {
         const decryptedData = decryptParams(decodeURIComponent(encryptedData));
-        console.log("🔓 Données déchiffrées :", decryptedData);
+
     }*/
     const renderPage = () => {
         if (pageNum === 0) {

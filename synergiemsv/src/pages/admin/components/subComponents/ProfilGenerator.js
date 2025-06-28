@@ -24,7 +24,7 @@ export function ProfilGenerator() {
                     credentials: 'include',
                 });
                 const data = await response.json()
-                console.log("authUrl", authURL)
+
                 
 
                 setAuthURL(data.authURL)
@@ -69,7 +69,7 @@ export function ProfilGenerator() {
             lastName: profilName.lastName
         }
         document.getElementById('loading').style.display = 'block';
-        console.log(dataToSend, "params id =", id)
+
         try {
             const response = await fetch(`${apiUrl}/api/admin/${id}/profilgenerator`, {
                 method: "POST",
@@ -88,7 +88,7 @@ export function ProfilGenerator() {
                 
                 setMessage(data.message)
             } else {
-                console.log(`problem sending ${dataToSend}`)
+
                 const error = await response.json()
                 setMessage(error.error)
             }

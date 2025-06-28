@@ -11,7 +11,7 @@ export function DetailsLeaders({}) {
     if(!leadersData) {
         return <h2>...loading</h2>
     }
-    console.log("leader DAAATTTAAA:" ,leadersData, "CLIENTSDATA", clientsData)
+
 
     const handleSearch = (e) => {
         const {value} = e.target

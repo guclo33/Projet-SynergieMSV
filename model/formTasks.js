@@ -13,7 +13,7 @@ const createForm = async (form, info) => {
             [fullName, info.email]
         );
 
-        console.log("RESULT", result);
+
 
         let client_id;
         let form_id;
@@ -28,7 +28,7 @@ const createForm = async (form, info) => {
             );
 
             form_id = form_result.rows[0].id;
-            console.log("NEW FORM ID", form_id);
+
 
             await client.query(
                 "INSERT INTO questionnaire_client (client_id, questionnaire_id) VALUES ($1, $2)",
@@ -62,7 +62,7 @@ const createForm = async (form, info) => {
             );
             
             client_id = result2.rows[0].id;
-            console.log("CLIENT_ID==", client_id)
+
 
             const form_result = await client.query(
                 "INSERT INTO questionnaire (client_id, form) VALUES ($1, $2::jsonb) RETURNING id", 
@@ -71,7 +71,7 @@ const createForm = async (form, info) => {
 
             form_id = form_result.rows[0].id;
 
-            console.log("NEW FORM ID", form_id);
+
 
             await client.query(
                 "INSERT INTO questionnaire_client (client_id, questionnaire_id) VALUES ($1, $2)",
@@ -106,7 +106,7 @@ const createPreformUrl = async(formId, formData) => {
     try {
         const response = await pool.query("SELECT id FROM prefilledForm WHERE data @> $1::jsonb", [JSON.stringify(formData)])
         if(response.rows.length > 0) {
-            console.log("✅ Formulaire déjà existant :", response.rows[0]);
+
             return response.rows[0];
         } else {
              
@@ -115,11 +115,11 @@ const createPreformUrl = async(formId, formData) => {
                 [formId, JSON.stringify(formData)]
             );
 
-            console.log("✅ Nouveau formulaire enregistré :", insertResponse.rows[0]);
+
             return insertResponse.rows[0]; 
         }
     } catch(error) {
-        console.log(error)
+        console.error(error)
     }
     
     
@@ -128,7 +128,7 @@ const createPreformUrl = async(formId, formData) => {
 const getPreformData = async(formId) => {
     const data = await pool.query("SELECT data FROM prefilledForm WHERE id = $1", [formId])
     
-    console.log("data de preform", data)
+
     return data.rows
 }
 

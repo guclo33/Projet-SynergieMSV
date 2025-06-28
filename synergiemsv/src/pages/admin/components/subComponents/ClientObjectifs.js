@@ -18,11 +18,11 @@ export function ClientObjectifs ({user, objectifsData, category, URL}) {
         }
     
     const handleSubmit = async(e) => {
-        console.log("objectifsData", objectifsData)
+
             
         if(objectifsData && objectifsData.objectifs_id){
             try {
-                console.log("sending data to update objectif", value, "URL", URL)
+
                 const response = await fetch(URL, {
                     method: "PUT",
                     credentials: "include",
@@ -36,20 +36,20 @@ export function ClientObjectifs ({user, objectifsData, category, URL}) {
                     })
                 });
                 if(response.ok) {
-                    console.log("Objectifs mis à jour avec succès!");
+
                     setModify(false);
                     return
                 }
-                console.log("n'a pas réussi à mettre à jour")
+                console.error("n'a pas réussi à mettre à jour")
                 return
     
             } catch(error) {
-                console.log("erreur en mettan à jour l'objectifs", error)
+                console.error("erreur en mettan à jour l'objectifs", error)
                 return
             }
         }
         try {
-            console.log("sending data to create objectifs. user.id", user.id, "clientid", clientid, "URL", URL)
+
 
             const response = await fetch(URL, {
                 method: "POST",
@@ -65,12 +65,12 @@ export function ClientObjectifs ({user, objectifsData, category, URL}) {
                 })
             });
             if(response.ok) {
-                console.log("Objectifs crée avec succès!");
+        
                 setModify(false);
             }
 
         } catch(error) {
-            console.log("erreur en ajoutant l'objectifs", error)
+            console.error("erreur en ajoutant l'objectifs", error)
         }
 
         
@@ -115,7 +115,7 @@ export function ClientObjectifs ({user, objectifsData, category, URL}) {
     }
     
     if(objectifsData && objectifsData.objectifs_id ) {
-        console.log("data category:", objectifsData[category] )
+
         
         return(
             <div>

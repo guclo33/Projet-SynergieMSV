@@ -1,4 +1,3 @@
-
 import requests
 import json
 import time
@@ -28,65 +27,85 @@ template_id = canva_token[4]
 # 🎨 Création du design avec données + image
 
 def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_text, changements_text, interpersonnelles_text, structure_text, problemes_text, arch1_nom, arch2_nom, desc_arch1_text, desc_arch2_text, travail_text, adapte_rouge_text, adapte_bleu_text, adapte_vert_text, adapte_jaune_text, bleu, rouge, jaune, vert, photo_url):
-    if photo_url :
+    asset_id = None
+    
+    if photo_url:
+        print(f"Tentative d'upload de l'image depuis: {photo_url}")
         # ---- Upload image dans Canva ----
         name_base64 = base64.b64encode(nom_profile.encode("utf-8")).decode("utf-8")
-        image_response = requests.get(photo_url)
-        if image_response.status_code != 200:
-            print("Erreur en téléchargeant l'image :", image_response.status_code)
-            return  # Stop if image download fails
+        
+        try:
+            image_response = requests.get(photo_url, timeout=30)
+            print(f"Statut de la réponse image: {image_response.status_code}")
+            
+            if image_response.status_code != 200:
+                print(f"Erreur en téléchargeant l'image : {image_response.status_code}")
+                print(f"Contenu de la réponse: {image_response.text}")
+                photo_url = None  # Reset photo_url to None if download fails
+            else:
+                print("Image téléchargée avec succès")
+                
+                headers_upload = {
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/octet-stream",
+                    "Asset-Upload-Metadata": json.dumps({"name_base64": name_base64})
+                }
 
-        headers_upload = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/octet-stream",
-            "Asset-Upload-Metadata": json.dumps({"name_base64": name_base64})
-        }
+                upload_response = requests.post(
+                    "https://api.canva.com/rest/v1/asset-uploads",
+                    headers=headers_upload,
+                    data=image_response.content,
+                    timeout=30
+                )
 
-        upload_response = requests.post(
-            "https://api.canva.com/rest/v1/asset-uploads",
-            headers=headers_upload,
-            data=image_response.content
-        )
+                upload_json = upload_response.json()
+                print("Upload response:", json.dumps(upload_json, indent=2))
 
-        upload_json = upload_response.json()
-        print("Upload response:", json.dumps(upload_json, indent=2))
+                if upload_response.status_code != 200 or "job" not in upload_json:
+                    print("X Upload initial échoué. Réponse reçue:", json.dumps(upload_json, indent=2))
+                    photo_url = None  # Reset photo_url to None if upload fails
+                else:
+                    job_id = upload_json["job"]["id"]
+                    job_status = upload_json["job"]["status"]
 
-        if upload_response.status_code != 200 or "job" not in upload_json:
-            print("❌ Upload initial échoué. Réponse reçue:", json.dumps(upload_json, indent=2))
-            return  # Stop if upload failed or 'job' key is missing
-
-    job_id = upload_json["job"]["id"]
-    job_status = upload_json["job"]["status"]
-
-    if job_status != "success":
-        for _ in range(10):
-            print(f"⌛ Attente du traitement du job Canva... (status: {job_status})")
-            time.sleep(5)
-            check_response = requests.get(
-                f"https://api.canva.com/rest/v1/asset-uploads/{job_id}",
-                headers={"Authorization": f"Bearer {access_token}"}
-            )
-            check_json = check_response.json()
-            job_status = check_json["job"]["status"]
-            print("Check response:", json.dumps(check_json, indent=2))
-            if job_status == "success":
-                asset_id = check_json["job"]["asset"]["id"]
-                break
-        else:
-            print("❌ L'upload a pris trop de temps ou a échoué.")
-            return
+                    if job_status != "success":
+                        for _ in range(10):
+                            print(f"~ Attente du traitement du job Canva... (status: {job_status})")
+                            time.sleep(5)
+                            check_response = requests.get(
+                                f"https://api.canva.com/rest/v1/asset-uploads/{job_id}",
+                                headers={"Authorization": f"Bearer {access_token}"}
+                            )
+                            check_json = check_response.json()
+                            job_status = check_json["job"]["status"]
+                            print("Check response:", json.dumps(check_json, indent=2))
+                            if job_status == "success":
+                                asset_id = check_json["job"]["asset"]["id"]
+                                print(f"Asset ID obtenu: {asset_id}")
+                                break
+                        else:
+                            print("X L'upload a pris trop de temps ou a échoué.")
+                            photo_url = None
+                    else:
+                        asset_id = upload_json["job"]["asset"]["id"]
+                        print(f"Asset ID obtenu immédiatement: {asset_id}")
+                        
+        except Exception as e:
+            print(f"Erreur lors du téléchargement ou upload de l'image: {e}")
+            photo_url = None
     else:
-        asset_id = upload_json["job"]["asset"]["id"]
+        print("Aucune URL de photo fournie ou photo_url est None")
 
     # ---- Suite du design Canva ----
-    print("starting autofill job")
-    print(asset_id)
+    print("Début de la création du design Canva")
+    print(f"Asset ID: {asset_id}")
 
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
 
+    # Préparer les données du design
     data = {
         "brand_template_id": template_id,
         "title": nom_profile,
@@ -128,10 +147,16 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
             "adapteRouge": {"type": "text", "text": adapte_rouge_text},
             "adapteBleu": {"type": "text", "text": adapte_bleu_text},
             "adapteVert": {"type": "text", "text": adapte_vert_text},
-            "adapteJaune": {"type": "text", "text": adapte_jaune_text},
-            "photoProfil": {"type": "image", "asset_id": asset_id}
+            "adapteJaune": {"type": "text", "text": adapte_jaune_text}
         }
     }
+    
+    # Ajouter la photo seulement si asset_id est disponible
+    if asset_id:
+        data["data"]["photoProfil"] = {"type": "image", "asset_id": asset_id}
+        print("Photo ajoutée au design")
+    else:
+        print("Aucune photo ajoutée au design (asset_id non disponible)")
 
     response = requests.post("https://api.canva.com/rest/v1/autofills", headers=headers, json=data)
 
@@ -151,15 +176,16 @@ def autofill_job(nom_profile, motivation_text, bref_text, forces_text, defis_tex
 
                 if job_status == "success":
                     edit_url = job_done["result"]["design"]["urls"]["edit_url"]
-                    print("✅ Design prêt :", edit_url)
+                    print("SUCCESS Design prêt :", edit_url)
                     return edit_url
                 else:
-                    print("⌛ En attente de finalisation...")
+                    print("~ En attente de finalisation...")
             else:
-                print("❌ Erreur lors du suivi du job Canva.")
+                print("X Erreur lors du suivi du job Canva.")
                 break
     else:
-        print("❌ Erreur lors de la création du design Canva :", response.text)
+        print("X Erreur lors de la création du design Canva :", response.text)
+        print("Status code:", response.status_code)
 
 # 🔹 Fermer la connexion DB
 conn.commit()

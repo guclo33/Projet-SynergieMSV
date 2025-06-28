@@ -67,7 +67,7 @@ app.use(passport.session());
 
 
 redisClient.on('connect', () => {
-  console.log('Connected to Redis successfully');
+
 });
 
 redisClient.on('error', (err) => {
@@ -76,7 +76,7 @@ redisClient.on('error', (err) => {
 
 redisClient.set('testKey', 'testValue');
 redisClient.get('testKey', (err, result) => {
-    console.log('Test key value:', result);
+
 });
 
 app.use("/api/admin/:id", isAuthorizedAdmin, adminRoute)
@@ -105,7 +105,7 @@ app.get("/api/canva/auth", connectCanva)
 //app.get("/api/details/canva", connectCanvaDetail);
 
 app.get('/api/auth/check', (req, res) => {
-  console.log("req.user:", req.user)
+
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
    

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export function SuperAdmin() {
     const {id} = useParams()
-    console.log("id", id)
+
         return (
             <div className="superChoice">
                 <h3><Link to={`/admin/${id}`}>Admin</Link></h3>

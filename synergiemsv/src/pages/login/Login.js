@@ -36,7 +36,7 @@ export function Login() {
         e.preventDefault()
         if (verified){
             try {
-                console.log('Sending data to backend:', userData.usernameOrEmail);
+
                 const response = await fetch(`${apiUrl}/api/login`, {
                     method: "POST",
                     credentials: 'include',
@@ -48,7 +48,7 @@ export function Login() {
                 ;
                 if(response.ok){
                     const data = await response.json();
-                    console.log(`User successfully logged in with role: ${data.user.role}`);
+
                     const user = {
                         id : data.user.id,
                         role : data.user.role,
@@ -57,18 +57,18 @@ export function Login() {
                     }
                     
                     login(user)
-                    console.log("user role :",data.user.role)
+
                     navigate(`/${data.user.role}/${data.user.id}`);
 
                 } else {
                     const errorData = await response.json()
-                    console.log("error", errorData.message)
+                    console.error("error", errorData.message)
                     alert(`Error : ${errorData.message}`)
                 }
 
 
             } catch(error){
-                console.log("user not found")
+
                 alert("Couldn't get user, have you created your account?")
             }
         } else {

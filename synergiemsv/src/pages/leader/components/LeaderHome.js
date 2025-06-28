@@ -16,8 +16,8 @@ export function LeaderHome() {
     if(!leaderData || !info) {
         return <div>Loading...</div>
     }
-    console.log("leaderData =", leaderData)
-    console.log("equipeProfile =", equipeProfiles)
+
+
 
     const getArchImage = (name, num) => {
         if(!Array.isArray(equipeProfiles)) {
@@ -73,7 +73,7 @@ export function LeaderHome() {
             return clientProfile.vert
         } 
     }
-    console.log("getProfile Arch =",getprofileArch("Félicia Caux", 1))
+
 
     const equipeWithoutLeader = equipe.filter((client) => client.nom !== info.nom_client)
 

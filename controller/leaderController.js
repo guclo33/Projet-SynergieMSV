@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const getLeaderDataController = async (req, res) => {
     const {id} = req.params;
-    console.log("getting leader data for id", id)
+
     try {
         const data = await getLeaderData(id);
         return res.status(200).json(data);
@@ -21,18 +21,18 @@ const getLeaderDataController = async (req, res) => {
 const getLeaderPhotosController = async (req, res) => {
     const {nomLeader, clientName} = req.params;
     if (!nomLeader || !clientName) {
-        console.log("Paramètres manquants. Aucune action.");
+    
         return; 
       }
     
-    console.log("nomLeader et clientName", nomLeader, clientName)
+
     const s3params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `Synergia/${nomLeader}/photos/${clientName}.png`,
         Expires: 7200,
     }
 
-    console.log("nomLeader et clientName", nomLeader, clientName,"s3Params", s3params)
+
     
     try {
 
@@ -41,11 +41,9 @@ const getLeaderPhotosController = async (req, res) => {
 
         const command = new GetObjectCommand(s3params);
         const url = await getSignedUrl(s3Client, command);
-        console.log("URL = ", url)
         return res.status(200).json({url})
     } catch (error) {
         if (error.name === 'NotFound' || error.$metadata?.httpStatusCode === 404) {
-            console.log("Objet introuvable :", s3params.Key);
             return res.status(200).json({ url: null });
     }
 

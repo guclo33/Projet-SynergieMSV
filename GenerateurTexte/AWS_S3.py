@@ -4,11 +4,10 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 from io import BytesIO
 from dotenv import load_dotenv
-
+from utils.file_utils import normalize_filename
 
 #Connection à et setup AWS S3
 load_dotenv()
-
 
 BUCKET_NAME= os.getenv("AWS_BUCKET_NAME")
 
@@ -62,7 +61,13 @@ def upload_to_s3(buffer, s3_path):
 def synergia_upload_s3(full_text, nom_organisateur, nom_profile):        
     try:
         buffer = generate_simple_word_in_memory(full_text)
-        s3_path = f"Synergia/{nom_organisateur}/{nom_profile}/profils/{nom_profile}.docx"
+        
+        # Normaliser les noms pour éviter les problèmes avec les accents
+        nom_organisateur_normalized = normalize_filename(nom_organisateur)
+        nom_profile_normalized = normalize_filename(nom_profile)
+        
+        s3_path = f"Synergia/{nom_organisateur_normalized}/{nom_profile_normalized}/profils/{nom_profile_normalized}.docx"
+        print(f"Chemin S3 normalisé : {s3_path}")
         upload_to_s3(buffer, s3_path)
     except Exception as e:
         print(f"Erreur lors de la génération et de l'upload du fichier Word : {e}")

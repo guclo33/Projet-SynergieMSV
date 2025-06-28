@@ -44,10 +44,10 @@ export function GeneralInfos({ detailsData, openModal }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    console.log(`Changing ${name} to ${value}`) // Ajouter un log pour déboguer
+
     setNewInfos((prev) => {
       const updated = { ...prev, [name]: value }
-      console.log("Updated state:", updated) // Ajouter un log pour déboguer
+
       return updated
     })
   }
@@ -65,13 +65,13 @@ export function GeneralInfos({ detailsData, openModal }) {
       })
 
       if (response.ok) {
-        console.log(`overview for client ${clientid} data are successfully updated`)
+
         window.location.reload() // Reload to show updated data
       } else {
-        console.log("error while trying to update in the server")
+        console.error("error while trying to update in the server")
       }
     } catch (error) {
-      console.log("couldn't update client details data", error)
+      console.error("couldn't update client details data", error)
     }
   }
 

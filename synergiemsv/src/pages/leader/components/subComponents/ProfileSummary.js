@@ -25,8 +25,8 @@ export function ProfileSummary() {
         return <div>Loading...</div>
     }
    
-    console.log(String(profile.archnum2).toLowerCase())
-    console.log(String(profile.archnum1).toLowerCase())
+
+
 
     let image1 = ""
     switch (String(profile.archnum1).toLowerCase()) {
@@ -180,12 +180,12 @@ export function ProfileSummary() {
 
     }
 
-    console.log("image1:", image1);
-    console.log("image2:", image2)
+
+
 
     
 
-    console.log("info", info)
+
 
     return (
         

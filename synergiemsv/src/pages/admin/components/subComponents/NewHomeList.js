@@ -66,12 +66,11 @@ export function ClientsList() {
         setLoadingPromptSets(true)
         try {
           const sets = await getPromptSetsAPI(user.id)
-          console.log("Prompt sets loaded:", sets)
           if (Array.isArray(sets) && sets.length > 0) {
             setPromptSets(sets)
             setSelectedPromptSet(sets[0].id)
           } else {
-            console.log("No prompt sets found or invalid response format", sets)
+
             setPromptSets([])
           }
         } catch (error) {
@@ -136,7 +135,6 @@ export function ClientsList() {
       setLoadingPromptSets(true)
       try {
         const sets = await getPromptSetsAPI(user.id)
-        console.log("Prompt sets loaded on click:", sets)
         if (Array.isArray(sets) && sets.length > 0) {
           setPromptSets(sets)
           setSelectedPromptSet(sets[0].id)
@@ -203,8 +201,8 @@ export function ClientsList() {
 
       if (response.ok) {
         const data = await response.json()
-        console.log("Message from API:", data.message)
-        console.log("Profil généré avec succès")
+
+ 
         navigate(`/admin/${user.id}/details/${clientId}`)
       } else {
         console.error("Erreur lors de la génération du profil")

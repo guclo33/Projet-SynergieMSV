@@ -24,7 +24,7 @@ export function Overview() {
                     });
                     if(response.ok){
                         const data = await response.json();
-                        console.log("here's data", data.rows)
+
                         const dataArray = data.rows.map((row) => ( {
                             leader_id: row.leader_id,
                             nom: row.nom,
@@ -34,9 +34,9 @@ export function Overview() {
                             priorite: row.priorite,
                             client_id: row.client_id
                         }));
-                        console.log("dataArray:", dataArray)
+
                         setOverviewData(dataArray)
-                        console.log("overviewData:", overviewData)
+    
                         
                         
                     } else {
@@ -91,13 +91,13 @@ export function Overview() {
                 })
             });
             if(response.ok){
-                console.log(`overview for leaderId ${modifyId}data are succesfully updated`)
+
                 setModifyId(null)
             } else {
-                console.log("error while trying to update in the server")
+                console.error("error while trying to update in the server")
             }
         } catch(error) {
-            console.log("couldn't update leader overview data" , error)
+            console.error("couldn't update leader overview data" , error)
         }
     }
     

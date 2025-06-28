@@ -15,26 +15,26 @@ export function ObjectifsById ({clientsData, user, clientid, apiUrl}) {
     if(user.role==="leader") {
         URL = `${apiUrl}/api/leader/${user.id}/objectifs`
     }
-    console.log("URL", URL)
+
     
     useEffect(() => {
         const getObjectifsData = async () => {
-            console.log("clientid", clientid)
+
             try { const response = await fetch(URL, {
                 method: "GET",
                 credentials: "include"
             });
             if(response.ok){
                 const data = await response.json()
-                console.log("DATA", data)
+
                 setObjectifsData(data.objectifs.rows[0]);
-                console.log("objectifs data:", objectifsData)
+
                 setProgresData(data.progres.rows)
-                console.log("progrès data:", progresData)
+
             }
     
             } catch(error) {
-                console.log("couldn't get objectifs Data", error)
+                console.error("couldn't get objectifs Data", error)
             }
         }
     
@@ -44,7 +44,7 @@ export function ObjectifsById ({clientsData, user, clientid, apiUrl}) {
     let client = {}
     if (clientsData) {
     client = clientsData.find(client => client.id === Number(clientid))
-    console.log("client", client, "clientsData", clientsData)
+
         if(!client){
             return <h2>Loading...</h2>
         } 

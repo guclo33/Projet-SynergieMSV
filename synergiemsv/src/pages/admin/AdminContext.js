@@ -19,7 +19,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
 
 
     useEffect(() => {
-        console.log(`${apiUrl}/api/admin/${id}`);
+
         const getAdminHomeData = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/admin/${id}`, {
@@ -28,7 +28,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("here's data", data)
+
                     const dataArray = data.leadersData.rows.map((row) => ({
                         id: row.leaderid,
                         clientid: row.clientid,
@@ -41,7 +41,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
                         date_presentation: row.date_presentation,
                         statut: row.statut
                     }));
-                    console.log(dataArray)
+                
                     const clientsArray = data.clientsData.rows.map((row) => ({
                         id: row.id,
                         nom: row.nom_client,
@@ -110,7 +110,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
 
 
                     } catch (error) {
-                        console.log("couldn't get image url", error)
+                        console.error("couldn't get image url", error)
                     }
 
 
@@ -123,8 +123,8 @@ export const AdminProvider = ({ children, store, persistor }) => {
                 console.error("Could not connect to getadminhomedata", error)
             }
         }
-        console.log('user.id', id)
-        console.log("getAdmin called")
+
+
         getAdminHomeData();
 
     }, [leadersData, clientsData, id])
@@ -137,7 +137,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log("here's data", data)
+
                 const dataArray = data.leadersData.rows.map((row) => ({
                     id: row.leaderid,
                     clientid: row.clientid,
@@ -150,7 +150,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
                     date_presentation: row.date_presentation,
                     statut: row.statut
                 }));
-                console.log(dataArray)
+
                 const clientsArray = data.clientsData.rows.map((row) => ({
                     id: row.id,
                     nom: row.nom_client,
@@ -196,9 +196,12 @@ export const AdminProvider = ({ children, store, persistor }) => {
                             method: "GET",
                             credentials: "include",
                         }
+                        
                         );
+
                         if (response.ok) {
                             const imageUrl = await response.json();
+
 
                             const name = client.nom
                             setProfilePhotos((prev) => ({
@@ -219,7 +222,7 @@ export const AdminProvider = ({ children, store, persistor }) => {
 
 
                 } catch (error) {
-                    console.log("couldn't get image url", error)
+                    console.error("couldn't get image url", error)
                 }
 
 

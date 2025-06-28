@@ -17,7 +17,9 @@
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "express-session": "^1.18.1",
+        "file-type": "^16.5.4",
         "git-filter-repo": "^0.0.30",
+        "heic-convert": "^2.1.0",
         "ioredis": "^5.6.0",
         "jsonwebtoken": "^9.0.2",
         "multer": "^1.4.5-lts.2",
@@ -28,10 +30,12 @@
         "react-dropzone": "^14.3.8",
         "react-router-dom": "^7.4.0",
         "redis": "^4.7.0",
+        "sharp": "^0.33.0",
         "xlsx": "^0.18.5"
     },
     "scripts": {
         "postinstall": "cd GenerateurTexte && pip install -r requirements.txt && cd ..",
-        "start": "nodemon ./server/server.js"
+        "start": "nodemon ./server/server.js",
+        "migrate-heic": "node server/scripts/migrateHeicFiles.js"
     }
 }

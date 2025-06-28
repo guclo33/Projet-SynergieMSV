@@ -49,7 +49,6 @@ export function Profile({ detailsData }) {
           credentials: "include",
         })
         const data = await response.json()
-        console.log("authUrl", authUrl)
         setAuthUrl(data.authURL)
       } catch (error) {
         console.error("error fetching authurl", error)
@@ -101,11 +100,10 @@ export function Profile({ detailsData }) {
         }),
       })
       if (response.ok) {
-        console.log("succesfully updated profile")
         setModify(false)
       }
     } catch (error) {
-      console.log("couldn't modify profile", error)
+      console.error("couldn't modify profile", error)
     }
   }
 
@@ -128,11 +126,11 @@ export function Profile({ detailsData }) {
         }),
       })
       if (response.ok) {
-        console.log("succesfully updated profile")
+        console.info("succesfully updated profile")
         setModify(false)
       }
     } catch (error) {
-      console.log("couldn't modify profile", error)
+      console.error("couldn't modify profile", error)
     }
   }
 
@@ -155,7 +153,7 @@ export function Profile({ detailsData }) {
         const info = data.info
 
         try {
-          console.log("trying to create canva")
+
           const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/canva/${clientid}`, {
             method: "POST",
             credentials: "include",
@@ -166,24 +164,30 @@ export function Profile({ detailsData }) {
           })
           if (response.ok) {
             const data = await response.json()
-            console.log("here's Canva", data)
-            console.log("successfully autofill Canva")
+
             if (data && data.editUrl) {
               window.open(data.editUrl, "_blank")
             }
-            setIsLoading(false)
+          } else {
+            // Gérer l'erreur de la requête Canva (500, 400, etc.)
+            const errorText = await response.text()
+            console.error("Error response from Canva server:", errorText)
+            alert(`Erreur lors de la génération du template Canva: ${response.status} ${response.statusText}`)
           }
         } catch (error) {
-          console.log("couldn't connect canva")
-          setIsLoading(false)
+          console.error("couldn't connect canva", error)
+          alert("Erreur de connexion lors de la génération du template Canva")
         }
       } else {
         const errorText = await response.text()
         console.error("Error response from server:", errorText)
-        setIsLoading(false)
+        alert(`Erreur lors de la récupération des données: ${response.status} ${response.statusText}`)
       }
     } catch (error) {
       console.error("Could not connect to get details data", error)
+      alert("Erreur de connexion lors de la récupération des données")
+    } finally {
+      // S'assurer que le loading est toujours arrêté
       setIsLoading(false)
     }
   }

@@ -11,4 +11,3 @@ import innocent from "../../../../Images/Innocent.webp";
 import protecteur from "../../../../Images/Protecteur.webp";
 import souverain from "../../../../Images/Souverain.webp";*/
 
-console.log("héro", héro)

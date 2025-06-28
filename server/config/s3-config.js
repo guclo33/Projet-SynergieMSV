@@ -26,7 +26,7 @@ const uploadFileToS3 = (filePath) => {
       if (err) {
         console.error(`Erreur d'upload pour ${filePath}:`, err);
       } else {
-        console.log(`Fichier ${filePath} uploadé sur S3 : ${data.Location}`);
+
       }
     });
   };

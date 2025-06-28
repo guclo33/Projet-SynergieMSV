@@ -19,7 +19,7 @@ export function PagesDISC() {
 
     const answersArray = [form[question1Array[questionNum]], form[question2Array[questionNum]], form[question3Array[questionNum]], form[question4Array[questionNum]]];
 
-    console.log("AnswerArray =", answersArray)
+
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -34,11 +34,11 @@ export function PagesDISC() {
 
     }, [answersArray])
 
-    console.log("FORM=", form, "INFO=", info)
+
 
     useEffect(()=>{
         const valeursUnique = new Set(answersArray)
-        console.log("valeurUnique", valeursUnique, "answersArray length", answersArray.length, "valeurUnique length", valeursUnique.size)
+
         if(answersArray.length === valeursUnique.size) {
             setDifferent(true)
         } else {
@@ -64,9 +64,9 @@ export function PagesDISC() {
         }
     }, [repondu, different, minMax])
     
-    console.log("different = ", different, "repondu=", repondu, "minMax=", minMax, "validated =", validated)
 
-   console.log("pageArray.slice(0,pageNum+1)", pageArray.slice(0,pageNum+1))
+
+
 
    const handleNextPage = ()=> {
         dispatch(addPage());

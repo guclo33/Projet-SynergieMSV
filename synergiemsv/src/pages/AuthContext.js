@@ -32,7 +32,7 @@ export const  AuthProvider = ({children}) => {
               if (response.ok) {
                   const userData = await response.json();
                   setUser(userData); // Met à jour l'état utilisateur avec les données serveur
-                  console.log('User authenticated via server:', userData);
+
               } else {
                   setUser(null);
                   Cookies.remove('user'); // Supprime le cookie utilisateur si la session n'est pas valide
@@ -66,7 +66,7 @@ export const  AuthProvider = ({children}) => {
           });
           setUser(null);
           Cookies.remove('user'); // Supprime le cookie utilisateur
-          console.log('User logged out successfully.');
+
       } catch (error) {
           console.error('Error during logout:', error);
       }

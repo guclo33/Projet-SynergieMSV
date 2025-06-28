@@ -6,8 +6,6 @@ export function Progress ({progresData, URL, clientid, user}) {
     const [value, setValue] = useState("")
     const [valueProg, setValueProg] = useState("")
     
-    
-    console.log("progress Data", progresData)
 
     
     const handleModify = (e) => {
@@ -29,7 +27,7 @@ export function Progress ({progresData, URL, clientid, user}) {
                 })
             });
             if(response.ok) {
-                console.log("progrès crée avec succès!");
+
                 setModify(false);
                 setValue("")
                 return
@@ -37,7 +35,7 @@ export function Progress ({progresData, URL, clientid, user}) {
             return
 
         } catch(error) {
-            console.log("erreur en ajoutant le progrès", error)
+            console.error("erreur en ajoutant le progrès", error)
             return
         }
             
@@ -46,9 +44,9 @@ export function Progress ({progresData, URL, clientid, user}) {
 
     const handleClick = async(e) => {
         const {name} = e.target
-        console.log("clé", name)
+
         try {
-            console.log("sending data to update progres", valueProg)
+
             const response = await fetch(URL, {
                 method: "PUT",
                 credentials: "include",
@@ -61,14 +59,14 @@ export function Progress ({progresData, URL, clientid, user}) {
                 })
             });
             if(response.ok) {
-                console.log("Progrès mis à jour avec succès!");
+
                 setModifyProg(null);
                 setValueProg("")
                 return
             }
 
         } catch(error) {
-            console.log("erreur en mettant à jour le progrès", error)
+            console.error("erreur en mettant à jour le progrès", error)
         }
     }
 
@@ -84,11 +82,11 @@ export function Progress ({progresData, URL, clientid, user}) {
 
     const handleDelete = async(e) => {
         const {name} = e.target
-        console.log("clé", name)
+
         const confirmDelete = window.confirm(`Voulez-vous vraiment supprimer ce progrès?`);
         if(confirmDelete) {
             try {
-                console.log("sending data to update progres", value)
+
                 const response = await fetch(URL, {
                     method: "DELETE",
                     credentials: "include",
@@ -101,13 +99,13 @@ export function Progress ({progresData, URL, clientid, user}) {
                     })
                 });
                 if(response.ok) {
-                    console.log("progrès supprimé avec succès!");
+
                     setModify(false);
                     return
                 }
 
             } catch(error) {
-                console.log("erreur en supprimant le progrès", error)
+                console.error("erreur en supprimant le progrès", error)
             }}
 
     }

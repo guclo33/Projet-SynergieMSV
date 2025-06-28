@@ -1,17 +1,29 @@
 "use client"
 
-import { useCallback, useContext, useState, useEffect } from "react"
+import React, { useState, useEffect, useContext, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
 import { AuthContext } from "../../../AuthContext"
+import { processImageForUpload, isHeicFile, getHeicWarning, validateImageFile } from "../../../../components/imageUtils"
 
 function capitalizeFirstLetter(string) {
-  if (!string) return ""
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+// Fonction pour normaliser les noms de fichiers côté frontend (optionnel, pour la cohérence)
+const normalizeFileName = (fileName) => {
+  return fileName
+    .normalize('NFD') // Décompose les caractères accentués
+    .replace(/[\u0300-\u036f]/g, '') // Supprime les diacritiques
+    .replace(/[^a-zA-Z0-9.-]/g, '_') // Remplace les caractères spéciaux par des underscores
+    .replace(/_+/g, '_') // Remplace les underscores multiples par un seul
+    .replace(/^_|_$/g, ''); // Supprime les underscores en début et fin
+};
 
 export function DropZone({ detailsData, category, apiUrl }) {
   const [files, setFiles] = useState([])
   const [selectedFile, setSelectedFile] = useState()
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [warning, setWarning] = useState(null)
   const { user } = useContext(AuthContext)
   const { info, group } = detailsData
 
@@ -21,7 +33,7 @@ export function DropZone({ detailsData, category, apiUrl }) {
       encodedGroupName = encodeURIComponent(group.group_name)
     }
     const encodedClientName = encodeURIComponent(info.nom_client)
-    console.log("calling fetchfiles with apiurl:", apiUrl, "category:", category, "nom_client", info.nom_client)
+
     try {
       const response = await fetch(`${apiUrl}/${category}/list/${encodedClientName}/${encodedGroupName}`, {
         method: "GET",
@@ -40,7 +52,7 @@ export function DropZone({ detailsData, category, apiUrl }) {
         }
         const data = await response.json()
 
-        console.log("data", data)
+
         const filenames = data.files.map((file) => file.split("/").pop())
 
         setFiles(filenames)
@@ -52,16 +64,36 @@ export function DropZone({ detailsData, category, apiUrl }) {
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      if (!detailsData?.info?.nom_client) {
-        console.error("detailsData.info.nom_client is not defined")
+      if (acceptedFiles.length === 0) return
+
+      const file = acceptedFiles[0]
+      
+      // Valider le fichier
+      const validation = validateImageFile(file)
+      if (!validation.valid) {
+        alert(validation.error)
         return
       }
 
-      const formData = new FormData()
-      formData.append("file", acceptedFiles[0])
-      formData.append("fileName", encodeURIComponent(acceptedFiles[0].name))
+      // Vérifier les avertissements HEIC
+      const heicWarning = getHeicWarning(file)
+      if (heicWarning) {
+        setWarning(heicWarning)
+      } else {
+        setWarning(null)
+      }
 
+      setIsProcessing(true)
       try {
+        // Traiter le fichier (préparer pour upload)
+        const processedFile = await processImageForUpload(file)
+        
+
+
+        const formData = new FormData()
+        formData.append("file", processedFile)
+        formData.append("fileName", processedFile.name)
+
         const response = await fetch(`${apiUrl}/${category}/upload/${info.nom_client}/${group.group_name}`, {
           method: "POST",
           credentials: "include",
@@ -69,11 +101,18 @@ export function DropZone({ detailsData, category, apiUrl }) {
         })
         if (response.ok) {
           const data = await response.json()
-          console.log("Uploaded file:", data)
+
+          setWarning(null) // Effacer l'avertissement après upload réussi
           fetchFiles()
+        } else {
+          const errorText = await response.text()
+          alert(`Erreur lors de l'upload: ${errorText}`)
         }
       } catch (error) {
-        console.log("couldn't upload file")
+        console.error("couldn't upload file", error)
+        alert("Erreur lors de l'upload du fichier. Vérifiez que le fichier est valide.")
+      } finally {
+        setIsProcessing(false)
       }
     },
     [apiUrl, category, detailsData],
@@ -86,8 +125,6 @@ export function DropZone({ detailsData, category, apiUrl }) {
       encodedGroupName = encodeURIComponent(group.group_name)
     }
 
-    console.log("apiUrl", apiUrl, "category", category, "encoded leader", info.nom_leader, "filename", fileName)
-    console.log("apiURL", `${apiUrl}/${category}/download/${encodedClientName}/${fileName}/${encodedGroupName}`)
     try {
       const response = await fetch(
         `${apiUrl}/${category}/download/${encodedClientName}/${fileName}/${encodedGroupName}`,
@@ -98,7 +135,7 @@ export function DropZone({ detailsData, category, apiUrl }) {
       )
       if (response.ok) {
         const data = await response.json()
-        console.log("data", data)
+
         if (data.downloadUrl) {
           window.open(data.downloadUrl, "_blank")
         }
@@ -124,11 +161,10 @@ export function DropZone({ detailsData, category, apiUrl }) {
         },
       )
       if (response.ok) {
-        console.log(fileName, "successfully deleted")
         await fetchFiles()
       }
     } catch (err) {
-      console.log("Couldn't delete the file", err)
+      console.error("Couldn't delete the file", err)
     }
   }
 
@@ -148,14 +184,33 @@ export function DropZone({ detailsData, category, apiUrl }) {
     const confirmDelete = window.confirm(`Voulez-vous vraiment supprimer le fichier "${fileName}" ?`)
 
     if (!confirmDelete) {
-      console.log("Suppression annulée")
+      console.info("Suppression annulée")
       return // Annuler la suppression si l'utilisateur clique sur "Annuler"
     }
     deleteFile(fileName)
   }
 
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0])
+    const file = e.target.files[0]
+    if (file) {
+      // Valider le fichier
+      const validation = validateImageFile(file)
+      if (!validation.valid) {
+        alert(validation.error)
+        e.target.value = null
+        return
+      }
+
+      // Vérifier les avertissements HEIC
+      const heicWarning = getHeicWarning(file)
+      if (heicWarning) {
+        setWarning(heicWarning)
+      } else {
+        setWarning(null)
+      }
+
+      setSelectedFile(file)
+    }
   }
 
   const handleUpload = async () => {
@@ -163,22 +218,31 @@ export function DropZone({ detailsData, category, apiUrl }) {
       alert("Svp sélectionner un fichier d'abord")
       return
     }
-    const formData = new FormData()
-    formData.append("file", selectedFile)
-    console.log("selectedFile", selectedFile)
-    if (category === "photos") {
-      formData.append("fileName", encodeURIComponent(`${info.nom_client}.${selectedFile.name.split(".").pop()}`))
-    } else {
-      formData.append("fileName", encodeURIComponent(selectedFile.name))
-    }
-    console.log("selectedFile", selectedFile)
-    let encodedGroupName = ""
-    if (group && group.group_name) {
-      encodedGroupName = encodeURIComponent(group.group_name)
-    }
-    const encodedClientName = encodeURIComponent(info.nom_client)
-
+    
+    setIsProcessing(true)
     try {
+      // Traiter le fichier (préparer pour upload)
+      const processedFile = await processImageForUpload(selectedFile)
+      
+
+      
+      const formData = new FormData()
+      formData.append("file", processedFile)
+
+      
+      if (category === "photos") {
+        formData.append("fileName", `${info.nom_client}.${processedFile.name.split(".").pop()}`)
+      } else {
+        formData.append("fileName", processedFile.name)
+      }
+      
+    
+      let encodedGroupName = ""
+      if (group && group.group_name) {
+        encodedGroupName = encodeURIComponent(group.group_name)
+      }
+      const encodedClientName = encodeURIComponent(info.nom_client)
+
       const response = await fetch(`${apiUrl}/${category}/upload/${encodedClientName}/${encodedGroupName}`, {
         method: "POST",
         credentials: "include",
@@ -186,11 +250,18 @@ export function DropZone({ detailsData, category, apiUrl }) {
       })
       if (response.ok) {
         const data = await response.json()
-        console.log("Uploaded file:", data)
+        setWarning(null) // Effacer l'avertissement après upload réussi
+        setSelectedFile(null) // Réinitialiser la sélection
         fetchFiles()
+      } else {
+        const errorText = await response.text()
+        alert(`Erreur lors de l'upload: ${errorText}`)
       }
     } catch (error) {
-      console.log("couldn't upload file")
+      console.error("couldn't upload file", error)
+      alert("Erreur lors de l'upload du fichier. Vérifiez que le fichier est valide.")
+    } finally {
+      setIsProcessing(false)
     }
   }
 
@@ -201,6 +272,13 @@ export function DropZone({ detailsData, category, apiUrl }) {
   return (
     <div className="dropSection">
       <h3 className="text-base font-medium mb-2">{capitalizeFirstLetter(category)}</h3>
+
+      {/* Avertissement HEIC */}
+      {warning && (
+        <div className="mb-3 p-3 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+          <p className="text-sm">{warning}</p>
+        </div>
+      )}
 
       <div className="flex flex-col space-y-2">
         <div className="flex items-center space-x-2">
@@ -216,8 +294,12 @@ export function DropZone({ detailsData, category, apiUrl }) {
               </span>
             </div>
           </div>
-          <button onClick={handleUpload} className="btn-upload">
-            Ajouter
+          <button 
+            onClick={handleUpload} 
+            className="btn-upload"
+            disabled={isProcessing || !selectedFile}
+          >
+            {isProcessing ? "Upload..." : "Ajouter"}
           </button>
         </div>
 

@@ -19,7 +19,7 @@ export function Admin() {
 
     /*useEffect(() => {
         if(user) {
-            console.log(`Voici les infos envoyer au server : ${user.id}`)
+
             const data = {user}
             const setUser = async() => {
                 try {
@@ -32,9 +32,9 @@ export function Admin() {
                         body : JSON.stringify(data)                   
                     });
                     if(response.ok) {
-                        console.log(`Session on server successfully saved for ${user.username}`)
+
                     } else {
-                        console.log("problem saving user info")
+
                     }
 
                 } catch(error){

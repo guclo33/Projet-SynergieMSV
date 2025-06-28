@@ -42,7 +42,7 @@ const getUser = (req, res) => {
             accessToken : req.session.user.token.accessToken,
             refreshToken : req.session.user.token.refreshToken
         }
-        console.log(`here is the user :`, user)
+
         return res.json(user)
         
     }*/
@@ -138,7 +138,7 @@ const connectCanva = async (req,res, next) => {
 
     if(authCode) {
         try{
-        console.log("fetching api canva")
+
         const credentials = `${clientId}:${clientSecret}`;
         const base64Credentials = Buffer.from(credentials).toString('base64');
         const response = await fetch("https://api.canva.com/rest/v1/oauth/token", {
@@ -199,11 +199,10 @@ const connectCanvaDetail = async (req,res, next) => {
     const redirectURI = `${apiUrl}/api/details/canva`;
     
     
-    console.log("authCode===", authCode)
+
 
     if(authCode) {
         try{
-        console.log("fetching api canva")
         const credentials = `${clientId}:${clientSecret}`;
         const base64Credentials = Buffer.from(credentials).toString('base64');
         const response = await fetch("https://api.canva.com/rest/v1/oauth/token", {
@@ -221,7 +220,7 @@ const connectCanvaDetail = async (req,res, next) => {
             })
         });
         const data = await response.json();
-        console.log("data: ", data)
+
         accessToken = await data.access_token;
         refreshToken = await data.refresh_token;
 
@@ -242,7 +241,7 @@ const connectCanvaDetail = async (req,res, next) => {
 
         
 
-        console.log(`accessToken = ${accessToken}. refreshToken = ${refreshToken}` )
+
         //await res.send(data);
         
         
@@ -268,7 +267,7 @@ const connectCanvaDetail = async (req,res, next) => {
 
 const generateTemplate = async (req, res) => {
     const { clientid } = req.params;
-    console.log("clientid", clientid);
+
 
     try {
         exec(`python ./GenerateurTexte/canvaAutofillExecute.py ${clientid}`, (error, stdout, stderr) => {

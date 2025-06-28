@@ -56,7 +56,7 @@ export function PromptSetSelector({ promptSets, selectedSetId, onSelectSet, onAd
               <select
                 value={selectedSetId}
                 onChange={(e) => {
-                  console.log("Select changed to:", e.target.value)
+
                   onSelectSet(e.target.value)
                 }}
                 disabled={loading || promptSets.length === 0}
@@ -68,7 +68,7 @@ export function PromptSetSelector({ promptSets, selectedSetId, onSelectSet, onAd
                   <>
                     <option value="">Sélectionner un ensemble</option>
                     {promptSets.map((set) => {
-                      console.log("Rendering option for set:", set)
+
                       return (
                         <option key={set.id} value={set.id}>
                           {set.prompt_set_name || set.name || `Ensemble ${set.id}`}

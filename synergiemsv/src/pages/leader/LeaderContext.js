@@ -21,9 +21,9 @@ export const LeaderProvider = ({children}) => {
                 });
                 if(response.ok){
                     const data = await response.json();
-                    console.log("here's leader data", data)
+
                     setLeaderData(data)
-                    console.log("leaderData =", leaderData)
+
 
                     try {
                                 
@@ -36,7 +36,7 @@ export const LeaderProvider = ({children}) => {
                             );
                             if(response.ok){
                                 const imageUrl = await response.json();
-                                console.log("imageUrl", imageUrl, "client", client.nom)
+
                                 const name = client.nom
                                 setProfilePhotos((prev) => ({
                                     ...prev,
@@ -52,11 +52,11 @@ export const LeaderProvider = ({children}) => {
                         })
 
                         await Promise.all(promises)
-                        console.log("Photos Profile", profilePhotos)
+
                     
                         
                     } catch (error) {
-                        console.log("couldn't get image url", error)
+                        console.error("couldn't get image url", error)
                     }
 
                 } else {
@@ -65,11 +65,11 @@ export const LeaderProvider = ({children}) => {
                 }
 
             } catch(error) {
-                console.log("error", error)
+                console.error("error", error)
             }
         };
 
-        console.log("getting Leader Datas")
+
         getLeaderData() 
         
     }, [])

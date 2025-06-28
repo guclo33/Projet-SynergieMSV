@@ -16,7 +16,7 @@ export function LeaderObjectifs () {
     
     useEffect(() => {
             
-            console.log("getDetails called with id", user.id)
+
             const getDetailsData = async () => {
                 try {
                     const response = await fetch(`${apiUrl}/api/${user.role}/${user.id}/details/`, {
@@ -25,11 +25,11 @@ export function LeaderObjectifs () {
                         });
                         if(response.ok){
                             const data = await response.json();
-                            console.log("here's Details", data)
+
                             
                             setDetailsData(data)
        
-                            console.log("detailsData:", detailsData)
+
                                 
                         } else {
                             const errorText = await response.text();

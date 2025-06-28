@@ -12,7 +12,7 @@ export function Settings() {
     })
     const [newPassword, setNewPassword] = useState("")
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
-    console.log("user :", user)
+
     const handleClick = () => {
         setModify(true)
     }
@@ -45,13 +45,13 @@ export function Settings() {
                 })
             });
             if(response.ok){
-                console.log(`User succesfully updated`)
+
                 setModify(false)
             } else {
-                console.log("error while trying to update user in the server")
+                console.error("error while trying to update user in the server")
             }
         } catch(error) {
-            console.log("couldn't update user infos data" , error)
+            console.error("couldn't update user infos data" , error)
         }
 
     }
@@ -68,7 +68,6 @@ export function Settings() {
         const isConfirmed = window.confirm("Êtes-vous sûr de vouloir modifier votre mot de passe ?");
         if (isConfirmed) {
             
-            console.log("Mot de passe modifié !");
                
             try{
                 const response = await fetch(`${apiUrl}/api/admin/${user.id}/settings/password`, {
@@ -80,18 +79,18 @@ export function Settings() {
                     body : JSON.stringify(newPassword)
                 });
                 if(response.ok){
-                    console.log(`User password succesfully updated`)
+
                     setModify(null)
                 } else {
-                    console.log("error while trying to update the password in the server")
+                    console.error("error while trying to update the password in the server")
                 }
             } catch(error) {
-                console.log("couldn't update user password" , error)
+                console.error("couldn't update user password" , error)
             }
             
         } else {
             
-            console.log("Action annulée.");
+            console.info("Action annulée.");
         }
     
         

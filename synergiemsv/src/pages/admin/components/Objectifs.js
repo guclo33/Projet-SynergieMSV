@@ -33,7 +33,7 @@ export function Objectifs () {
                             }))
                             
                             setClientsData(clientsArray)
-                            console.log("clientsData",clientsData, "clientsArray", clientsArray, "data", data)
+
                             
                             
                         } else {

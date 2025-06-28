@@ -8,7 +8,7 @@ export const getPromptSetsAPI = async (userid) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("getPromptSets data:", data)
+
       return data
     }
     console.error("getPromptSets error:", response.statusText)
@@ -28,7 +28,7 @@ export const getPromptsAPI = async (userid, selectedSetName) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("getPrompts data:", data)
+
       return data
     }
     console.error("getPrompts error:", response.statusText)
@@ -41,7 +41,7 @@ export const getPromptsAPI = async (userid, selectedSetName) => {
 
 export const createPromptsAPI = async (userid, selectedSetName, prompts) => {
   if (!selectedSetName) return null
-  console.log("Creating prompts:", prompts)
+
   try {
     const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}/`, {
       method: "POST",
@@ -53,7 +53,7 @@ export const createPromptsAPI = async (userid, selectedSetName, prompts) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("createPrompts success:", data)
+
       return data
     }
     console.error("savePrompts error:", response.statusText)
@@ -66,7 +66,7 @@ export const createPromptsAPI = async (userid, selectedSetName, prompts) => {
 
 export const updatePromptAPI = async (userid, selectedSetName, promptData) => {
   if (!selectedSetName) return null
-  console.log("Updating prompt:", promptData)
+
   try {
     const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}`, {
       method: "PUT",
@@ -78,7 +78,7 @@ export const updatePromptAPI = async (userid, selectedSetName, promptData) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("updatePrompt success:", data)
+
       return data
     }
     console.error("updatePrompt error:", response.statusText)
@@ -91,7 +91,7 @@ export const updatePromptAPI = async (userid, selectedSetName, promptData) => {
 
 export const deletePromptAPI = async (userid, selectedSetName, promptName) => {
   if (!selectedSetName) return null
-  console.log("Deleting prompt:", promptName)
+
   try {
     const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}/${promptName}`, {
       method: "DELETE",
@@ -99,7 +99,7 @@ export const deletePromptAPI = async (userid, selectedSetName, promptName) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("deletePrompt success:", data)
+
       return data
     }
     console.error("deletePrompt error:", response.statusText)
@@ -112,7 +112,7 @@ export const deletePromptAPI = async (userid, selectedSetName, promptName) => {
 
 export const updateAllPromptsAPI = async (userid, selectedSetName, prompts) => {
   if (!selectedSetName) return null
-  console.log("Updating all prompts:", prompts)
+
   try {
     const response = await fetch(`${apiURL}/api/admin/${userid}/prompts/${selectedSetName}`, {
       method: "PUT",
@@ -124,7 +124,7 @@ export const updateAllPromptsAPI = async (userid, selectedSetName, prompts) => {
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("updateAllPrompts success:", data)
+
       return data
     }
     console.error("updateAllPrompts error:", response.statusText)
@@ -151,7 +151,7 @@ export const openAiExecuteAPI = async (userid, formId, promptName, selectedSetId
     })
     if (response.ok) {
       const data = await response.json()
-      console.log("openAiExecuteAPI data:", data)
+
       return data
     }
     console.error("openAiExecuteAPI error:", response.statusText)

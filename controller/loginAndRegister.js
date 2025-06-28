@@ -45,7 +45,7 @@ const login = (req, res, next) => {
                     email: user.email,
                 };
     
-                console.log('User logged in successfully:', userResponse);
+
                 return res.status(200).send({
                     message: 'Login successful',
                     user: userResponse,
@@ -74,13 +74,11 @@ const isAuthorizedAdmin = (req, res, next) => {
     
     
     if (!req.isAuthenticated()) {
-        console.log("User not authenticated");
         return res.status(401).send({ message: "Unauthorized" });
     }
       
 
     if(!["admin", "superadmin"].includes(req.user.role)  || req.user.id !== Number(id)) {
-        console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }
     
@@ -92,17 +90,14 @@ const isAuthorizedLeader = (req, res, next) => {
     const {id} = req.params;
     
     if (!req.isAuthenticated()) {
-        console.log("User not authenticated");
         return res.status(401).send({ message: "Unauthorized" });
     }
       
 
     if(!["leader", "superadmin"].includes(req.user.role) || req.user.id.toString() !== id) {
-        console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }
     
-    console.log("AUTHORIZED AS LEADER")
     return next();
 }
 
@@ -110,13 +105,11 @@ const isAuthorizedUser = (req, res, next) => {
     const {id} = req.params;
     
     if (!req.isAuthenticated()) {
-        console.log("User not authenticated");
         return res.status(401).send({ message: "Unauthorized" });
     }
       
 
     if(!["user", "superadmin"].includes(req.user.role) || req.user.id.toString() !== id) {
-        console.log("c'est la que ca casse")
         return res.status(403).send({message: "Forbidden: Role or ID does not match"});
     }
     

@@ -104,7 +104,7 @@ export function ResponseViewer({
 
     setIsLoading(true)
     try {
-      console.log("Processing input with API...", selectedFormId, selectedPromptName, selectedSetId)
+
       const apiResult = await openAiExecuteAPI(user.id, selectedFormId, selectedPromptName, selectedSetId)
 
       // Store the result
@@ -112,7 +112,7 @@ export function ResponseViewer({
 
       if (apiResult) {
         // Add the new response to the existing responses
-        console.log("API response:", apiResult)
+
         const newResponse = {
           promptName: selectedPromptName,
           timestamp: new Date().toLocaleTimeString(),

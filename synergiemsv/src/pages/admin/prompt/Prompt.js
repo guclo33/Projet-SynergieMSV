@@ -60,7 +60,7 @@ export function Prompt() {
       setLoading(true)
       try {
         const sets = await getPromptSetsAPI(user.id)
-        console.log("Loaded prompt sets:", sets)
+
         if (sets && sets.length > 0) {
           // Assurez-vous que chaque ensemble a un id en string
           const formattedSets = sets.map((set) => ({
@@ -68,7 +68,7 @@ export function Prompt() {
             id: set.id,
           }))
           setPromptSets(formattedSets)
-          console.log("Formatted prompt sets:", formattedSets)
+
         }
       } catch (error) {
         console.error("Error loading prompt sets:", error)
@@ -109,7 +109,7 @@ export function Prompt() {
           })
           setOriginalPromptValues(originalValues)
 
-          console.log("Loaded prompts:", loadedPrompts)
+
         } else {
           // If no prompts are returned, create a default system prompt
           if (selectedSetId) {
@@ -206,8 +206,8 @@ export function Prompt() {
 
   // Modifiez la fonction handleSelectSet pour ajouter des logs et assurer la conversion de type
   const handleSelectSet = (id) => {
-    console.log("Selecting set with ID:", id, typeof id)
-    console.log("Available sets:", promptSets)
+
+
 
     if (id === "") {
       // Clear selection
@@ -221,7 +221,7 @@ export function Prompt() {
     const stringId = String(id)
     const set = promptSets.find((s) => String(s.id) === stringId)
 
-    console.log("Found set:", set)
+
 
     if (set) {
       setSelectedSetId(stringId)
@@ -265,7 +265,7 @@ export function Prompt() {
         prompt_set_id: Number(selectedSetId), // Convert to number to ensure consistency
         prompt_number: promptIndex + 1,
       }
-      console.log("Saving prompt:", updatedPrompt)
+
       // Save to server (individual prompt update)
       const response = await updatePromptAPI(user.id, selectedSetName, updatedPrompt)
 
@@ -318,7 +318,7 @@ export function Prompt() {
         prompt_number: index + 1,
       }))
 
-      console.log("Sauvegarde de tous les prompts:", updatedPrompts)
+
 
       // Sauvegarder tous les prompts sur le serveur avec les valeurs prompt_number mises à jour
       const response = await updateAllPromptsAPI(user.id, selectedSetName, updatedPrompts)
@@ -410,7 +410,7 @@ export function Prompt() {
     // Then save to server
     try {
       setLoading(true)
-      console.log("deleting prompt", promptToDelete)
+
       const response = await deletePromptAPI(user.id, selectedSetName, promptToDelete.prompt_name)
       if (response.ok) {
         // Update local state first for immediate feedback
@@ -503,7 +503,7 @@ export function Prompt() {
     setPrompts(updatedPrompts)
 
     // Ne pas sauvegarder automatiquement - l'utilisateur devra cliquer sur "Sauvegarder tous les prompts"
-    console.log("Prompts réordonnés, utilisez 'Sauvegarder tous les prompts' pour enregistrer les modifications")
+
   }
 
   const handleProcessInput = () => {
@@ -518,7 +518,7 @@ export function Prompt() {
 
     setResponses(newResponses)
   }
-  console.log("userId", user.id)
+
 
   return (
     <div className="container mx-auto p-4">

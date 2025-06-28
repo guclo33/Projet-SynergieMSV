@@ -40,7 +40,7 @@ const getOverviewData = async () => {
 }
 
 const getObjectifsData = async (clientid, id) => {
-    console.log("CLIENTID", clientid, "ID", id)
+
     
     if(clientid) {
     const objectifs = await pool.query("SELECT * FROM client LEFT JOIN objectifs on client.id = objectifs.client_id AND client.objectifs_id IS NOT NULL WHERE client.id = $1", [clientid])
@@ -62,25 +62,24 @@ const getObjectifsData = async (clientid, id) => {
         objectifs,
         progres
     }
-    console.log("DATA", data)
+
     return data
 
 }
 
 const createObjectifsData = async ( query, queryArray, value) => {
-    console.log("QUERY:", query, "queryARRAY", queryArray, "VALUE", value)
+
     if(value) {
         return await pool.query(query, [value])
     }
 
-    console.log("JE FAIS LA QUERY SANS VALUE")
     return await pool.query(query, queryArray)
     
 }
 
 const updateObjectifsData = async (query, queryArray, prog_id, value) => {
     if(prog_id) {
-        console.log("updating with value", value, "and id", prog_id)
+
         return await pool.query(query, [value, prog_id])
     }
     return await pool.query(query, queryArray)
@@ -119,7 +118,7 @@ const deleteRoadmapTodosQuery = async (clientid, task, delete_default) => {
 }
 
 const updateOverview = async ( id, active) => {
-    console.log("updating overview with", id, active)
+
     await pool.query("UPDATE client SET active = $1 WHERE id = $2", [active, id])
     return {success:true}
 }
@@ -146,7 +145,7 @@ const getDetailsData = async (clientid, id) => {
         info: info.rows[0],
         equipe : equipe.rows
     }
-    console.log("voici le detailsData:", data)
+
     return data
     }
 
@@ -184,10 +183,10 @@ const updateDetailsGeneralInfosQuery = async (email, phone, price_sold, active, 
 
 const updateProfile = async (query, params) => {
     try {
-        console.log("Updating DB...");
+
         await pool.query(query, params);
     } catch (error) {
-        console.log("Database update error", error);
+        console.error("Database update error", error);
         throw new Error("Database update failed");
     }
 };
@@ -209,8 +208,7 @@ const createGroup = async (group_name, have_leader, nom_leader, leader_id, membe
             [group_name, have_leader, nom_leader, leader_id, date_presentation]
         );
 
-        const groupe_id = result.rows[0].id;
-        console.log("Nouvel ID du groupe :", groupe_id);
+        const groupe_id = result.rows[0].id;        
 
         
         if (members_ids.length > 0) {
@@ -224,7 +222,7 @@ const createGroup = async (group_name, have_leader, nom_leader, leader_id, membe
             );
         }
 
-        console.log("Tous les clients ont été ajoutés au groupe !");
+
     } catch (error) {
         console.error("Erreur lors de la création du groupe :", error);
         throw error; 
@@ -258,9 +256,7 @@ const fetchToken = async () => {
 }
 
 const updateToken = async (query, value) => {
-    console.log("Updating token with", query, value)
     await pool.query(query, value)
-    console.log("Done updating Token")
     return
 }
 
@@ -275,8 +271,7 @@ const getPrompts = async (selectedSetName) => {
 
 const createPrompts = async (selectedSetName, prompts) => {
     if (!selectedSetName) return null;
-    console.log("selectedSetName:", selectedSetName);
-    console.log("Creating prompts:", prompts.prompt_set_id, prompts.prompt_number, prompts.prompt_name, prompts.value);
+
     return await pool.query("INSERT INTO prompts (prompt_set_name, prompt_set_id, prompt_number, prompt_name, value) VALUES ($1, $2, $3, $4, $5) RETURNING id", [selectedSetName, prompts[0].prompt_set_id, prompts[0].prompt_number, prompts[0].prompt_name, prompts[0].value]);
 };
 
@@ -285,22 +280,21 @@ const updatePrompt = async (selectedSetName, promptData) => {
     const existingPrompt = await pool.query("SELECT * FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [selectedSetName, promptData.prompt_name]);
 
     if (existingPrompt.rows.length === 0) {
-        console.log("Creating prompt for update:", promptData);
         return pool.query("INSERT INTO prompts (prompt_set_name, prompt_name, value, prompt_set_id, prompt_number) VALUES ($1, $2, $3, $4, $5)", [selectedSetName, promptData.prompt_name, promptData.value, promptData.prompt_set_id, promptData.prompt_number]);
     };
 
-    console.log("Updating prompt:", promptData);
+
     return await pool.query("UPDATE prompts SET value = $1, prompt_name=$2 WHERE prompt_set_name = $3 AND prompt_number = $4", [promptData.value, promptData.prompt_name, selectedSetName, promptData.prompt_number]);
 };
 
 const deletePrompt = async (promptSetName, promptName) => {
-    console.log("Deleting prompt:", promptSetName, promptName);
+
     return await pool.query("DELETE FROM prompts WHERE prompt_set_name = $1 AND prompt_name = $2", [promptSetName, promptName]);
 };
 
 const saveAllPrompts = async (selectedSetName, prompts) => {
     if (!selectedSetName) return null;
-    console.log("SAVING ALL prompts:", prompts);
+ 
 
     try {
         const promises = prompts.map(async (prompt) => {

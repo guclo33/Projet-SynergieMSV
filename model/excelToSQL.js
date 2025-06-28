@@ -16,7 +16,7 @@ const worksheet = workbook.Sheets[sheetName];
 // 📌 Convertir les données Excel en JSON
 let jsonData = XLSX.utils.sheet_to_json(worksheet);
 jsonData = jsonData.filter((row, index) => index >= 22);
-console.log("🔍 Données Excel :", jsonData);
+
 
 // 📌 Fonction pour insérer les données dans PostgreSQL
 
@@ -34,7 +34,6 @@ const insertDataToDB = async () => {
             );
         }
 
-        console.log("✅ Données importées avec succès !");
         pool.end(); // Ferme la connexion
     } catch (error) {
         console.error("❌ Erreur lors de l'insertion :", error);

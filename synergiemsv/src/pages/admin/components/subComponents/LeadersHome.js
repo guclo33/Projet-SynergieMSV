@@ -12,7 +12,7 @@ export function LeadersHome () {
     const {profilePhotos, setClientsData, clientsData, leadersData} = useContext(AdminContext)
     const [search, setSearch] = useState("")
     
-    console.log("profilePhotos =", profilePhotos)
+
     
     
     const [newInfos, setNewInfos] = useState(clientsData)
@@ -34,7 +34,7 @@ export function LeadersHome () {
     useEffect(()=> {
         if(modifyId) {
             const leaderData = clientsData.find(leader => leader.id === Number(modifyId))
-            console.log("leaderData:", leaderData)
+
             if (!leaderData) {
                 console.error(`Leader with id ${modifyId} not found`);
                 return;
@@ -71,7 +71,7 @@ export function LeadersHome () {
     }
     const handleChange = (e) => {
         const {name, value} = e.target;
-        console.log("name:", name, "value,", value)
+
         setNewInfos(prev => ({
             ...prev,
             [name] : value,
@@ -81,7 +81,7 @@ export function LeadersHome () {
 
     const handleSubmit = async (e) =>  {
         e.preventDefault()
-        console.log("data envoyé:", newInfos)
+
         try{
             const response = await fetch(`${apiUrl}/api/admin/${user.id}/overview`, {
                 method : "PUT",
@@ -101,15 +101,15 @@ export function LeadersHome () {
                 })
             });
             if(response.ok){
-                console.log(`overview for leaderId ${modifyId}data are succesfully updated`)
+
                 
                 setClientsData(prev => prev.map(client => client.id === Number(modifyId) ? {...client, ...newInfos} : client))
                 setModifyId(null)
             } else {
-                console.log("error while trying to update in the server")
+                console.error("error while trying to update in the server")
             }
         } catch(error) {
-            console.log("couldn't update leader overview data" , error)
+            console.error("couldn't update leader overview data" , error)
         }
     }
     
@@ -118,7 +118,6 @@ export function LeadersHome () {
         setSearch(value.toLowerCase())
     }
 
-    console.log("newInfos", newInfos)
 
     const leadersActif = clientsData.filter(leader => leader.active !== undefined && leader.active === active);
     const clientSearched = leadersActif.filter(client => client.nom.toLowerCase().includes(search))

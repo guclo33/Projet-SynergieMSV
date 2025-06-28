@@ -9,12 +9,12 @@ const { Upload } = require('@aws-sdk/lib-storage');
 require("dotenv").config();
 const {createPreformUrl, getPreformData, createForm} = require("../model/formTasks")
 const { exec } = require('child_process')
+const { normalizeFileName, normalizeMimeType, processImageFile } = require('../server/utils/fileUtils');
 
 const storedForms = {};
 
 const createFormController = async (req, res) => {
     const {form, info} = req.body;
-    console.log("form", form, "INFO", info)
     try{
         const id = await createForm(form, info)
         res.status(200).json({ id })
@@ -25,26 +25,36 @@ const createFormController = async (req, res) => {
 
 const uploadProfilPhotoController = async (req, res) => {
     const file = req.file
-    const {groupName, clientName} = req.params
-    console.log('[BACKEND] [UPLOAD] Fichier reçu par le backend, file.originalname =', file.originalname);
-    const decodedFileName = decodeURIComponent(file.originalname)
-    const filePath = `Synergia/Photos/${decodedFileName}`
-    console.log('[BACKEND] [UPLOAD] Chemin S3 utilisé pour upload =', filePath);
+    const { formId, clientName } = req.body;
+    const finalClientName = clientName || 'unknown';
+
     try {
+        // Traiter le fichier image (convertir HEIC si nécessaire)
+        const processedFile = await processImageFile(file.buffer, file.originalname, file.mimetype);
+       
+        // Utiliser le nom du client tel quel pour nommer le fichier
+        let normalizedFileName = processedFile.originalName;
+        if (finalClientName && finalClientName !== 'unknown') {
+            const fileExtension = processedFile.originalName.split('.').pop().toLowerCase();
+            normalizedFileName = `${finalClientName}.${fileExtension}`;
+        }
+        const filePath = `Synergia/Photos/${normalizedFileName}`
+
         const upload = new Upload({
             client: s3Client,
             params: {
               Bucket: process.env.AWS_BUCKET_NAME,
               Key: filePath,
-              Body: file.buffer, 
-              ContentType: file.mimetype,
+              Body: processedFile.buffer, // Utiliser le buffer traité
+              ContentType: processedFile.mimetype, // Utiliser le type MIME traité
+              ContentDisposition: 'inline', // Pour que les images s'affichent directement
             },
           });
         upload.on('httpUploadProgress', (progress) => {
             console.log(`[BACKEND] [UPLOAD] Progression upload S3: ${progress.loaded}/${progress.total} bytes`);
         });
         const result = await upload.done(); 
-        console.log('[BACKEND] [UPLOAD] Upload terminé sur S3, location =', result.Location);
+      
         res.status(200).json({ message: 'Fichier uploadé avec succès', location: result.Location });
     } catch (error) {
         console.error('[BACKEND] [UPLOAD] Erreur lors de l\'upload:', error);
@@ -59,23 +69,20 @@ const createUrl = async( req, res) => {
         
         const id = await createPreformUrl(formId, formData)
 
-        console.log("IIIDDD", id)
         res.json(id);
     } catch(error) {
-        console.log("could upload dataForm", error)
+        console.error("could upload dataForm", error)
     }
 }
 
 const getUrlParams = async( req, res) => {
     const {formId} = req.params;
-    console.log("FORMIDDDD", formId)
     try {
         const data = await getPreformData(formId)
-        console.log("DATAA!!==", data)
         res.status(200).send(data)
 
     } catch(error) {
-        console.log("Couldn't get data from preform Id", error)
+        console.error("Couldn't get data from preform Id", error)
     }
 }
 
@@ -84,7 +91,6 @@ const generateProfileController = async(req, res) => {
     if(!formId) {   
         res.status(400).send("Did not receive the formId");
     } 
-    console.log("Starting Python execute")
     const pythonFile = path.join(__dirname, './../GenerateurTexte/Synergia MLM avec newform.py');
 
     exec(`python "${pythonFile}" "${formId}"`, (error, stdout, stderr) => {
@@ -98,7 +104,6 @@ const generateProfileController = async(req, res) => {
             return res.status(500).json({ error: stderr });
         }
 
-        console.log("execution completed", stdout);
         
         res.json({ message: stdout });
     })

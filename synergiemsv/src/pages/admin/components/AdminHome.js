@@ -12,7 +12,7 @@ export function AdminHome() {
     const {user} = useContext(AuthContext);
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000';
     /*useEffect( () => {
-        console.log(`${apiUrl}/api/admin/${user.id}`);
+
         const getAdminHomeData = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/admin/${user.id}`, {
@@ -21,7 +21,7 @@ export function AdminHome() {
                     });
                     if(response.ok){
                         const data = await response.json();
-                        console.log("here's data", data)
+
                         const dataArray = data.leadersData.rows.map((row) => ( {
                             id : row.leaderid,
                             clientid: row.clientid,
@@ -34,7 +34,7 @@ export function AdminHome() {
                             date_presentation: row.date_presentation,
                             statut: row.statut
                         }));
-                        console.log(dataArray)
+
                         setAdminHomeData(dataArray)
                         
                         
@@ -47,8 +47,8 @@ export function AdminHome() {
                 console.error("Could not connect to getadminhomedata", error)
             }
         }
-        console.log('user.id', user.id)
-        console.log("getAdmin called")
+
+
         getAdminHomeData();
 
     },[])*/

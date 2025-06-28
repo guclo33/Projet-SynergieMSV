@@ -1,23 +1,30 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { setPage, addPage, removePage,  } from '../Redux/pageSlice'
 import { addValueForm, addValueInfo} from '../Redux/formSlice';
-import { setFile } from "../Redux/fileSlice";
+import { setFile, setFileBase64, clearFile } from "../Redux/fileSlice";
+import { persistor, store } from "../Redux/store";
+import { AuthContext } from "../../AuthContext";
 import image from '../../../Images/logo2 sans fond.png';
+import iconeProfile from '../../../Images/iconeProfile.jpg';
+import { isHeicFile } from "../../../components/imageUtils";
 
 export function FirstPage () {
     const [validated,setValidated] = useState(false)  
     const [modify, setModify] = useState(false)
-    const [fileObj, setFileObj] = useState({})
+    const [fileObj, setFileObj] = useState(null)
+    const [isHeic, setIsHeic] = useState(false)
     const {pageNum, totalPage} = useSelector((state) => state.session.page)
     const {form, info} = useSelector((state) => state.session.form);
     const file = useSelector((state) => state.file)
     const {fileURL} = file;
     const [errors, setErrors] = useState({ email: '', phone: '' });
+    const { apiUrl } = useContext(AuthContext);
     
     useEffect(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }, [pageNum, totalPage]);
+        
         
     const dispatch = useDispatch();
 
@@ -76,9 +83,7 @@ export function FirstPage () {
         }
     }, [fileURL, form, info])
 
-    useEffect(() => {
-        console.log("fileURL rechargé après refresh :", fileURL);
-    }, [fileURL]);
+   
 
     useEffect(() => {
         if(info && info.firstName) {
@@ -111,16 +116,42 @@ export function FirstPage () {
 
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0]
-        
         if(selectedFile){
-            const base64File = await convertFileToBase64(selectedFile)
-            dispatch(setFile(base64File))
+            const heicFile = isHeicFile(selectedFile);
+            setIsHeic(heicFile);
+            if (heicFile) {
+                dispatch(setFile({ url: iconeProfile, file: selectedFile }))
+            } else {
+                const objectUrl = URL.createObjectURL(selectedFile)
+                dispatch(setFile({ url: objectUrl, file: selectedFile }))
+            }
+            try {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const fileData = {
+                        base64: reader.result,
+                        name: selectedFile.name,
+                        type: selectedFile.type,
+                        size: selectedFile.size
+                    };
+                    sessionStorage.setItem('uploadedFile', JSON.stringify(fileData));
+                };
+                reader.readAsDataURL(selectedFile);
+            } catch (error) {
+                console.error("[FRONTEND] [FILE] Erreur lors du stockage:", error);
+            }
             setFileObj(selectedFile)
             setModify(false)
         }
     }
 
-    console.log("file==", file, "fileURL ==",fileURL, "info=", info )
+    // Déterminer l'image à afficher
+    let photoSrc = iconeProfile;
+    if (fileURL && !isHeic) {
+        photoSrc = fileURL;
+    }
+    // Si HEIC ou aucun fichier, on garde iconeProfile
+
 
     const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -138,6 +169,38 @@ export function FirstPage () {
             dispatch(setPage(num-1))
             
         }
+
+    const sendFileData = async () => {
+        if (!fileObj) {
+            console.info("[FRONTEND] [UPLOAD] Pas de fichier à envoyer");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", fileObj);
+        
+        try {
+
+            const response = await fetch(`${apiUrl}/api/form/photo`, {
+                method: "POST",
+                credentials: "include",
+                body: formData
+            });
+            
+            if(response.ok){
+                const data = await response.json();
+
+                dispatch(clearFile());
+                persistor.purge(); 
+                sessionStorage.clear();
+                dispatch(addPage());
+            } else {
+                console.error("[FRONTEND] [UPLOAD] Erreur lors de l'envoi:", await response.text());
+            }
+        } catch(error) {
+            console.error("[FRONTEND] [UPLOAD] couldn't send picture", error);
+        }
+    }
 
     return (
         <div className="page">
@@ -170,27 +233,54 @@ export function FirstPage () {
                 <label htmlFor="phone">Téléphone</label>
                 <input name= "phone" type="tel" value={info.phone} onChange={(e) => dispatch(addValueInfo({key: 'phone', value: e.target.value}))} required />
                 </div>
-                <div className="questionsPhoto">    
-                    <label htmlFor="file">Photo de profil</label>
-                    {fileURL ? modify ? (
-                        <div className="modifyProfil">
-                            <img className="profilPhoto" src={fileURL} alt={info.firstName + " " + info.lastName} />
-                            <input type="file"  accept="image/*"  onChange={handleFileChange} />
-                            <button className="annulerButton" onClick={()=> setModify(false)}>Annuler</button>
-                            
-                        
-                        </div> ): (
-                        <div className="questionsPhoto">
-                            <img className="profilPhoto" src={fileURL} alt={info.firstName + " " + info.lastName} />
-                            <button onClick={() => setModify(true)}>Modifier</button>
-                        </div>
-                        
-                        ):(
-                        <>
-                        <input type="file"  accept="image/*"  onChange={handleFileChange} required/>
-                        {fileObj && <p>Selected file: {fileObj.name}</p>}
-                        </>)}
-                     
+                <div className="questionsPhoto" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20 }}>
+                    <label htmlFor="file" style={{ alignSelf: 'flex-start', marginBottom: 8, fontWeight: 500 }}>Photo de profil</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                        <img
+                            className="profilPhoto"
+                            src={photoSrc}
+                            alt="Photo de profil"
+                            style={{
+                                width: 120,
+                                height: 120,
+                                objectFit: 'cover',
+                                borderRadius: '50%',
+                                border: '2px solid #b57ba6',
+                                background: '#fff',
+                                boxShadow: '0 2px 8px rgba(181,123,166,0.08)'
+                            }}
+                        />
+                        {isHeic && (
+                            <div style={{
+                                padding: '8px 16px',
+                                margin: '8px 0',
+                                backgroundColor: '#fff3cd',
+                                border: '1px solid #ffeaa7',
+                                borderRadius: '4px',
+                                color: '#856404',
+                                fontSize: '13px',
+                                textAlign: 'center',
+                                maxWidth: 220
+                            }}>
+                                ⚠️ Fichier HEIC détecté. Il sera converti en JPEG lors de l'upload.
+                            </div>
+                        )}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            style={{
+                                marginTop: 8,
+                                border: 'none',
+                                background: 'none',
+                                color: '#b57ba6',
+                                fontWeight: 500
+                            }}
+                        />
+                        {fileObj && fileObj.name && (
+                            <div style={{ fontSize: 13, color: '#555', marginTop: 4 }}>{fileObj.name}</div>
+                        )}
+                    </div>
                 </div>
                 
                 <button 

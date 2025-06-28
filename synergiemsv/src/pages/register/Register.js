@@ -85,20 +85,20 @@ export function Register() {
                 });
                 if(response.ok) {
                     const data = await response.json()
-                    console.log("user created!", data)
+
                     navigate("/login")
                 } else {
                     const errorData = await response.json()
-                    console.log("Error", errorData.message);
+                    console.error("Error", errorData.message);
                     alert(`Error : ${errorData.message}`)
                 }
 
             } catch(error) {
-                console.log("Could not create user");
+
                 alert("An unexpected error occured. Please try again")
             }
         } else {
-            console.log("format de mot de passe non valide");
+
             
         }
     };

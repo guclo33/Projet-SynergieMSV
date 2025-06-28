@@ -117,12 +117,12 @@ export function GroupeList() {
         setLoadingPromptSets(true)
         try {
           const sets = await getPromptSetsAPI(user.id)
-          console.log("Prompt sets loaded:", sets)
+
           if (Array.isArray(sets) && sets.length > 0) {
             setPromptSets(sets)
             setSelectedPromptSet(sets[0].id)
           } else {
-            console.log("No prompt sets found or invalid response format", sets)
+
             setPromptSets([])
           }
         } catch (error) {
@@ -263,7 +263,7 @@ export function GroupeList() {
         }),
       })
       if (response.ok) {
-        console.log("group successfully updated")
+
         const groupeData = {
           active: modifiedGroup,
           date_presentation: modifiedGroup.date_presentation,
@@ -281,7 +281,7 @@ export function GroupeList() {
         })
         if (response2.ok) {
           const data = await response2.json()
-          console.log("got the new data", data)
+
           const groupesData = {
             groupesData: data.groupesData.groupesData.rows,
             groupesClients: data.groupesData.groupesClients.rows,
@@ -290,10 +290,10 @@ export function GroupeList() {
         }
         return
       } else {
-        console.log("probleme au niveau du server pour l'update de groupe")
+        console.error("probleme au niveau du server pour l'update de groupe")
       }
     } catch (error) {
-      console.log("couldn't update the group", error)
+      console.error("couldn't update the group", error)
     }
   }
 
@@ -311,10 +311,10 @@ export function GroupeList() {
         body: value,
       })
       if (response.ok) {
-        console.log("réussi la mise à jour du showProfile!")
+
       }
     } catch (error) {
-      console.log("N'a pas updater ShowProfile", error)
+      console.error("N'a pas updater ShowProfile", error)
     }
   }
 
@@ -327,10 +327,10 @@ export function GroupeList() {
         credentials: "include",
       })
       if (response.ok) {
-        console.log("réussi l'autofill Canva")
+        console.loinfog("réussi l'autofill Canva")
       }
     } catch (error) {
-      console.log("N'a pas fait l'autofill Canva", error)
+      console.error("N'a pas fait l'autofill Canva", error)
     }
   }
 
@@ -410,8 +410,8 @@ export function GroupeList() {
 
       if (response.ok) {
         const data = await response.json()
-        console.log("Message from API:", data.message)
-        console.log("Profil généré avec succès")
+
+
         navigate(`/admin/${user.id}/details/${clientId}`)
       } else {
         console.error("Erreur lors de la génération du profil")

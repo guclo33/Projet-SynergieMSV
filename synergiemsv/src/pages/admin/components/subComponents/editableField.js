@@ -7,7 +7,7 @@ export function EditableField({ label, name,  value, profileId }) {
     const {user} = useContext(AuthContext)
   
     const apiUrl = process.env.REACT_APP_RENDER_API || 'http://localhost:3000'
-    console.log("PROFILEID==", profileId)
+
     // Ouvrir l'édition
     const handleEdit = () => setIsEditing(true);
   
@@ -45,19 +45,20 @@ export function EditableField({ label, name,  value, profileId }) {
                     profile_id : profileId
                 })
             });
-            console.log("body", JSON.stringify( {
-              name: name,
-              value : draft,
-              profile_id : profileId
-          })
-          )
+
+              const data = {
+                name: name,
+                value : draft,
+                profile_id : profileId
+            }
+          
             if(response.ok){
-                console.log("succesfully updated profile")
+
                 setIsEditing(false)
             }
 
         } catch(error) {
-            console.log("couldn't modify profile", error)
+            console.error("couldn't modify profile", error)
         }
 
         

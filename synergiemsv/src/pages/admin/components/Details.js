@@ -17,10 +17,10 @@ export function Details() {
    
     useEffect(() => {
         if(!clientid){
-            console.log("client id non dispo pour l'instant")
+
             return
         }
-        console.log("getDetails called with clientid", clientid)
+
         const getDetailsData = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/admin/${user.id}/details/${clientid}`, {
@@ -29,11 +29,11 @@ export function Details() {
                     });
                     if(response.ok){
                         const data = await response.json();
-                        console.log("here's Details", data)
+
                         
                         setDetailsData(data)
    
-                        console.log("detailsData:", detailsData)
+
                             
                     } else {
                         const errorText = await response.text();
@@ -48,7 +48,7 @@ export function Details() {
         }, [clientid])
     
     
-        console.log("DETAILSDATA = ", detailsData)
+
     
     return(
         <div className="details">

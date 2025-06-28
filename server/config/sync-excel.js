@@ -6,6 +6,6 @@ const watcher = chokidar.watch('C:/Users/Guillaume Cloutier/OneDrive/Synergia/Sy
 
 
 watcher.on('change', (filePath) => {
-  console.log(`Fichier modifié : ${filePath}`);
+
   uploadFileToS3(filePath); 
 });

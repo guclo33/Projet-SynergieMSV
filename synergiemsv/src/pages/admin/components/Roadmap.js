@@ -38,15 +38,15 @@ export function Roadmap() {
                         const data = await response.json();
                         
                         if(!clientid) {
-                            console.log("fullRoadData:", data.rows)
+
                             setFullRoadData(data.rows)
                             return
                         }
                         
-                        console.log("client id:", clientid)
+
                        
                         const filterData = data.rows.filter(leader => leader.id == clientid)
-                        console.log("filteredRoadmap data avec client id:", filterData)
+
                         if (JSON.stringify(filteredRoadmapdata) !== JSON.stringify(filterData)) {
                             setFilteredRoadMapData(filterData);
                         }
@@ -87,16 +87,16 @@ export function Roadmap() {
 
     if(filteredRoadmapdata.length > 0) {
         dataArrayPreparation = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == false)
-        console.log(" dataArrayPreparation", dataArrayPreparation)
+
 
         dataArrayExecution = filteredRoadmapdata.filter(row => row.category === "exécution" && row.is_completed == false)
-        console.log(" dataArrayExecution", dataArrayExecution)
+
 
         dataArrayPrepDataDone = filteredRoadmapdata.filter(row => row.category === "préparation" && row.is_completed == true)
-        console.log(" dataArrayPrepDataDone", dataArrayPrepDataDone)
+
 
         dataArrayExecDataDone = filteredRoadmapdata.filter(row => row.category === "exécution" && row.is_completed == true)
-        console.log(" dataArrayExecDataDone", dataArrayExecDataDone)
+
         
     }
 
@@ -110,14 +110,12 @@ export function Roadmap() {
         const {value} = e.target
         const {name} = e.target
         let newValue = null
-        console.log("value", value)
         if (value === "true") {
             newValue = false
-            console.log("newValue", newValue)
         } 
         if (value === "false") {
             newValue = true
-            console.log("newValue", newValue)
+
         }
         
 
@@ -136,14 +134,14 @@ export function Roadmap() {
                 })
             });
             if(response.ok){
-                console.log(`succesfully updated ${name} with ${newValue}`)
+
                 setFilteredRoadMapData(prevData => prevData.map(item => item.task === name ? {...item, is_completed: newValue} : item))
 
             } else {
-                console.log("could not update the task")
+                console.error("could not update the task")
             }
         } catch(error) {
-            console.log("error updating todo list", error)
+            console.error("error updating todo list", error)
         }
     }
     
@@ -154,7 +152,6 @@ export function Roadmap() {
         return acc;
     }, []);
 
-    console.log("uniqueLeaders:", uniqueLeaders) 
    /* const handleNewTask = async() => {
 
     }*/
@@ -182,7 +179,7 @@ export function Roadmap() {
                 })
             });
             if(response.ok){
-                console.log("Task succesfully added")
+
                 setFilteredRoadMapData(prevData => 
                     prevData.map(item => 
                         item.id === addTodos.id 
@@ -192,11 +189,11 @@ export function Roadmap() {
                 );
                 setShowModal(false)
             } else {
-                console.log("could not add task")
+                console.error("could not add task")
             }
 
         } catch(error) {
-            console.log("error adding todos", error)
+            console.error("error adding todos", error)
         }
     };
 
@@ -227,15 +224,15 @@ export function Roadmap() {
                     })
                 });
                 if(response.ok){
-                    console.log("Task succesfully deleted")
+
 
                     setDeleteModal(false)
                 } else {
-                    console.log("could not delete task")
+                    console.error("could not delete task")
                 }
 
             } catch(error) {
-                console.log("error deleting todos", error)
+                console.error("error deleting todos", error)
             }
         } else {
             console.alert("suppression annulée")

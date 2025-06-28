@@ -98,7 +98,7 @@ export function CreateurGroupe() {
         return
       }
 
-      console.log("Données du leader à créer:", newLeader)
+
       const response = await fetch(`${apiUrl}/api/admin/${user.id}/gestion/leader`, {
         method: "POST",
         credentials: "include",
@@ -109,11 +109,11 @@ export function CreateurGroupe() {
       })
 
       if (response.ok) {
-        console.log("leader créé avec succès")
+        
 
         try {
           const data = await response.json()
-          console.log("Données du leader créé:", data)
+
 
           // Ajouter le leader à leadersData sans modifier l'état directement
           // Utiliser getAdminHomeData pour rafraîchir les données
@@ -121,7 +121,7 @@ export function CreateurGroupe() {
             getAdminHomeData()
           }
         } catch (parseError) {
-          console.log("Réponse reçue mais pas au format JSON:", parseError)
+          console.error("Réponse reçue mais pas au format JSON:", parseError)
         }
 
         // Réinitialiser le formulaire
@@ -155,13 +155,13 @@ export function CreateurGroupe() {
         body: JSON.stringify(newGroup),
       })
       if (response.ok) {
-        console.log("groupe créé avec succès!")
+
         setCreatingGroup(false)
         dispatch(resetNewGroup())
         getAdminHomeData()
       }
     } catch (error) {
-      console.log("Couldn't add group to server", error)
+      console.error("Couldn't add group to server", error)
     }
   }
 

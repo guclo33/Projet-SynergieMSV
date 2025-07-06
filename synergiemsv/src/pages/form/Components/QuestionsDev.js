@@ -228,7 +228,7 @@ export function QuestionsDev () {
             setWarning(null);
             setLoadingMessage('');
             showToast('Formulaire et photo envoyés avec succès !', 'success');
-            
+            dispatch(addPage())
         } catch (error) {
             console.error("[FRONTEND] [SUBMIT] Erreur lors de la soumission:", error);
             setWarning(`Erreur lors de la soumission: ${error.message}`);
